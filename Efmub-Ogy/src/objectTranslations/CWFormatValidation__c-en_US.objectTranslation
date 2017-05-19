@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>CWFormatValidation</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>CWFormatValidation</value>
+    </caseValues>
+    <fields>
+        <help><!-- The error message to be displayed if the field in not formatted correctly. --></help>
+        <label><!-- Error Message --></label>
+        <name>Error_Message__c</name>
+    </fields>
+    <fields>
+        <help><!-- The API name of the field to be validated. --></help>
+        <label><!-- Field Name --></label>
+        <name>Field_Name__c</name>
+    </fields>
+    <fields>
+        <help><!-- The API name of the sObject that contains the field of interest. --></help>
+        <label><!-- Object Name --></label>
+        <name>Object_Name__c</name>
+    </fields>
+    <fields>
+        <help><!-- The regular expression used to validate the field format.  For help with regular expressions, see http://docs.oracle.com/javase/7/docs/api/java/util/regex/Pattern.html --></help>
+        <label><!-- Regular Expression --></label>
+        <name>Regular_Expression__c</name>
+    </fields>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

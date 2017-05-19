@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>This object will hold all the Email template Name, labels, api mappings, Field validation type.</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>false</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Field_Label__c</fullName>
+        <externalId>false</externalId>
+        <label>Field Label</label>
+        <length>100</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Field_Type_for_Validation__c</fullName>
+        <description>We will store the field type so that we will perform the appropriate validation</description>
+        <externalId>false</externalId>
+        <label>Field Type for Validation</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Text</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Date</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Email</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Phone</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Form_Name__c</fullName>
+        <externalId>false</externalId>
+        <label>Form Name</label>
+        <length>100</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Object_Name__c</fullName>
+        <description>Will store the object information</description>
+        <externalId>false</externalId>
+        <label>Object Name</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Account</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Case</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Salesforce_API_Name__c</fullName>
+        <externalId>false</externalId>
+        <label>Salesforce API Name</label>
+        <length>100</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>Phx Case Form</label>
+    <listViews>
+        <fullName>All</fullName>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
+    <listViews>
+        <fullName>Delta_Air_Lines_Customer_Care_Form</fullName>
+        <columns>NAME</columns>
+        <columns>Form_Name__c</columns>
+        <columns>Field_Label__c</columns>
+        <columns>Salesforce_API_Name__c</columns>
+        <columns>Field_Type_for_Validation__c</columns>
+        <columns>Object_Name__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Form_Name__c</field>
+            <operation>equals</operation>
+            <value>Delta Air Lines Customer Care Form</value>
+        </filters>
+        <label>Delta Air Lines Customer Care Form</label>
+    </listViews>
+    <listViews>
+        <fullName>Delta_Air_Lines_Delayed_Bag_Fee_Rebate_F</fullName>
+        <columns>NAME</columns>
+        <columns>Form_Name__c</columns>
+        <columns>Field_Label__c</columns>
+        <columns>Salesforce_API_Name__c</columns>
+        <columns>Field_Type_for_Validation__c</columns>
+        <columns>Object_Name__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Form_Name__c</field>
+            <operation>equals</operation>
+            <value>Delta Air Lines Delayed Bag Fee Rebate Form</value>
+        </filters>
+        <label>Delta Air Lines Delayed Bag Fee Rebate F</label>
+    </listViews>
+    <listViews>
+        <fullName>Delta_Forms_Labels</fullName>
+        <columns>NAME</columns>
+        <columns>Form_Name__c</columns>
+        <columns>Field_Label__c</columns>
+        <columns>Salesforce_API_Name__c</columns>
+        <columns>Field_Type_for_Validation__c</columns>
+        <columns>Object_Name__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>Delta Forms Labels</label>
+    </listViews>
+    <nameField>
+        <displayFormat>PHXE-{00000}</displayFormat>
+        <label>Phx_Email template Labels Name</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Phx Case Forms</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ReadWrite</sharingModel>
+</CustomObject>

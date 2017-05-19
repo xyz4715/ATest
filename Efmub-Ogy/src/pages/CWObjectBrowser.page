@@ -1,0 +1,263 @@
+<!-- 
+/*******************************************************//**
+
+@page		CWObjectBrowser
+
+@brief		Object Browser Page
+
+	This page displays all the objects in an org, with their
+	3-character prefixes and links to their list view pages.
+	(Subject to the running user's permissions.)
+
+@author		Glyn Anderson	(LiquidHub.GHA)
+
+@version	2014-10-31	LiquidHub.GHA
+	Created.
+@version	2014-11-02	LiquidHub.GHA
+	Added object detail mode.
+@version	2015-03-30	LiquidHub.GHA
+	Added Formula, Default, External ID, and CWRollup functionality.
+
+@see		CWObjectBrowserController
+
+	(c)2014-2015 LiquidHub.  All Rights Reserved.  Unauthorized use is prohibited.
+
+	This is a component of CW Core (tm), LiquidHub's middleware library for Salesforce.
+
+***********************************************************/
+ -->
+<apex:page controller="CWObjectBrowserController" id="objectBrowser">
+
+<style>
+	.light	{	background-color:	#FFFFFF;	}
+	.dark	{	background-color:	#F0F0F0;	}
+</style>
+
+<script>
+function collapsePageBlockSection( elementId )
+{
+	twistSection( document.getElementById( elementId ).childNodes[0].childNodes[0].childNodes[0] );
+}
+</script>
+
+<!-- 
+/***********************************************************
+					All Objects
+***********************************************************/
+ -->
+	<apex:outputPanel rendered="{!showAllObjects}" >
+	<apex:sectionHeader subtitle="{!orgName}" title="Object Browser" />
+
+	<apex:pageBlock title="Objects" mode="maindetail" >
+		<apex:repeat value="{!objectInfoLists}" var="objectInfoList" >
+		<div id="objects{!objectInfoList.elementId}">
+		<apex:pageBlockSection title="{!objectInfoList.name}" columns="1" collapsible="true" rendered="{!objectInfoList.hasObjectInfos}">
+			<br/>
+			<apex:dataTable value="{!objectInfoList.objectInfos}" var="objectInfo" columns="4" columnsWidth="30%,10%,30%,30%" style="width:100%" rowClasses="dark,dark,dark,light,light,light">
+				<apex:column >
+					<apex:facet name="header" >Name</apex:facet>
+					<apex:outputLink value="{!objectInfo.detailUrl}" >{!objectInfo.name}</apex:outputLink>
+				</apex:column>
+				<apex:column >
+					<apex:facet name="header" >Prefix</apex:facet>
+					<apex:outputText value="{!objectInfo.prefix}" style="font-family: courier, monospace;"/>
+				</apex:column>
+				<apex:column >
+					<apex:facet name="header" >Label</apex:facet>
+					<apex:outputText value="{!objectInfo.label}" />
+				</apex:column>
+				<apex:column >
+					<apex:facet name="header" >{!objectInfoList.listViewHeader}</apex:facet>
+					<apex:outputLink value="{!objectInfo.listViewUrl}" rendered="{!objectInfo.hasListView}">{!objectInfo.plural}</apex:outputLink>
+				</apex:column>
+			</apex:dataTable>
+		</apex:pageBlockSection>
+		</div>
+		<apex:outputPanel rendered="{!objectInfoList.collapse}">
+			<script>collapsePageBlockSection( 'objects{!objectInfoList.elementId}' );</script>
+		</apex:outputPanel>
+		</apex:repeat>
+	</apex:pageBlock>
+
+	</apex:outputPanel>
+
+<!-- 
+/***********************************************************
+					One Object
+***********************************************************/
+ -->
+	<apex:outputPanel rendered="{!showFields}" >
+	<apex:sectionHeader title="{!orgName}" subtitle="{!detailObject.name}" />
+<!-- 
+	<apex:sectionHeader title="{!orgName}" subtitle="{!detailObject.name} ({!detailObject.numRecords} records)" />
+ -->
+	<apex:outputLink value="{!pageUrl}">Back to Object Browser</apex:outputLink>
+	<br/><br/>
+
+	<apex:pageBlock title="Prefix / {!detailObject.listViewLabel}" rendered="{!detailObject.hasListView}" mode="maindetail">
+		<apex:pageBlockSection showHeader="false" columns="2">
+			<apex:pageBlockSectionItem >
+				<apex:outputLabel value="Prefix" />
+				<apex:outputText value="{!detailObject.prefix}" style="font-family: courier, monospace;"/>
+			</apex:pageBlockSectionItem>
+			<apex:pageBlockSectionItem >
+				<apex:outputLabel value="{!detailObject.listViewLabel}" />
+				<apex:outputLink value="{!detailObject.listViewUrl}">{!detailObject.plural}</apex:outputLink>
+			</apex:pageBlockSectionItem>
+		</apex:pageBlockSection>
+	</apex:pageBlock>
+
+	<apex:pageBlock title="Fields" rendered="{!detailObject.hasFields}" mode="maindetail">
+		<apex:repeat value="{!detailObject.fieldInfoLists}" var="fieldInfoList" >
+		<div id="fields{!fieldInfoList.elementId}">
+		<apex:pageBlockSection title="{!fieldInfoList.name}" columns="1" collapsible="true" rendered="{!fieldInfoList.hasFieldInfos}">
+			<apex:dataTable value="{!fieldInfoList.fieldInfos}" var="fieldInfo" columns="5" columnsWidth="25%,25%,25%,13%,12%" style="width:100%" rowClasses="dark,dark,dark,light,light,light">
+				<apex:column >
+					<apex:facet name="header" >Name</apex:facet>
+					<apex:outputText value="{!fieldInfo.name}" rendered="{!!fieldInfo.hasHelpText}"/>
+					<apex:outputText value="{!fieldInfo.name}" rendered="{!fieldInfo.hasHelpText}" title="{!fieldInfo.helpText}" style="text-decoration: underline;"/>
+				</apex:column>
+				<apex:column >
+					<apex:facet name="header" >Label</apex:facet>
+					<apex:outputText value="{!fieldInfo.label}"/>
+				</apex:column>
+				<apex:column >
+					<apex:facet name="header" >Type</apex:facet>
+					<apex:outputText value="{!fieldInfo.fieldType}" rendered="{!!fieldInfo.isReference}"/>
+					<apex:outputPanel rendered="{!fieldInfo.isReference}">
+						Id (<a href="{!fieldInfo.detailUrl}">{!fieldInfo.referenceTo}</a>)
+					</apex:outputPanel>
+					<apex:outputPanel rendered="{!fieldInfo.isFormula}">
+						&nbsp;(<span title="{!fieldInfo.formula}" style="text-decoration: underline;">Formula</span>)
+					</apex:outputPanel>
+					<apex:outputPanel rendered="{!fieldInfo.hasDefaultValue}">
+						&nbsp;(<span title="{!fieldInfo.defaultValue}" style="text-decoration: underline;">Default</span>)
+					</apex:outputPanel>
+					<apex:outputPanel rendered="{!fieldInfo.isExternalID}">
+						&nbsp;(External ID)
+					</apex:outputPanel>
+					<apex:outputPanel rendered="{!fieldInfo.isPicklist}">
+						&nbsp;(<span title="{!fieldInfo.picklistValues}" style="text-decoration: underline;">Picklist</span>)
+					</apex:outputPanel>
+					<apex:outputPanel rendered="{!fieldInfo.isDependent}">
+						&nbsp;(<span title="{!fieldInfo.controller}" style="text-decoration: underline;">Dependent</span>)
+					</apex:outputPanel>
+					<apex:outputPanel rendered="{!fieldInfo.isRestricted}">
+						&nbsp;(Restricted)
+					</apex:outputPanel>
+					<apex:outputPanel rendered="{!fieldInfo.isCWRollup}">
+						&nbsp;(<a title="{!fieldInfo.cwRollupName}" href="/setup/ui/viewCustomSettingsData.apexp?id={!fieldInfo.cwRollupId}">CWRollup</a>)
+					</apex:outputPanel>
+				</apex:column>
+				<apex:column >
+					<apex:facet name="header" ><div align="center">Required</div></apex:facet>
+					<div align="center"><apex:image URL="{!if(fieldInfo.isRequired,'/img/checkbox_checked.gif','/img/checkbox_unchecked.gif')}"/></div>
+				</apex:column>
+				<apex:column >
+					<apex:facet name="header" ><div align="center">Unique</div></apex:facet>
+					<div align="center"><apex:image URL="{!if(fieldInfo.isUnique,'/img/checkbox_checked.gif','/img/checkbox_unchecked.gif')}"/></div>
+				</apex:column>
+			</apex:dataTable>
+		</apex:pageBlockSection>
+		</div>
+		<apex:outputPanel rendered="{!fieldInfoList.collapse}">
+			<script>collapsePageBlockSection( 'fields{!fieldInfoList.elementId}' );</script>
+		</apex:outputPanel>
+		</apex:repeat>
+	</apex:pageBlock>
+
+	<apex:pageBlock title="Field Sets" rendered="{!detailObject.hasFieldSets}" mode="maindetail">
+		<apex:repeat value="{!detailObject.fieldSetInfos}" var="fieldSetInfo" >
+		<div id="fieldSets{!fieldSetInfo.elementId}">
+		<apex:pageBlockSection title="{!fieldSetInfo.name}" columns="1" collapsible="true" rendered="{!fieldSetInfo.hasMembers}">
+			<apex:outputText value="{!fieldSetInfo.description}" />
+			<apex:dataTable value="{!fieldSetInfo.members}" var="member" columns="3" columnsWidth="25%,25%,50%" style="width:100%" rowClasses="dark,dark,dark,light,light,light">
+				<apex:column >
+					<apex:facet name="header" >Name</apex:facet>
+					<apex:outputText value="{!member.name}"/>
+				</apex:column>
+				<apex:column >
+					<apex:facet name="header" >Label</apex:facet>
+					<apex:outputText value="{!member.label}"/>
+				</apex:column>
+				<apex:column >
+					<apex:facet name="header" ></apex:facet>
+				</apex:column>
+			</apex:dataTable>
+		</apex:pageBlockSection>
+		</div>
+		<apex:outputPanel rendered="{!fieldSetInfo.collapse}">
+			<script>collapsePageBlockSection( 'fieldSets{!fieldSetInfo.elementId}' );</script>
+		</apex:outputPanel>
+		</apex:repeat>
+	</apex:pageBlock>
+
+	<apex:pageBlock title="Record Types" rendered="{!detailObject.hasRecordTypes}" mode="maindetail">
+		<div id="recordTypes">
+		<apex:pageBlockSection title="All Record Types" columns="1" collapsible="true">
+			<apex:dataTable value="{!detailObject.recordTypeInfos}" var="recordType" columns="5" columnsWidth="25%,25%,25%,13%,12%" style="width:100%" rowClasses="dark,dark,dark,light,light,light">
+				<apex:column >
+					<apex:facet name="header" >Name</apex:facet>
+					<apex:outputText value="{!recordType.name}"/>
+				</apex:column>
+				<apex:column >
+					<apex:facet name="header" >Label</apex:facet>
+					<apex:outputText value="{!recordType.label}"/>
+				</apex:column>
+				<apex:column >
+					<apex:facet name="header" >Description</apex:facet>
+					<apex:outputText value="{!recordType.description}"/>
+				</apex:column>
+				<apex:column >
+					<apex:facet name="header" ><div align="center">Id</div></apex:facet>
+					<div align="center"><apex:outputText value="{!recordType.rtId}"/></div>
+				</apex:column>
+				<apex:column >
+					<apex:facet name="header" ><div align="center">Default</div></apex:facet>
+					<div align="center"><apex:image URL="{!if(recordType.isDefault,'/img/checkbox_checked.gif','/img/checkbox_unchecked.gif')}"/></div>
+				</apex:column>
+			</apex:dataTable>
+		</apex:pageBlockSection>
+		</div>
+		<apex:outputPanel rendered="true">
+			<script>collapsePageBlockSection( 'recordTypes' );</script>
+		</apex:outputPanel>
+	</apex:pageBlock>
+
+	<apex:pageBlock title="Child Relationships" rendered="{!detailObject.hasChildRelationships}" mode="maindetail">
+		<apex:repeat value="{!detailObject.childRelationshipInfoLists}" var="childRelationshipInfoList" >
+		<div id="childRelationships{!childRelationshipInfoList.elementId}">
+		<apex:pageBlockSection title="{!childRelationshipInfoList.name}" columns="1" collapsible="true" rendered="{!childRelationshipInfoList.hasChildRelationshipInfos}">
+			<apex:dataTable value="{!childRelationshipInfoList.childRelationshipInfos}" var="childRelationship" columns="5" columnsWidth="25%,25%,25%,13%,12%" style="width:100%" rowClasses="dark,dark,dark,light,light,light">
+				<apex:column >
+					<apex:facet name="header" >Child Object</apex:facet>
+					<apex:outputLink value="{!childRelationship.detailUrl}">{!childRelationship.sObjectName}</apex:outputLink>
+				</apex:column>
+				<apex:column >
+					<apex:facet name="header" >Lookup Field</apex:facet>
+					<apex:outputText value="{!childRelationship.fieldName}"/>
+				</apex:column>
+				<apex:column >
+					<apex:facet name="header" >Relationship Name</apex:facet>
+					<apex:outputText value="{!childRelationship.name}"/>
+				</apex:column>
+				<apex:column >
+					<apex:facet name="header" ><div align="center">Cascade Delete</div></apex:facet>
+					<div align="center"><apex:image URL="{!if(childRelationship.isCascadeDelete,'/img/checkbox_checked.gif','/img/checkbox_unchecked.gif')}"/></div>
+				</apex:column>
+				<apex:column >
+					<apex:facet name="header" ><div align="center">Restricted Delete</div></apex:facet>
+					<div align="center"><apex:image URL="{!if(childRelationship.isRestrictedDelete,'/img/checkbox_checked.gif','/img/checkbox_unchecked.gif')}"/></div>
+				</apex:column>
+			</apex:dataTable>
+		</apex:pageBlockSection>
+		</div>
+		<apex:outputPanel rendered="{!childRelationshipInfoList.collapse}">
+			<script>collapsePageBlockSection( 'childRelationships{!childRelationshipInfoList.elementId}' );</script>
+		</apex:outputPanel>
+		</apex:repeat>
+	</apex:pageBlock>
+
+	</apex:outputPanel>
+
+</apex:page>

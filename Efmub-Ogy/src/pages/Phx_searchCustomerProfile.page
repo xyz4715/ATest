@@ -1,0 +1,793 @@
+<!--
+/*******************************************************//**
+
+@page       SkyFinderCreateContact
+
+@brief      Facilitates operations on Contacts without a case
+
+
+@author     Janeen Anderson   (LiquidHub.JDA)
+
+@version    2016-12-27  LiquidHub.JDA
+    Created.
+
+@see        SkyFinderMainController
+@see        SkyfinderUtils
+
+    (c)2015 Delta Air Lines, Inc.  All Rights Reserved.  Unauthorized use is prohibited.
+
+    This is a component of Phoenix, Delta's Case Management App for Salesforce.
+
+***********************************************************/
+-->
+
+
+<apex:page id="ContactSearchWithCallout" standardController="Case" extensions="SkyFinderMainController" tabStyle="Contact">
+
+<apex:includeScript value="/support/console/35.0/integration.js"/>
+<apex:includeScript value="{!$Resource.CWConsole}"/>
+<apex:stylesheet value="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css"/>
+<apex:includeScript value="{!$Resource.jQuery}"/>
+
+
+<script>
+       
+    
+    
+
+        
+        var ccConsole = CWConsole({subTabTitle:"Loyalty Search", returnURL:""});
+        j$ = jQuery.noConflict();
+        j$(document).ready(function(){
+            initPage();
+
+        });
+
+        function initPage()
+        {
+            sforce.console.onFocusedSubtab(handleFocus);
+        }   
+
+        var handleFocus = function (result) 
+        {
+            sforce.console.getTabLink( sforce.console.TabLink.TAB_ONLY, result.id, refreshVfPage )
+        };
+
+        var refreshVfPage = function(result)
+        {
+            console.log( '---->' + result.tabLink );
+            if( result.success && result.tabLink.indexOf('Loyalty Search') != -1 )
+            {
+                refreshPageAF();
+            }
+        }
+        
+        function ToggleSortFunc(ParamVal)
+        {
+           // alert(jQuery('[id$=myHiddenField]').val(ParamVal));
+            jQuery('[id$=myHiddenField]').val(ParamVal);
+            CallApexMethod(ParamVal);
+        }
+    function Complete(Paramval,ParamVal2)
+    {
+        alert('Paramval--' + Paramval);
+        alert('ParamVal2--' + ParamVal2);
+        
+    }
+</script>
+
+<script>
+function onKeyup_TxtFieldcom(e)
+{
+var keynum;
+if(window.event) // IE
+{
+keynum = e.keyCode;
+}
+
+if(keynum == 13) 
+{ 
+
+//document.getElementById("T2retbuttonDemo").click();
+//redirct();
+callMethodWhenEnter();
+return false; 
+} 
+}
+    
+</script>
+
+
+<style>
+
+.contactBkgrd
+{
+    background:#8370C2;
+}
+
+</style>
+
+<head>
+    <apex:stylesheet value="{!URLFOR($Resource.SLDS, 'assets/styles/salesforce-lightning-design-system-vf.css')}"/>
+</head>
+
+<apex:form id="CaseSection">
+
+<apex:pageMessages />
+<br/>
+    <!--****************************************************
+                        Top Section Find Contact (No Case)
+        ****************************************************    -->
+    <div class="slds"> <!-- SLDS wrapper div -->
+        <apex:outputPanel id="topSearchContact">
+            <div class="slds-page-header" role="banner">
+                <div class="slds-media">
+                    <div class="slds-media__figure">
+                        <div aria-hidden="true" class="slds-icon slds-icon--large slds-icon-standard-user">
+                            <img class="contactBkgrd" src="{!URLFOR($Resource.SLDS, 'assets/icons/standard/contact_120.png')}"/>
+                        </div>
+                    </div>
+                    <div class="slds-media__body">
+                        <h1 class="slds-text-heading--medium">
+                            <!--Customer Profile Search-->Loyalty Search
+                        </h1> 
+                    </div>
+                </div>
+            </div>
+        </apex:outputPanel>
+    </div> <!-- SLDS wrapper div -->
+
+    <!--****************************************************
+                        End Top Section
+        ****************************************************    -->
+
+    <!--****************************************************
+                    Search Input with Case SLDS
+    ****************************************************    -->
+
+<div class="slds"><!-- SLDS wrapper div --> 
+    <br/><br/>
+    <apex:outputPanel id="searchInputTabs">
+            <fieldset class="slds-form--compound">
+          <!--  <legend class="slds-form-element__label">Enter Loyalty Enter Loyalty </legend>-->
+                <div class="form-element__group">
+                    <div class="slds-form-element__row">
+                     <!--   <div class="slds-form-element slds-size--1-of-4">
+                            <label class="slds-form-element__label" for="input-pnr">PNR</label>
+                            <apex:inputText value="{!searchPanel.searchInfo.PNR}" 
+                                id="T2input-pnr" html-class="slds-input"/>
+                        </div>
+                        <div class="slds-form-element slds-size--1-of-4">
+                            <label class="slds-form-element__label" for="input-tkt">Ticket #</label>
+                            <apex:inputText value="{!searchPanel.searchInfo.TicketNumber}" 
+                                id="T2input-tkt" html-class="slds-input"/>
+                        </div> -->
+                        <div class="slds-form-element slds-size--1-of-4">
+                            <label class="slds-form-element__label" for="input-sm">Skymiles #</label>
+                            <apex:inputfield value="{!searchPanel.searchInfo.subject.SkyMiles_Number__pc}" onkeypress="return onKeyup_TxtFieldcom(event); " 
+                                id="T2input-sm" html-class="slds-input"/>
+                        </div>
+                        <div class="slds-form-element slds-size--1-of-4">
+                            <label class="slds-form-element__label" for="input-fb">Flying Blue #</label>
+                            <apex:inputfield value="{!searchPanel.searchInfo.subject.Flying_Blue_Number__pc}" onkeypress="return onKeyup_TxtFieldcom(event);" 
+                                id="T2input-fb" html-class="slds-input"/>
+                        </div>
+                    </div>
+                </div>
+         <!--       <legend class="slds-form-element__label">Enter Name</legend> -->
+                <div class="form-element__group">
+                    <div class="slds-form-element__row">
+                       <!--  <div class="slds-form-element slds-size--1-of-5">
+                            <label class="slds-form-element__label" for="input-sal">Salutation</label>
+                            <div class="slds-select_container" >
+                            <apex:inputfield value="{!searchPanel.searchInfo.subject.Salutation}"   
+                                id="input-sal" html-class="slds-input slds-select"/>
+                            </div>
+                        </div> -->
+                         <div class="slds-form-element slds-size--1-of-5">
+                            <label class="slds-form-element__label" for="input-ln">Last Name</label>
+                          <!--<apex:inputfield value="{!searchPanel.searchInfo.subject.LastName}" required="false" onkeypress="return onKeyup_TxtFieldcom(event);"
+                                id="input-ln" html-class="slds-input"/>-->
+                          <apex:inputtext value="{!searchPanel.searchInfo.lname}"  onkeypress="return onKeyup_TxtFieldcom(event);"
+                                id="input-ln" html-class="slds-input"/>
+                          
+                           
+                        </div>
+                        <div class="slds-form-element slds-size--1-of-5">
+                            <label class="slds-form-element__label" for="input-fn">First Name</label>
+                          <!-- <apex:inputfield value="{!searchPanel.searchInfo.subject.FirstName}" onkeypress="return onKeyup_TxtFieldcom(event);"   
+                                 id="input-fn" html-class="slds-input"/>-->
+                           <apex:inputtext value="{!searchPanel.searchInfo.fname}"  onkeypress="return onKeyup_TxtFieldcom(event);"   
+                                 id="input-fn" html-class="slds-input" />
+                        
+                        </div>
+                       <!-- <div class="slds-form-element slds-size--1-of-5">
+                            <label class="slds-form-element__label" for="input-mn">Middle Name</label>
+                            <apex:inputfield value="{!searchPanel.searchInfo.subject.MiddleName}" 
+                                id="input-mn" html-class="slds-input"/>
+                        </div> -->
+                       
+                       <!-- <div class="slds-form-element slds-size--1-of-5">
+                            <label class="slds-form-element__label" for="input-suf">Suffix</label>
+                            <apex:inputfield value="{!searchPanel.searchInfo.subject.Suffix}" 
+                                id="input-suf" html-class="slds-input"/>
+                        </div> --> 
+                    </div>
+                </div>
+        <!--         <legend class="slds-form-element__label">Enter Address</legend> -->
+                <div class="form-element__group">
+                   <!-- <div class="slds-form-element__row">
+                        <div class="slds-form-element slds-size--1-of-1">
+                            <label class="slds-form-element__label" for="input-03">Street</label>
+                            <apex:inputfield value="{!searchPanel.searchInfo.subject.PersonMailingStreet}" 
+                                id="input-03" html-class="slds-input"/>
+                        </div>
+                    </div> -->
+                    <div class="slds-form-element__row">
+                       <!-- <div class="slds-form-element slds-size--1-of-3">
+                            <label class="slds-form-element__label" for="input-04">City</label>
+                            <apex:inputfield value="{!searchPanel.searchInfo.subject.PersonMailingCity}" onkeypress="return onKeyup_TxtFieldcom(event);" 
+                                id="input-04" html-class="slds-input"/>
+                        </div>-->
+                        <div class="slds-form-element slds-size--1-of-3">
+                            <label class="slds-form-element__label" for="input-06"> Zip/Postal Code</label>
+                            <apex:inputfield value="{!searchPanel.searchInfo.subject.PersonMailingPostalCode}" onkeypress="return onKeyup_TxtFieldcom(event); " 
+                                id="input-06" html-class="slds-input"/>
+                        </div>
+                        <div class="slds-form-element slds-size--1-of-3">
+                            <label class="slds-form-element__label" for="input-05">State/Province </label>
+                           
+                            <apex:inputfield value="{!searchPanel.searchInfo.subject.PersonMailingState}" onkeypress="return onKeyup_TxtFieldcom(event); " 
+                                id="input-05" html-class="slds-input"/>
+                        </div>
+                        
+                    </div>
+                    <!--
+                    <div class="slds-form-element__row">
+                        <div class="slds-form-element slds-size--1-of-2">
+                            <label class="slds-form-element__label" for="input-email">Email</label>
+                            <apex:inputfield value="{!searchPanel.searchInfo.subject.personEmail}" onkeypress="return onKeyup_TxtFieldcom(event); " 
+                                id="input-email" html-class="slds-input"/>
+                        </div>
+                        <div class="slds-form-element slds-size--1-of-2">
+                            <label class="slds-form-element__label" for="input-phone">Phone</label>
+                            <apex:inputfield value="{!searchPanel.searchInfo.subject.phone}" onkeypress="return onKeyup_TxtFieldcom(event);" 
+                                id="input-phone" html-class="slds-input"/>
+                        </div>
+                    </div>
+                    -->
+                </div>
+                 
+                <div class="slds-grid"> 
+                    <div class="slds-col slds-size--1-of-2">                    
+                        <apex:commandButton id="T2retbuttonDemo" title="Search for Passengers" 
+                            styleClass="slds-button slds-button--brand slds-m-bottom--medium slds-m-top--medium" 
+                                value=" Search " action="{!searchPanel.search}" 
+                                   status="spin" onclick="showSpinner()"   />
+                                    
+                 <!--
+                        <apex:commandButton id="T2clearbuttonDemo" title="Clear the Search Parameters" value="Clear Input" 
+                            action="{!searchPanel.clearSearch}" status="spin"
+                                styleClass="slds-button slds-button--brand slds-m-bottom--medium slds-m-top--medium"/>
+
+                        <apex:commandButton id="T2resetbuttonDemo" title="Clear the Search Parameters" value="Clear All" 
+                            action="{!searchPanel.resetSearch}" status="spin"
+                                styleClass="slds-button slds-button--brand slds-m-bottom--medium slds-m-top--medium" onComplete="javascript:return clearContactCreate();"/>
+
+                        <apex:commandButton id="T2createbuttonDemo" title="Create a new Contact" 
+                            value="  Create  " disabled="{!!searchPanel.showCreate}" 
+                                action="{!searchPanel.createContact}" rerender="MainPanel, searchInputTabs, listBlock" 
+                                    status="spin"  
+                                        styleClass="slds-button slds-button--brand slds-m-bottom--medium slds-m-top--medium"/> -->
+                    </div>
+                   <!-- <div class="slds-col slds-size--1-of-2">
+                        <apex:selectList rendered="{!searchPanel.searchInfo.DropdownNotEmpty}" 
+                            value="{!searchPanel.searchInfo.selectedAccountName}" multiselect="false" size="1">
+                                <apex:selectOptions rendered="{!searchPanel.searchInfo.DropdownNotEmpty}" 
+                                        value="{!searchPanel.searchInfo.possibleAccts.dropdownList}"/>
+                        </apex:selectList>
+                    </div>-->
+                </div>               
+            </fieldset>
+    </apex:outputPanel>
+</div><!-- SLDS wrapper div --> 
+
+<!--****************************************************
+                    END Search Input with Case SLDS
+    ****************************************************    -->
+
+<apex:outputPanel id="listBlock"> <!-- for lists other then search list -->
+<!--****************************************************
+                    Error Messages
+    ****************************************************    -->
+    <apex:outputPanel id="errorMessages" rendered="{!showErrorMessages}">  
+        <div class="slds"><!-- SLDS wrapper div -->           
+            <div aria-hidden="false" aria-labelledby="prompt-heading-id" aria-describedby="prompt-message-wrapper" 
+                        role="alertdialog" class="slds-modal slds-modal--prompt slds-fade-in-open">
+                <div class="slds-modal__container slds-modal--prompt" role="document" 
+                            id="prompt-message-wrapper" tabindex="0">
+                    <div class="slds-modal__header slds-theme--error slds-theme--alert-texture">
+                        <h2 class="slds-text-heading--medium" id="prompt-heading-id">{!errorMessageHdr}</h2>
+                    </div>
+                    <div class="slds-modal__content slds-p-around--medium">
+                        <div>
+                            <p>{!errorMessageBody}</p>
+                        </div>
+                    </div>
+                    <div class="slds-modal__footer slds-theme--default">
+                        <apex:commandButton styleClass="slds-button slds-button--neutral" 
+                                    action="{!clearErrorMessages}" value="Okay"/>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-backdrop slds-backdrop--open"></div>  
+        </div><!-- SLDS wrapper div -->           
+    </apex:outputPanel>
+<!--****************************************************
+                    END Error Messages
+    ****************************************************    -->
+
+
+<!--****************************************************
+                    Created List
+    ****************************************************    -->
+
+    <apex:outputPanel id="createdContactsPanel" rendered="{!hasCreatedContacts}">
+
+        <script>
+            j$ = jQuery.noConflict();
+            j$(document).ready(function(){
+                j$('#createdContactsLegend').click(function(){
+                    j$(this).parent().find('#CreatedContactsTab').slideToggle("slow");
+                    j$(this).find('.expandIcon').toggleClass( 'slds-hide' );
+                });        
+            });
+        </script>
+        <div class="slds"><!-- SLDS wrapper div --> 
+        <fieldset class="slds-box slds-theme--default slds-container--xlarge">
+            <legend id="createdContactsLegend" class="slds-text-heading--medium slds-p-vertical--medium">
+                <span aria-hidden="true" class="slds-icon slds-icon--small slds-icon-text-default" style="cursor:pointer">
+                    <img src="{!URLFOR($Resource.SLDS, 'assets/icons/utility/chevrondown_60.png')}"
+                             class="expandIcon" width="10px"/>
+                    <img src="{!URLFOR($Resource.SLDS, 'assets/icons/utility/chevronright_60.png')}"
+                             class="slds-hide expandIcon" width="10px"/>
+                </span>                   
+                <span class="slds-text-heading--medium">Created Customer Accounts</span>
+            </legend>
+
+            <div id="CreatedContactsTab">
+            <table class="slds-table slds-table--bordered slds-no-row-hover slds-table--striped">
+                <thead class="tableHdr">
+                    <tr class="slds-text-heading--label">
+                        <apex:repeat value="{!crContactsColumns}" var="swcHdr">
+                            <th class="slds-is-sortable" scope="col">
+                                <div class="slds-truncate">
+                                    <div class="tblHdrText">
+                                        {!swcHdr}
+                                        <button class="slds-button slds-button--icon-bare">
+                                            <img src="{!URLFOR($Resource.SLDS, 'assets/icons/utility/arrowdown_60.png')}"
+                                                class="expandIcon" width="10px" height="20px"/>
+                                            <span class="slds-assistive-text">Sort</span>
+                                        </button>
+                                    </div>
+                                </div> 
+                            </th>
+                        </apex:repeat>  
+                    </tr>
+                </thead>
+                
+                <tbody>
+                    <apex:repeat value="{!createdContactsList}" var="contactCreated">
+                        <tr class="slds-hint-parent">
+                            <td class="slds-truncate" scope="row">
+                                <apex:outputPanel >
+                                <!-- code updated for correct redirection - vinay 6th apr 2017 - start -->
+                                   <apex:outputlink value="javascript:ccConsole.openNewSubTab('/{!contactCreated.subject.id}',
+                                             '{!contactCreated.NameLastFirst}' );">
+                                        {!contactCreated.NameLastFirst}
+                                    </apex:outputlink>
+                                    
+                                    <!--<apex:commandLink style="color:#0000FF" value="View Customer" rendered="{!IF(contactCreated.subject.id != null,True,False)}" action="{!contactRedirect}">
+                                <apex:param name="contactId" value="{!contactCreated.subject.id}"/>
+                                </apex:commandlink> -->
+                                    
+                                    <!-- <apex:outputlink target="_blank" value="/{!contactCreated.subject.id}">
+                                        {!contactCreated.NameLastFirst}
+                                    </apex:outputlink>-->
+                                    
+                                </apex:outputPanel>  
+                                <!-- code updated for correct redirection - vinay 6th apr 2017 - End-->                             
+                            </td>
+                            <!--<td class="slds-truncate" scope="row">
+                                <apex:outputPanel >
+                                    <apex:outputlink value="javascript:ccConsole.openNewSubTab('/{!contactCreated.subjectAccountID}',
+                                             '{!contactCreated.subjectAccountName}' );">
+                                        {!contactCreated.subjectAccountName}
+                                    </apex:outputlink>
+                                </apex:outputPanel>                               
+                            </td> -->
+                            <td class="slds-truncate" scope="row">
+                                <apex:outputField value="{!contactCreated.subject.SkyMiles_Number__pc}" 
+                                        styleClass="SearchInfoResults"/>    
+                            </td>
+                            <td class="slds-truncate" scope="row">
+                                <apex:outputField value="{!contactCreated.subject.Flying_Blue_Number__pc}" 
+                                        styleClass="SearchInfoResults"/>    
+                            </td>
+                           <!-- <td class="slds-truncate" scope="row">
+                                <apex:outputText value="{!contactCreated.subject.Gender__pc}" styleClass="SearchInfoResults"/>    
+                            </td> -->                             
+                            <td class="slds-truncate" scope="row">
+                                <apex:outputText value="{!contactCreated.subject.PersonEmail}" styleClass="SearchInfoResults"/>   
+                            </td>
+                            <td class="slds-truncate" scope="row">
+                                <apex:outputText value="{!contactCreated.subject.phone}" styleClass="SearchInfoResults"/>    
+                            </td>
+                           <td class="slds-truncate" scope="row">
+                                <apex:outputText value="{!contactCreated.searchAddress}" styleClass="SearchInfoResults"/>    
+                            </td>
+                            <!-- <td class="slds-truncate" scope="row">
+                                <apex:outputPanel > -->
+                                <!-- code updated for correct redirection - vinay 6th apr 2017 - start -->
+                                   <!-- <apex:outputlink value="javascript:ccConsole.openNewSubTab('/{!contactCreated.subject.id}',
+                                             '{!contactCreated.NameLastFirst}' );">
+                                        {!contactCreated.NameLastFirst}
+                                    </apex:outputlink>-->
+                                    
+                                    <!--<apex:commandLink style="color:#0000FF" value="View Contact" rendered="{!IF(contactCreated.subject.id != null,True,False)}" action="{!contactRedirect}">
+                                <apex:param name="contactId" value="{!contactCreated.subject.id}"/>
+                                </apex:commandlink> -->
+                                    
+                                    <!-- commented by anil for PHX-1242 -->
+                                    <!--<apex:outputlink target="https://www.google.com" value="/{!contactCreated.subject.id}">
+                                        View Customer
+                                    </apex:outputlink>-->
+                                    <!-- code updated for correct redirection - vinay 6th apr 2017 - End-->  
+                                <!--</apex:outputPanel>  
+                                                           
+                            </td> -->
+                        </tr>
+                    </apex:repeat>
+                </tbody>
+            </table>
+            </div>
+        </fieldset>
+        </div><!-- SLDS wrapper div -->
+    </apex:outputPanel>
+
+<!--****************************************************
+                    End Created List 
+    ****************************************************    -->
+<!--****************************************************
+                    Search Results
+    ****************************************************    -->
+    <apex:outputPanel id="searchWithCaseContactsPanel" rendered="{!searchpanel.render}">
+
+        <script>
+            j$ = jQuery.noConflict();
+            j$(document).ready(function(){
+                j$('#searchWithCaseContacts').click(function(){
+                    j$(this).parent().find('.householdContactTable').slideToggle("slow");
+                    j$(this).find('.expandIcon').toggleClass( 'slds-hide' );
+                });        
+            });
+        </script>
+        <div class="slds"><!-- SLDS wrapper div --> 
+        <fieldset class="slds-box slds-theme--default slds-container--xlarge">
+            <legend id="searchWithCaseContacts" class="slds-text-heading--medium slds-p-vertical--medium">
+                <span aria-hidden="true" class="slds-icon slds-icon--small slds-icon-text-default" style="cursor:pointer">
+                    <img src="{!URLFOR($Resource.SLDS, 'assets/icons/utility/chevrondown_60.png')}"
+                             class="expandIcon" width="10px"/>
+                    <img src="{!URLFOR($Resource.SLDS, 'assets/icons/utility/chevronright_60.png')}"
+                             class="slds-hide expandIcon" width="10px"/>
+                </span>                   
+                <span class="slds-text-heading--medium">Search Results# {!searchPanel.searchResultsListSize }   </span> 
+            </legend>
+            
+            <div class="householdContactTable" id="searchWithCaseTab">
+            <table class="slds-table slds-table--bordered slds-no-row-hover slds-table--striped">
+                <thead class="tableHdr">
+                    <tr class="slds-text-heading--label">
+                        
+                      
+                        <apex:repeat value="{!phxSearchCustprofileColumns}" var="swcHdr">
+                            <th width="100" class="slds-is-sortable" scope="col">
+                                <div class="slds-truncate">
+                                    <div class="tblHdrText">
+                                        {!swcHdr}
+                                        
+                                        <button class="slds-button slds-button--icon-bare" onclick="javascript:ToggleSortFunc('{!swcHdr}'); return false;"> 
+                                            <img src="{!URLFOR($Resource.SLDS, 'assets/icons/utility/arrowdown_60.png')}"
+                                                class="expandIcon" width="15px" height="10px"/>
+                                            <span class="slds-assistive-text">Sort</span>
+                                       </button>
+                                    </div>
+                                </div> 
+                            </th>
+                        </apex:repeat>
+                        <!-- Hidden field to store a column Header-->
+                        <apex:inputHidden value="{!ColHeader}" id="myHiddenField"/>
+                         <apex:actionFunction status="spin" name="CallApexMethod" action="{!toggleSort}"   rerender="searchWithCaseContactsPanel">
+                            <apex:param name="sortingHeader" value="" assignTo="{!sortingHeader}"/>
+                        </apex:actionFunction>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <apex:repeat value="{!searchpanel.pagingControl.currentPage}" var="contactFound">
+                        <tr class="slds-hint-parent">
+                           
+                            
+                           <td class="slds-truncate" scope="row">
+                                <apex:outputPanel rendered="{!contactFound.hasContactID}">
+                                    <apex:outputlink value="javascript:ccConsole.openNewSubTab('/{!contactFound.subject.id}');">
+                                        {!contactFound.subject.LastName} 
+                                     <!--   <apex:outputText rendered="{!contactFound.subject.salutation!=null}">
+                                    
+                                       -  {!contactFound.subject.Salutation}
+                                       
+                                    </apex:outputText> -->
+                                    </apex:outputlink>
+                                    
+                                    
+                                </apex:outputPanel>
+                               <apex:outputText styleclass="SearchInfoResults" value="{!contactFound.subject.LastName} " rendered="{!!contactFound.hasContactID}"/>
+                              <!--  <apex:outputText rendered="{!contactFound.subject.salutation!=null && !contactFound.hasContactID}">
+                                    
+                                       -  {!contactFound.subject.Salutation}
+                                       
+                                    </apex:outputText> -->
+                            </td>
+                            <td class="slds-truncate" scope="row">
+                               <apex:outputPanel rendered="{!contactFound.hasContactID}">
+                                    <apex:outputlink value="javascript:ccConsole.openNewSubTab('/{!contactFound.subject.id}',
+                                             '{!contactFound.NameLastFirst}' );">
+                                        {!contactFound.subject.FirstName} 
+                                    </apex:outputlink>
+                                </apex:outputPanel>
+                               <apex:outputText styleclass="SearchInfoResults" value="{!contactFound.subject.FirstName}" rendered="{!!contactFound.hasContactID}"/>
+                             
+                              
+                            </td>
+                            
+                            <td class="slds-truncate" scope="row">
+                               <apex:outputField value="{!contactFound.subject.SkyMiles_Number__pc}" />
+                            </td>
+                            
+                            
+                            <td class="slds-truncate" scope="row">
+                               <apex:outputField value="{!contactFound.subject.Flying_Blue_Number__pc}" />
+                            </td>
+                            <td class="slds-truncate" scope="row">
+                               <apex:outputText value="{!contactFound.searchEmail}" styleClass="SearchInfoResults"/>  
+                            </td>
+                            
+                            <td class="slds-truncate" scope="row">
+                               <apex:outputText value="{!contactFound.searchPhone}" styleClass="SearchInfoResults"/>
+                            </td>
+                            
+
+                            
+                            <td class="slds-truncate" scope="row">
+                                <apex:outputText value="{!contactFound.subject.PersonMailingStreet}"/>
+                            </td>
+                            
+                            <td class="slds-truncate" scope="row">
+                                <apex:outputText value="{!contactFound.subject.PersonMailingCity}"/>
+                            </td>
+                            <td class="slds-truncate" scope="row">
+                                <apex:outputText value="{!contactFound.subject.PersonMailingState}"/>
+                            </td>
+                            <td class="slds-truncate" scope="row">
+                                <apex:outputText value="{!contactFound.subject.PersonMailingPostalCode}"/>
+                            </td>
+                            
+                            <td class="slds-truncate" scope="row">
+                                <apex:facet name="header"></apex:facet>
+                                <apex:commandLink style="color:#0000FF" value="Create Customer" action="{!searchPanel.AcceptContactforCreate}" 
+                                        rendered="{!contactFound.showSelect}" reRender="listBlock">
+                                    <apex:param name="selected" assignTo="{!searchPanel.nextSelected}" value="{!contactFound.searchIndex}"/>
+                                   
+                                 </apex:commandLink>
+                                <!-- code added to show "View contact"- vinay 6th apr 2017 - start --> 
+                               <!-- <apex:commandLink id="ViewCustomer" style="color:#0000FF" value="View Customer" reRender="listBlock" 
+                                rendered="{!IF(contactFound.subject.id != null,true,false)}" onclick="javascript:ccConsole.openNewSubTab('/{!contactFound.subject.id}','{!contactFound.NameLastFirst}');" >
+                                <apex:param name="contactId" value="{!contactFound.subject.id}"/>
+                                </apex:commandlink>-->
+                                <apex:commandLink id="ViewCustomer" style="color:#0000FF" value="View Customer" reRender="listBlock" 
+                                rendered="{!IF(contactFound.subject.id != null && contactFound.showCheck == false,true,false)}" onclick="javascript:ccConsole.openNewSubTab('/{!contactFound.subject.id}','{!contactFound.NameLastFirst}');" >
+                                <apex:param name="contactId" value="{!contactFound.subject.id}"/>
+                                </apex:commandlink>
+                              
+                                <!-- code added to show "View contact"- vinay 6th apr 2017 - End--> 
+                                <apex:outputPanel rendered="{!contactFound.showView}"></apex:outputPanel>
+                                <div align="center">
+                                    <apex:image URL="/img/checkbox_checked.gif" rendered="{!contactFound.showCheck}"/>
+                                </div>
+                            </td>
+                            
+                            
+                           
+                           
+                        </tr>
+                    </apex:repeat>
+                </tbody>
+            </table>
+            
+            <div class="slds-card__footer" id="slds-card__footer">
+                <span>
+                <apex:commandLink value="" rendered="{!searchpanel.pagingControl.showPrev}" 
+                        action="{!searchpanel.pagingControl.gotoBeginning}" rerender="listBlock, searchInputTabs" 
+                            status="spin">
+                    <img src="{!URLFOR($Resource.SLDS, 'assets/icons/utility/chevronleft_60.png')}" 
+                            class="expandIcon" width="10px"/>                
+                </apex:commandLink>
+                <apex:commandLink value="" rendered="{!searchpanel.pagingControl.showPrev}" 
+                        action="{!searchpanel.pagingControl.goBack}" rerender="listBlock, searchInputTabs" 
+                            status="spin">
+                    <img src="{!URLFOR($Resource.SLDS, 'assets/icons/utility/back_60.png')}" class="expandIcon" 
+                        width="10px"/>                
+                </apex:commandLink>
+                </span>
+                <span>             
+                
+                <apex:outputText value="{!searchpanel.pagingControl.label}" html-class="slds-text-body--small"/>
+                
+                </span>
+                <span>
+                <apex:commandLink value="" rendered="{!searchpanel.pagingControl.showNext}" 
+                        action="{!searchpanel.pagingControl.advance}" rerender="listBlock, searchInputTabs" 
+                            status="spin">
+                    <img src="{!URLFOR($Resource.SLDS, 'assets/icons/utility/forward_60.png')}" class="expandIcon" 
+                        width="10px"/>                
+                </apex:commandLink>
+                <apex:commandLink value="" rendered="{!searchpanel.pagingControl.showNext}" 
+                        action="{!searchpanel.pagingControl.gotoEnd}" rerender="listBlock, searchInputTabs" 
+                            status="spin">
+                    <img src="{!URLFOR($Resource.SLDS, 'assets/icons/utility/chevronright_60.png')}" class="expandIcon" 
+                        width="10px"/>                
+                </apex:commandLink>
+                </span>                
+            </div>
+            </div>
+        </fieldset>
+        </div><!-- SLDS wrapper div -->
+    </apex:outputPanel>
+    <apex:outputPanel id="searchMessages" rendered="{!searchpanel.showMessages}"> 
+        <div class="slds"><!-- SLDS wrapper div -->           
+            <div aria-hidden="false" aria-labelledby="prompt-heading-id" aria-describedby="prompt-message-wrapper" 
+                            role="alertdialog" class="slds-modal slds-modal--prompt slds-fade-in-open">
+                <div class="slds-modal__container slds-modal--prompt" role="document" 
+                                id="prompt-message-wrapper" tabindex="0">
+                    <div class="slds-modal__header slds-theme--error slds-theme--alert-texture">
+                        <h2 class="slds-text-heading--medium" id="prompt-heading-id">{!searchpanel.messageHdr}</h2>
+                    </div>
+                    <div class="slds-modal__content slds-p-around--medium">
+                        <div>
+                            <p>{!searchpanel.messageBody}</p>
+                        </div>
+                    </div>
+                    <div class="slds-modal__footer slds-theme--default">
+                        <apex:commandButton styleClass="slds-button slds-button--neutral" 
+                                        action="{!searchPanel.clearResults}" value="Okay"/>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-backdrop slds-backdrop--open"></div> 
+        </div><!-- SLDS wrapper div -->           
+    </apex:outputPanel>
+    <!-- for a more demure search return (none or too many) message replace the above outputPanel with one that just has the
+                message and the same rendered variable as the above outputPanel.
+    -->
+
+<!--****************************************************
+                    END Search Results
+    ****************************************************    -->
+
+<!--    ****************************************************
+                    Action Functions/Statuses
+        ****************************************************    -->
+        <!-- action function for clearing primary checkboxes on change -->
+        <apex:actionFunction name="resetPrimary" action="{!resetPrimary}" reRender="RelatedContactsDetailsSection">
+            <apex:param name="thePrimary" assignTo="{!primary}" value="This is the primary"/>
+        </apex:actionFunction>
+        
+        <apex:actionFunction name="clearContactCreate" action="{!clearCreatedContact}" reRender="MainPanel, searchInputTabs, listBlock"/>
+        <!-- action funtion to control the Account button/checkbox/name state rerender -->
+        <apex:actionFunction name="usePrimary" action="{!handleUsePrimaryChange}" reRender="RelatedContactsDetailsSection"/>
+
+        <!-- action function for switching to the Account Selection Panel -->
+        <apex:actionFunction name="accountPanel" action="{!handleUsePrimaryChange}" reRender="RelatedContactsDetailsSection"/>
+        
+        <apex:actionFunction name="firstNameSet" reRender="searchInputTabs" status="spin">
+        <apex:param name="FirstName" assignTo="{!searchPanel.searchInfo.subject.FirstName}" value="" />
+        </apex:actionfunction>
+        
+        <apex:actionFunction name="lastNameSet" reRender="searchInputTabs" status="spin">
+        <apex:param name="LastName" assignTo="{!searchPanel.searchInfo.subject.LastName}" value=""/>
+        </apex:actionfunction>
+         <apex:actionFunction action="{!searchPanel.search}" name="callMethodWhenEnter"/>
+        <!-- action funtion for full page spinner -->
+        <!--spinner-->
+        <div class="slds"><!-- SLDS wrapper div --> 
+            <apex:actionStatus id="spin">
+                <apex:facet name="stop" >
+                </apex:facet>
+                <apex:facet name="start" >
+                    <!-- spinner -->
+                    <div class="slds-spinner_container" style="z-index:1 !Important">
+                        <div class="slds-spinner--brandContact slds-spinner slds-spinner--large" aria-hidden="false" role="alert">
+                            <div class="slds-spinner__dot-a"></div>
+                            <div class="slds-spinner__dot-b"></div>
+                        </div>
+                    </div>    
+                </apex:facet>
+            </apex:actionStatus>
+        </div><!-- SLDS wrapper div --> 
+</apex:outputPanel>
+
+    <style>
+    #spinner{
+        display: none;
+        width: 50px;
+        height: 50px;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        text-align:center;
+        padding:10px;
+        font:normal 16px Tahoma, Geneva, sans-serif;
+        margin-left: -100px;
+        margin-top: -100px;
+        z-index:2;
+        overflow: hidden;
+        background-color: white;
+        opacity: 0.9;
+         -moz-opacity:0.9;
+         -khtml-opacity:0.9;
+        z-index:100;
+        padding:5px;
+        line-height:20px;
+     }
+     #opaque {
+         position: fixed;
+         top: 0px;
+         left: 0px;
+         width: 100%;
+         height: 100%;
+         z-index: 1;
+         display: none;
+         background-color: white;
+         filter: alpha(opacity=90);
+         opacity:0.9;
+         -moz-opacity:0.9;
+         -khtml-opacity:0.9;
+     }
+     * html #opaque {
+         position: absolute;
+     }
+  </style>
+
+    
+</apex:form>
+    
+    <div id="opaque" />
+   <div class="slds" id="spinner" >
+       <div class="slds-spinner_container" style="z-index:1 !Important">
+                        <div class="slds-spinner--brandContact slds-spinner slds-spinner--large" aria-hidden="false" role="alert">
+                            <div class="slds-spinner__dot-a"></div>
+                            <div class="slds-spinner__dot-b"></div>
+                        </div>
+                    </div> 
+    </div>
+   
+   <script>
+    function showSpinner()
+    {
+       document.getElementById('opaque').style.display='block';
+       var popUp = document.getElementById('spinner');
+      
+       popUp.style.display = 'block';
+    } 
+   </script>
+</apex:page>

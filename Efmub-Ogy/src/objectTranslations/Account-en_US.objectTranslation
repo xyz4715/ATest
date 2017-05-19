@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Customer</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Customers</value>
+    </caseValues>
+    <fields>
+        <caseValues>
+            <plural>false</plural>
+            <value>Customer Record Access</value>
+        </caseValues>
+        <name>account_access</name>
+        <startsWith>Vowel</startsWith>
+    </fields>
+    <fields>
+        <caseValues>
+            <plural>false</plural>
+            <value>Customer Record Access Level</value>
+        </caseValues>
+        <name>account_access_level</name>
+        <startsWith>Vowel</startsWith>
+    </fields>
+    <fields>
+        <caseValues>
+            <plural>false</plural>
+            <value>Division</value>
+        </caseValues>
+        <name>account_division</name>
+        <startsWith>Vowel</startsWith>
+    </fields>
+    <fields>
+        <caseValues>
+            <plural>false</plural>
+            <value>Customer Name</value>
+        </caseValues>
+        <caseValues>
+            <plural>true</plural>
+            <value>Customer Names</value>
+        </caseValues>
+        <name>account_name</name>
+        <startsWith>Vowel</startsWith>
+    </fields>
+    <fields>
+        <caseValues>
+            <plural>false</plural>
+            <value>Customer Number</value>
+        </caseValues>
+        <name>account_number</name>
+        <startsWith>Vowel</startsWith>
+    </fields>
+    <fields>
+        <caseValues>
+            <plural>false</plural>
+            <value>Customer Record Owner</value>
+        </caseValues>
+        <caseValues>
+            <plural>true</plural>
+            <value>Customer Record Owners</value>
+        </caseValues>
+        <name>account_owner</name>
+        <startsWith>Vowel</startsWith>
+    </fields>
+    <fields>
+        <caseValues>
+            <plural>false</plural>
+            <value>Customer Site</value>
+        </caseValues>
+        <caseValues>
+            <plural>true</plural>
+            <value>Customer Sites</value>
+        </caseValues>
+        <name>account_site</name>
+        <startsWith>Vowel</startsWith>
+    </fields>
+    <fields>
+        <caseValues>
+            <plural>false</plural>
+            <value>Customer Source</value>
+        </caseValues>
+        <name>account_source</name>
+        <startsWith>Vowel</startsWith>
+    </fields>
+    <fields>
+        <caseValues>
+            <plural>false</plural>
+            <value>Parent Customer Record</value>
+        </caseValues>
+        <caseValues>
+            <plural>true</plural>
+            <value>Parent  Customer Records</value>
+        </caseValues>
+        <name>parent_account</name>
+        <startsWith>Consonant</startsWith>
+    </fields>
+    <fields>
+        <caseValues>
+            <plural>false</plural>
+            <value>Parent  Customer Record Division</value>
+        </caseValues>
+        <name>parent_account_division</name>
+        <startsWith>Consonant</startsWith>
+    </fields>
+    <fields>
+        <caseValues>
+            <plural>false</plural>
+            <value>Parent Customer Record ID</value>
+        </caseValues>
+        <name>parent_account_id</name>
+        <startsWith>Consonant</startsWith>
+    </fields>
+    <fields>
+        <caseValues>
+            <plural>false</plural>
+            <value>Parent Customer Record Site</value>
+        </caseValues>
+        <name>parent_account_site</name>
+        <startsWith>Consonant</startsWith>
+    </fields>
+    <fields>
+        <caseValues>
+            <plural>false</plural>
+            <value>Customer Account</value>
+        </caseValues>
+        <caseValues>
+            <plural>true</plural>
+            <value>Customer Accounts</value>
+        </caseValues>
+        <name>person_account</name>
+        <startsWith>Consonant</startsWith>
+    </fields>
+    <fields>
+        <caseValues>
+            <plural>false</plural>
+            <value>Customer Account Record</value>
+        </caseValues>
+        <caseValues>
+            <plural>true</plural>
+            <value>Customer Account Records</value>
+        </caseValues>
+        <name>person_account_record</name>
+        <startsWith>Consonant</startsWith>
+    </fields>
+    <fields>
+        <label><!-- Corporate Sales Customer --></label>
+        <name>Corporate_Sales_Customer__c</name>
+    </fields>
+    <fields>
+        <label><!-- DOT Department Information --></label>
+        <name>DOT_Department_Information__c</name>
+    </fields>
+    <fields>
+        <label><!-- FASsmBase --></label>
+        <name>FASsmBase__c</name>
+    </fields>
+    <fields>
+        <label><!-- Flight Crew from Apex --></label>
+        <name>Flight_Crew_from_Apex__c</name>
+    </fields>
+    <fields>
+        <label><!-- Household SkyMiles --></label>
+        <name>Household_SkyMiles__c</name>
+    </fields>
+    <fields>
+        <help><!-- Account was used for migration of Contacts, Agent needs to create new Account for Contacts on this Account. --></help>
+        <label><!-- Migrated Account --></label>
+        <name>IsPlaceholder__c</name>
+    </fields>
+    <fields>
+        <label><!-- Name SoundEx --></label>
+        <name>Name_SoundEx__c</name>
+    </fields>
+    <fields>
+        <label><!-- Primary Contact --></label>
+        <name>Primary_Contact__c</name>
+        <relationshipLabel><!-- Accounts --></relationshipLabel>
+    </fields>
+    <fields>
+        <help><!-- Select the profession or occupation of the customer, if known --></help>
+        <label><!-- Profession --></label>
+        <name>Profession__c</name>
+        <picklistValues>
+            <masterLabel>Attorney</masterLabel>
+            <translation><!-- Attorney --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Doctor</masterLabel>
+            <translation><!-- Doctor --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Government</masterLabel>
+            <translation><!-- Government --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Nurse</masterLabel>
+            <translation><!-- Nurse --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Other</masterLabel>
+            <translation><!-- Other --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Student</masterLabel>
+            <translation><!-- Student --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Travel Agent</masterLabel>
+            <translation><!-- Travel Agent --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Top XX Corporate Sales Customer --></label>
+        <name>Top_XX_Corporate_Sales_Customer__c</name>
+    </fields>
+    <fields>
+        <label><!-- Travel Agency Information --></label>
+        <name>Travel_Agency_Information__c</name>
+    </fields>
+    <fields>
+        <label><!-- Valid Email --></label>
+        <name>Valid_Email__c</name>
+    </fields>
+    <layouts>
+        <layout>Person Account Feed Layout</layout>
+        <layoutType>PersonAccount</layoutType>
+        <sections>
+            <label><!-- Customer Alerts --></label>
+            <section>Customer Alerts</section>
+        </sections>
+        <sections>
+            <label><!-- Frequent Flyer Information --></label>
+            <section>Frequent Flyer Information</section>
+        </sections>
+    </layouts>
+    <quickActions>
+        <label><!-- New Baggage Case --></label>
+        <name>New_Baggage_Case</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- New Customer Care Case --></label>
+        <name>New_Customer_Care_Case</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- New DOT Case --></label>
+        <name>New_DOT_Case</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- New Disability Case --></label>
+        <name>New_Disability_Case</name>
+    </quickActions>
+    <recordTypes>
+        <label><!-- Account --></label>
+        <name>Account</name>
+    </recordTypes>
+    <recordTypes>
+        <label><!-- Entity --></label>
+        <name>Entity</name>
+    </recordTypes>
+    <recordTypes>
+        <label><!-- Household --></label>
+        <name>Household</name>
+    </recordTypes>
+    <startsWith>Vowel</startsWith>
+    <validationRules>
+        <errorMessage><!-- Either a Phone number, email address or a complete mailing address is required --></errorMessage>
+        <name>Customer_Channel_Required</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- First Name is required --></errorMessage>
+        <name>First_Name_Required</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- FlyingBlue# should be 10 digits --></errorMessage>
+        <name>FlyingBlue_Number_Length_Validation</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Invalid Email address --></errorMessage>
+        <name>Invalid_email_address</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Phone number cannot be alphanumeric --></errorMessage>
+        <name>Phone_Should_be_Numeric</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Skymiles# should be 10 digits --></errorMessage>
+        <name>Skymiles_Number_Length_Validation</name>
+    </validationRules>
+    <webLinks>
+        <label><!-- AltavistaNews --></label>
+        <name>AltavistaNews</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Clone --></label>
+        <name>Clone</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- GoogleMaps --></label>
+        <name>GoogleMaps</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- GoogleNews --></label>
+        <name>GoogleNews</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- GoogleSearch --></label>
+        <name>GoogleSearch</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- HooversProfile --></label>
+        <name>HooversProfile</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- New_Button --></label>
+        <name>New_Button</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Search_Loyalty --></label>
+        <name>Search_Loyalty</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Update_Contact_Details_From_Loyalty --></label>
+        <name>Update_Contact_Details_From_Loyalty</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Update_PA_Details --></label>
+        <name>Update_PA_Details</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- YahooMaps --></label>
+        <name>YahooMaps</name>
+    </webLinks>
+</CustomObjectTranslation>

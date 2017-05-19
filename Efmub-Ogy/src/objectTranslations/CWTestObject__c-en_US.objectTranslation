@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>CWTestObject</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>CWTestObjects</value>
+    </caseValues>
+    <fields>
+        <label><!-- Checkbox --></label>
+        <name>Checkbox__c</name>
+    </fields>
+    <fields>
+        <label><!-- Currency --></label>
+        <name>Currency__c</name>
+    </fields>
+    <fields>
+        <label><!-- DateTime --></label>
+        <name>DateTime__c</name>
+    </fields>
+    <fields>
+        <label><!-- Date --></label>
+        <name>Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- Email --></label>
+        <name>Email__c</name>
+    </fields>
+    <fields>
+        <label><!-- Geolocation --></label>
+        <name>Geolocation__c</name>
+    </fields>
+    <fields>
+        <label><!-- Lookup --></label>
+        <name>Lookup__c</name>
+        <relationshipLabel><!-- CWTestObjects --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Multi-Select --></label>
+        <name>Multi_Select__c</name>
+        <picklistValues>
+            <masterLabel>Value 1</masterLabel>
+            <translation><!-- Value 1 --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Value 2</masterLabel>
+            <translation><!-- Value 2 --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Value 3</masterLabel>
+            <translation><!-- Value 3 --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Number 12.6 --></label>
+        <name>Number_12_6__c</name>
+    </fields>
+    <fields>
+        <label><!-- Number 18.0 --></label>
+        <name>Number_18_0__c</name>
+    </fields>
+    <fields>
+        <label><!-- Number 8.0 --></label>
+        <name>Number_8_0__c</name>
+    </fields>
+    <fields>
+        <label><!-- Percent --></label>
+        <name>Percent__c</name>
+    </fields>
+    <fields>
+        <label><!-- Phone --></label>
+        <name>Phone__c</name>
+    </fields>
+    <fields>
+        <label><!-- Picklist --></label>
+        <name>Picklist__c</name>
+        <picklistValues>
+            <masterLabel>Value 1</masterLabel>
+            <translation><!-- Value 1 --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Value 2</masterLabel>
+            <translation><!-- Value 2 --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Value 3</masterLabel>
+            <translation><!-- Value 3 --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Soundex --></label>
+        <name>Soundex__c</name>
+    </fields>
+    <fields>
+        <label><!-- Text 40 --></label>
+        <name>Text_40__c</name>
+    </fields>
+    <fields>
+        <label><!-- Text Area --></label>
+        <name>Text_Area__c</name>
+    </fields>
+    <fields>
+        <label><!-- Text Encrypted --></label>
+        <name>Text_Encrypted__c</name>
+    </fields>
+    <fields>
+        <label><!-- Text Long --></label>
+        <name>Text_Long__c</name>
+    </fields>
+    <fields>
+        <label><!-- Text Rich --></label>
+        <name>Text_Rich__c</name>
+    </fields>
+    <fields>
+        <label><!-- URL --></label>
+        <name>URL__c</name>
+    </fields>
+    <recordTypes>
+        <label><!-- CWTestRecordType --></label>
+        <name>CWTestRecordType</name>
+    </recordTypes>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

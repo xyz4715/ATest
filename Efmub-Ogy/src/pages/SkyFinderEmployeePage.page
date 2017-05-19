@@ -1,0 +1,227 @@
+<!--
+/*******************************************************//**
+
+@page       GeneralTestStuff
+
+@brief      Used to test whatever (SOAs Lightning Components ideas ...)
+
+
+@author     Janeen Anderson   (LiquidHub.JDA)
+
+@version    2016-3-8  LiquidHub.JDA
+    Created.
+
+@see        SOACalloutTestController
+@see        changes depending on the test
+
+    (c)2015 Delta Air Lines, Inc.  All Rights Reserved.  Unauthorized use is prohibited.
+
+    This is a component of Phoenix, Delta's Case Management App for Salesforce.
+
+***********************************************************/
+-->
+
+<apex:page controller="SkyFinderEmployeeController" showHeader="false" standardStylesheets="false" sidebar="false" applyHtmlTag="false" applyBodyTag="false" docType="html-5.0" id="page">
+<html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<head>
+    <apex:stylesheet value="{!URLFOR($Resource.SLDS, 'assets/styles/salesforce-lightning-design-system-vf.css')}"/>
+    <apex:includeScript value="{!$Resource.CWConsole}"/>
+    <apex:includeScript value="{!$Resource.jQuery}"/>
+    <apex:includeScript value="/support/console/35.0/integration.js"/>
+</head> 
+
+<script>
+        var empConsole = CWConsole({subTabTitle:"SkyFinder:Employee", returnURL:""});
+        j$ = jQuery.noConflict();
+        j$(document).ready(function(){
+            initPage();
+
+        });
+
+        function initPage()
+        {
+            sforce.console.onFocusedSubtab(handleFocus);
+        }   
+
+        var handleFocus = function (result) 
+        {
+            sforce.console.getTabLink( sforce.console.TabLink.TAB_ONLY, result.id, refreshVfPage )
+        };
+
+        var refreshVfPage = function(result)
+        {
+            console.log( '---->' + result.tabLink );
+            if( result.success && result.tabLink.indexOf('SkyFinder:Employee') != -1 )
+            {
+                refreshPageAF();
+            }
+        }
+        function closeIframe()
+        {
+            
+           
+            var idCheck = document.getElementById('page:theForm:RespId').value;
+            if((idCheck != '')&&(idCheck != null))
+                {
+                    
+                    parent.closeRespIframe(idCheck);
+                }
+        }
+        
+</script>
+<apex:pageMessages />
+<apex:form id="theForm">        
+
+<apex:inputhidden value="{!selectedId}" id="RespId"/>
+<apex:outputPanel id="Everything">
+
+    <div class="slds"> <!-- SLDS wrapper div -->
+        <apex:outputPanel >
+            <div class="slds-page-header" role="banner">
+                <div class="slds-media">
+                    <div class="slds-media__figure">
+                        <div aria-hidden="true" class="slds-icon slds-icon--large slds-icon-standard-user">
+                            <img class="pnrBkgrd" src="{!URLFOR($Resource.SLDS, 'assets/icons/standard/user_120.png')}"/>
+                        </div>
+                    </div>
+                    <div class="slds-media__body">
+                        <apex:outputText value=""/>
+                        <h1 class="slds-text-heading--medium">
+                            Skyfinder | Find Employee
+                        </h1> 
+                    </div>
+                </div>
+            </div>
+        </apex:outputPanel>
+        <div class="slds-grid">
+            <div class="slds-col slds-size--1-of-2">
+                <apex:outputPanel id="EmployeeSearchInput" html-class="slds-m-around--medium">
+                    <fieldset class="slds-form--compound">
+                        <div class="form-element__group">
+                            <div class="slds-form-element__row">
+                                <div class="slds-form-element slds-size--1-of-5">
+                                    <label class="slds-form-element__label" for="input-sal">Employee Number</label>
+                                    <apex:inputText value="{!EmployeeIdentifier}"/>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </apex:outputPanel>
+            </div>
+            <div class="slds-col slds-size--1-of-2">
+                <apex:commandButton id="SearchButton" title="Search for Employee By Employee Number" 
+                        styleClass="slds-button slds-button--brand slds-m-around--large" 
+                            value="Search" action="{!makeEmployeeCallout}" rerender="Everything, listBlock" status="spin"/>
+                <apex:commandButton id="ClearButton" title="Search for Employee By Employee Number" 
+                        styleClass="slds-button slds-button--brand slds-m-around--large" 
+                            value="Clear" action="{!clear}" rerender="Everything, listBlock" status="spin"/>
+            </div>
+        </div>
+    </div> <!-- SLDS wrapper div -->
+</apex:outputPanel>
+
+<!--****************************************************
+                    SLDS Search Results Section - WITH case
+    ****************************************************    -->
+<apex:outputPanel id="listBlock"> <!-- for lists other then search list -->
+    <div class="slds"><!-- SLDS wrapper div -->
+        <apex:outputPanel rendered="{!hasResponse}">
+            <div class="EmployeeTable" id="empSearchResults">
+                <table class="slds-table slds-table--bordered slds-no-row-hover slds-table--striped">
+                    <thead class="tableHdr">
+                        <tr class="slds-text-heading--label">
+                            <apex:repeat value="{!EmployeeColumns}" var="theHdr">
+                                <th class="slds-is-sortable" scope="col">
+                                    <div class="slds-truncate">
+                                        <div class="tblHdrText">
+                                            {!theHdr}
+                                        </div>
+                                    </div> 
+                                </th>
+                            </apex:repeat>  
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                            
+                            <!--<tr class="slds-hint-parent">
+                                <td class="slds-truncate" scope="row">
+                                    <apex:outputPanel rendered="{!!hasID}">
+                                        <apex:outputText value="{!found.nameLastFirst}"/>
+                                    </apex:outputPanel>
+                                    <apex:outputPanel rendered="{!hasID}">
+                                        <apex:outputlink value="javascript:empConsole.openNewSubTab('/{!found.theContact.Id}', 
+                                                '{!found.nameLastFirst}' );">
+                                                {!found.nameLastFirst}
+                                        </apex:outputlink>
+                                    </apex:outputPanel>        
+                                </td>
+                                <td class="slds-truncate" scope="row">
+                                    <apex:outputText value="{!found.FADeptNb}"/>
+                                </td>
+                            </tr>-->
+                            <apex:repeat value="{!crewList}" var="crew">
+                                <tr class="slds-hint-parent">
+                                <td>
+                                <apex:commandLink style="color:#0000FF" value="" action="{!assignRespId}"
+                                                   rerender="RespId" oncomplete="closeIframe();" status="spin">
+                                                <apex:param name="searchIndex" assignTo="{!selectedId}" 
+                                                        value="{!crew.personId}" /> 
+                                                <span class="slds-badge">Attach</span>                
+                                            </apex:commandLink>
+                                </td>
+                                <td class="slds-truncate" scope="row">
+                                   <!-- <apex:outputPanel rendered="{!!hasID}">
+                                        <apex:outputText value="{!crew.nameLastFirst}"/>
+                                    </apex:outputPanel>-->
+                                    <apex:outputPanel >
+                                        <apex:outputlink value="javascript:empConsole.openNewSubTab('/{!crew.theContact.Id}', 
+                                                '{!crew.nameLastFirst}' );">
+                                                {!crew.nameLastFirst}
+                                        </apex:outputlink>
+                                    </apex:outputPanel>        
+                                </td>
+                                <td class="slds-truncate" scope="row">
+                                    <apex:outputText value="{!crew.FADeptNb}"/>
+                                </td>
+                            </tr>
+                            </apex:repeat>
+                    </tbody>
+                </table>
+            </div>
+           <!-- <apex:outputPanel rendered="{!showCreateButton}">
+                <apex:commandButton id="CreateButton" title="Create New Employee Record" 
+                        styleClass="slds-button slds-button--brand slds-m-around--small" 
+                            value="Create" action="{!createEmployee}" rerender="Everything, listBlock" status="spin"/>
+            </apex:outputPanel>-->
+        </apex:outputPanel>
+        <apex:outputPanel rendered="{!showNothingFound}">
+            <apex:outputText value="{!nothingFoundMsg}"/>
+            <apex:outputText value="{!EmployeeIdentifier}"/>
+        </apex:outputPanel>
+    </div><!-- SLDS wrapper div -->
+</apex:outputPanel> <!-- for listBlock -->
+</apex:form>
+<!--****************************************************
+                    Action Functions/Statuses
+    ****************************************************    -->
+    <!--spinner-->
+<div class="slds"><!-- SLDS wrapper div --> 
+    <apex:actionStatus id="spin">
+        <apex:facet name="stop" >
+        </apex:facet>
+        <apex:facet name="start" >
+            <!-- spinner -->
+            <div class="slds-spinner_container" style="z-index:1 !Important">
+                <div class="slds-spinner--brandContact slds-spinner slds-spinner--large" aria-hidden="false" role="alert">
+                    <div class="slds-spinner__dot-a"></div>
+                    <div class="slds-spinner__dot-b"></div>
+                </div>
+            </div>
+        </apex:facet>
+    </apex:actionStatus>
+</div><!-- SLDS wrapper div --> 
+
+
+</html>
+</apex:page>

@@ -1,0 +1,54 @@
+<!-- 
+/*******************************************************//**
+
+@page		CWRollupsPage
+
+@brief		Rollups Page
+
+	This page displays all CWRollup custom settings and allows the user
+	to edit one, or create a new one.
+
+@author		Michael Wing	(LiquidHub.EMW)
+
+@version	2014-??-??	LiquidHub.EMW
+	Created.
+
+@todo		Add 'delete' capability.
+
+@see		CWRollupsController
+
+	(c)2014-2015 LiquidHub.  All Rights Reserved.  Unauthorized use is prohibited.
+
+	This is a component of CW Core (tm), LiquidHub's middleware library for Salesforce.
+
+***********************************************************/
+ -->
+<apex:page controller="CWRollupsController">
+
+	<apex:sectionHeader title="{!$Organization.Name} ({!$Organization.Id})" subtitle="CWRollups"/>
+
+	<apex:form id="theForm">
+		<apex:pageBlock title="CWRollups" id="thePageBlock">
+			<apex:pageBlockButtons >
+				<apex:commandbutton action="{!clickNew}" value="New CWRollup" style="padding-left:10px; padding-right:10px;"/>
+			</apex:pageBlockButtons>
+			<apex:pageBlockTable value="{!rollups}" var="rollup" id="thePageBlockTable">
+				<apex:column >
+					<apex:outputLink value="/apex/CWRollupPage?name={!rollup.Name}" >Edit</apex:outputLink>
+				</apex:column>
+				<apex:column value="{!rollup.Name}"/>
+				<apex:column value="{!rollup.Inactive__c}"/>
+				<apex:column value="{!rollup.Child_Object__c}"/>
+				<apex:column value="{!rollup.Parent_Object__c}"/>
+				<apex:column value="{!rollup.Child_Field__c}"/>
+				<apex:column value="{!rollup.Parent_Field__c}"/>
+				<apex:column value="{!rollup.Function__c}"/>
+				<apex:column value="{!rollup.Child_Parent_Field__c}"/>
+				<apex:column value="{!rollup.Parent_Child_Field__c}"/>
+				<apex:column value="{!rollup.Child_Sort_Field__c}"/>
+				<apex:column value="{!rollup.Parent_Other_Field__c}"/>
+				<apex:column value="{!rollup.Child_Additional_Logic__c}"/>
+			</apex:pageBlockTable>
+		</apex:pageBlock>
+	</apex:form>
+</apex:page>

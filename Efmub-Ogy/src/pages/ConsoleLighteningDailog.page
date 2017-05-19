@@ -1,0 +1,20 @@
+<apex:page standardController="Account" title="Loyalty Update" showHeader="false" sidebar="false" > 
+<apex:includeScript value="/support/console/33.0/integration.js"/> 
+    <apex:includeLightning />
+
+    <div id="lightning" />
+    <script>
+    sforce.console.setTabTitle('Loyalty Update');
+        $Lightning.use("c:DisplayAccountUpdate", function() {
+          $Lightning.createComponent("c:DisplayAccountUpdates",
+          { label : "Press Me!",recordId : '{!Account.id}',skyMilesNumber: '{!Account.SkyMiles_Number__pc}', LoyaltyNumber : '{!Account.Flying_Blue_Number__pc}'},
+          "lightning",
+          function(cmp) {
+            // do some stuff
+          });
+          });
+        
+    </script>
+
+
+</apex:page>

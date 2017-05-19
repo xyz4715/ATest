@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>CWCoreConfiguration</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>CWCoreConfiguration</value>
+    </caseValues>
+    <fields>
+        <help><!-- This is the SOA service call endpoint for all Air France web services. --></help>
+        <label><!-- AF Endpoint --></label>
+        <name>AF_Endpoint__c</name>
+    </fields>
+    <fields>
+        <help><!-- Check this to allow this User/Profile to deploy to this org. --></help>
+        <label><!-- Allow Deployment --></label>
+        <name>Allow_Deployment__c</name>
+    </fields>
+    <fields>
+        <label><!-- Bypass Validation Rule --></label>
+        <name>Bypass_Valdiation_Rule__c</name>
+    </fields>
+    <fields>
+        <label><!-- Bypass Workflow Rule --></label>
+        <name>Bypass_Workflow_Rule__c</name>
+    </fields>
+    <fields>
+        <label><!-- Check Limit Level 2 --></label>
+        <name>Check_Limit_Level_2__c</name>
+    </fields>
+    <fields>
+        <label><!-- Check Limit --></label>
+        <name>Check_Limit__c</name>
+    </fields>
+    <fields>
+        <help><!-- The fully qualified class name for the default ErrorHandler --></help>
+        <label><!-- Default ErrorHandler --></label>
+        <name>Default_ErrorHandler__c</name>
+    </fields>
+    <fields>
+        <label><!-- Default Queue Name --></label>
+        <name>Default_Queue_Name__c</name>
+    </fields>
+    <fields>
+        <help><!-- Check this to disable automatic rollups defined in the CWRollup custom setting. --></help>
+        <label><!-- Disable Rollups --></label>
+        <name>Disable_Rollups__c</name>
+    </fields>
+    <fields>
+        <help><!-- Check this to disable all triggers that have been implemented using CWTrigger. --></help>
+        <label><!-- Disable Triggers --></label>
+        <name>Disable_Triggers__c</name>
+    </fields>
+    <fields>
+        <help><!-- The API Key to use with Google Maps and other APIs --></help>
+        <label><!-- Google API Key --></label>
+        <name>Google_API_Key__c</name>
+    </fields>
+    <fields>
+        <label><!-- Language Detection Endpoint --></label>
+        <name>Language_Detection_Endpoint__c</name>
+    </fields>
+    <fields>
+        <label><!-- Language Detection Key --></label>
+        <name>Language_Detection_Key__c</name>
+    </fields>
+    <fields>
+        <label><!-- SOA Certificate --></label>
+        <name>SOA_Certificate__c</name>
+    </fields>
+    <fields>
+        <label><!-- SOA Endpoint --></label>
+        <name>SOA_Endpoint__c</name>
+    </fields>
+    <fields>
+        <label><!-- SkyMiles Limit --></label>
+        <name>SkyMiles_Limit__c</name>
+    </fields>
+    <fields>
+        <label><!-- Sky Miles Limit Level 2 --></label>
+        <name>Sky_Miles_Limit_Level_2__c</name>
+    </fields>
+    <fields>
+        <label><!-- Update Locked Service Recovery Status --></label>
+        <name>Update_Locked_Service_Recovery_Status__c</name>
+    </fields>
+    <fields>
+        <label><!-- eTCV Limit Level 2 --></label>
+        <name>eTCV_Limit_Level_2__c</name>
+    </fields>
+    <fields>
+        <label><!-- eTCV Limit --></label>
+        <name>eTCV_Limit__c</name>
+    </fields>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

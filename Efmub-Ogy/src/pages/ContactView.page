@@ -1,0 +1,815 @@
+<!--
+/*******************************************************//**
+
+@page       ContactView
+
+@brief      Interactively updates information of a Contact record.
+
+    This page overrides the View action on the Contact object.
+    Whenever a User views a Contact, this page queries external
+    systems (e.g. Delta Loyalty) to determine if any contact
+    information is out-of-date.  The page prompts the User to
+    select information to be updated, then continues to the
+    standard Contact detail page layout.
+
+@author     Glyn Anderson   (LiquidHub.GHA)
+
+@version    2016-01-15  LiquidHub.GHA
+    Created.
+@version    2016-01-26  LiquidHub.GHA
+    Drag and drop working.
+
+@see        ContactViewController
+@see        ContactViewControllerTest
+
+    (c)2016 Delta Air Lines, Inc.  All Rights Reserved.  Unauthorized use is prohibited.
+
+    This is a component of Phoenix, Delta's Case Management App for Salesforce.
+
+***********************************************************/
+-->
+
+<apex:page standardController="Account" extensions="ContactViewController" showHeader="true" sidebar="true" action="{!checkInformation}" tabStyle="Contact">
+
+<apex:stylesheet value="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css"/>
+
+<style>
+.spinner {
+    position:       fixed;
+    top:            50%;
+    left:           50%;
+    margin-top:     -150px;
+    margin-left:    -175px;
+    font-size:      1200%;
+}
+.contactColor {
+    color:          #8370c2;
+}
+.centerText {
+    text-align:     center;
+}
+.promptText {
+    display:        inline-block;
+    font-size:      larger;
+    font-weight:    bold;
+}
+.addressBlock {
+    min-width:      100px;
+    min-height:     36px;
+}
+.selectBlock {
+    display:        none;
+    position:       absolute;
+    top:            14px;
+    right:          0px;
+    z-index:        10;
+}
+.different {
+    color:          red;
+}
+</style>
+
+<apex:includeScript value="/support/console/35.0/integration.js"/>
+<apex:includeScript value="{!$Resource.CWConsole}"/>
+
+<script type="text/javascript">
+
+//var console = CWConsole({"subTabIcon":"/img/icon/t4v35/standard/contact_60.png","subTabTitle":"{!record.Name}"}),
+var console = CWConsole({"subTabIcon":"{!$Resource.Image_png_DOTLogo}","subTabTitle":"{!record.Name}"}),
+    dragElement, dragId, dragType, dropElementId;
+
+function dragStart(ev)
+{
+    dragElement = ev.target;
+    dragId = dragElement.id;
+    dragType = dragElement.getAttribute( 'data-dragtype' );
+}
+
+function allowDrop(ev,dropZone)
+{
+var dropType = dropZone.getAttribute( 'data-droptype' );
+    if ( dragType == dropType && dragId != getDropId(dropZone) ) ev.preventDefault();
+}
+
+function drop(ev,dropZone,dropFieldId)
+{
+    ev.preventDefault();
+    dropElementId = dropFieldId;
+var dropId = getDropId(dropZone);
+    copyInfo(dragType,dragId,dropId);
+}
+
+function getDropId(dropZone)
+{
+var dropId = dropZone.id;
+    dropId = dropId.substring( dropId.lastIndexOf(":") + 1 );
+    dropId = dropId.substring( dropId.indexOf("_") + 1 );
+    return dropId;
+}
+
+function enableUndo()
+{
+var dropElement = document.getElementById( dropElementId ),
+    linkElement = document.createElement( "A" ),
+    imageElement = document.createElement( "IMG" );
+
+    linkElement.classList.add( 'inlineEditUndoLink' );
+    linkElement.style.display = 'inline';
+    linkElement.href = "javascript:alert( 'This function is not yet implemented.' );";
+    imageElement.width = "16px";
+    imageElement.height = "16px";
+    imageElement.src = "/s.gif";
+    imageElement.alt = "Undo";
+    imageElement.classList.add( 'inlineEditUndo' );
+
+    linkElement.appendChild( imageElement );
+    dropElement.appendChild( linkElement );
+    dropElement.classList.add( 'inlineEditModified' );
+
+//  <span class="inlineEditModified" style="display: block;">
+//      {!name}
+//      <a class="inlineEditUndoLink" style="display: inline;">
+//          <img width="16px" height="16px" src="/s.gif" alt="Undo" class="inlineEditUndo"></img>
+//      </a>
+//  </span>
+}
+
+function addressMouseOver(event,element)
+{
+    element.classList.add( 'inlineEditWriteOn' );
+}
+function addressMouseOut(event,element)
+{
+    element.classList.remove('inlineEditWriteOn');
+}
+function addressDblClick(event,element)
+{
+    notImplemented(event);
+}
+
+function notImplemented(event)
+{
+    event.preventDefault();
+    alert( 'This function is not yet implemented.' );
+}
+
+function showSelect( select )
+{
+var element = document.getElementById( select );
+    element.style.display = "block";
+    element.focus();
+}
+function hideSelect( select )
+{
+var element = document.getElementById( select );
+    element.blur();
+    element.style.display = "none";
+}
+function selectCopyInfo( select, dragType, dragId, dropId )
+{
+    hideSelect( select );
+    copyInfo( dragType, dragId, dropId );
+}
+
+</script>
+
+<apex:form >
+    <apex:sectionHeader title="Contact" subtitle="{!record.Name}" />
+
+    <apex:pageBlock title="Update Contact Information from Loyalty Databases" mode="inlineEdit" id="contactRecordInfo">
+
+        <apex:pageBlockButtons location="top">
+            <apex:commandButton value="Save" action="{!updateContact}" status="waitStatus" oncomplete="checkInformation()" reRender="contactRecordInfo"/>
+            <apex:commandButton value="Save & Continue" action="{!updateContactContinue}" status="waitStatus" />
+            <apex:commandButton value="Revert" action="{!revert}" status="waitStatus" reRender="contactRecordInfo"/>
+            <apex:commandButton value="Cancel" action="{!cancel}" status="waitStatus" />
+        </apex:pageBlockButtons>
+
+<!--    ****************************************************
+                    Contact Record Information
+        ****************************************************    -->
+
+        <apex:pageBlockSection title="Information from Contact Record" columns="1" collapsible="false" >
+            <apex:outputPanel layout="block" styleClass="centerText" >
+                <apex:outputPanel layout="block" styleClass="promptText contactColor">
+                    Double-click on fields below to edit the Contact record information.<br/>
+                    To use information from SkyMiles or Flying Blue, drag the corresponding icon to the appropriate field below.
+                </apex:outputPanel>
+            </apex:outputPanel>
+        </apex:pageBlockSection>
+
+        <apex:pageBlockSection showHeader="false" columns="2" collapsible="false" >
+
+            <apex:pageBlockSectionItem >
+                <apex:outputPanel id="drop1_Name" html-data-droptype="name" html-ondrop="drop(event,this,'drop_Name')" html-ondragover="allowDrop(event,this)">
+                    <apex:outputLabel value="Name"></apex:outputLabel>
+                </apex:outputPanel>
+                <apex:outputPanel id="drop2_Name" html-data-droptype="name" html-ondrop="drop(event,this,'drop_Name')" html-ondragover="allowDrop(event,this)">
+                    <div id="drop_Name">{!name}</div>
+                </apex:outputPanel>
+<!--
+                <apex:outputPanel id="drop2_Name" html-data-droptype="name" html-ondrop="drop(event,this)" html-ondragover="allowDrop(event,this)">
+                    <span class="inlineEditModified" style="display: block;">{!name}<a class="inlineEditUndoLink" style="display: inline;"><img width="16px" height="16px" src="/s.gif" alt="Undo" class="inlineEditUndo"></img></a></span>
+                </apex:outputPanel>
+-->
+
+            </apex:pageBlockSectionItem>
+            <apex:outputText value="{!record.Phone}" />
+
+            <apex:pageBlockSectionItem >
+                <apex:outputPanel id="drop1_Salutation" html-data-droptype="name" html-ondrop="drop(event,this)" html-ondragover="allowDrop(event,this)">
+                    <apex:outputLabel value="Salutation"></apex:outputLabel>
+                </apex:outputPanel>
+                <apex:outputPanel id="drop2_Salutation" html-data-droptype="name" html-ondrop="drop(event,this)" html-ondragover="allowDrop(event,this)">
+                    <apex:outputField value="{!record.Salutation}"/>
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>
+            <apex:outputText value="{!record.PersonEmail}" />
+
+            <apex:pageBlockSectionItem >
+                <apex:outputPanel id="drop1_FirstName" html-data-droptype="name" html-ondrop="drop(event,this)" html-ondragover="allowDrop(event,this)">
+                    <apex:outputLabel value="First Name"></apex:outputLabel>
+                </apex:outputPanel>
+                <apex:outputPanel id="drop2_FirstName" html-data-droptype="name" html-ondrop="drop(event,this)" html-ondragover="allowDrop(event,this)">
+                    <apex:outputField value="{!record.FirstName}"/>
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                <apex:outputPanel id="drop1_Gender__c" html-data-droptype="gender" html-ondrop="drop(event,this)" html-ondragover="allowDrop(event,this)">
+                    <apex:outputLabel value="Gender"></apex:outputLabel>
+                </apex:outputPanel>
+                <apex:outputPanel id="drop2_Gender__c" html-data-droptype="gender" html-ondrop="drop(event,this)" html-ondragover="allowDrop(event,this)">
+                    <apex:outputField value="{!record.Gender__pc}"/>
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>
+
+            <apex:pageBlockSectionItem >
+                <apex:outputPanel id="drop1_MiddleName" html-data-droptype="name" html-ondrop="drop(event,this)" html-ondragover="allowDrop(event,this)">
+                    <apex:outputLabel value="Middle Name"></apex:outputLabel>
+                </apex:outputPanel>
+                <apex:outputPanel id="drop2_MiddleName" html-data-droptype="name" html-ondrop="drop(event,this)" html-ondragover="allowDrop(event,this)">
+                    <apex:outputField value="{!record.MiddleName}"/>
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                <apex:outputPanel id="drop1_Birthdate" html-data-droptype="birthdate" html-ondrop="drop(event,this)" html-ondragover="allowDrop(event,this)">
+                    <apex:outputLabel value="Birthdate"></apex:outputLabel>
+                </apex:outputPanel>
+                <apex:outputPanel id="drop2_Birthdate" html-data-droptype="birthdate" html-ondrop="drop(event,this)" html-ondragover="allowDrop(event,this)">
+                    <apex:outputField value="{!record.PersonBirthdate}"/>
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>
+
+            <apex:pageBlockSectionItem >
+                <apex:outputPanel id="drop1_LastName" html-data-droptype="name" html-ondrop="drop(event,this)" html-ondragover="allowDrop(event,this)">
+                    <apex:outputLabel value="Last Name"></apex:outputLabel>
+                </apex:outputPanel>
+                <apex:outputPanel id="drop2_LastName" html-data-droptype="name" html-ondrop="drop(event,this)" html-ondragover="allowDrop(event,this)">
+                    <apex:outputField value="{!record.LastName}"/>
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Age"></apex:outputLabel>
+                <apex:outputText value="{!age}" />
+            </apex:pageBlockSectionItem>
+
+            <apex:pageBlockSectionItem >
+                <apex:outputPanel id="drop1_Suffix" html-data-droptype="name" html-ondrop="drop(event,this)" html-ondragover="allowDrop(event,this)">
+                    <apex:outputLabel value="Suffix"></apex:outputLabel>
+                </apex:outputPanel>
+                <apex:outputPanel id="drop2_Suffix" html-data-droptype="name" html-ondrop="drop(event,this)" html-ondragover="allowDrop(event,this)">
+                    <apex:outputField value="{!record.Suffix}"/>
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>
+            <apex:outputField value="{!record.SkyMiles_Number__pc}" />
+
+            <apex:outputField value="{!record.Also_Known_As__pc}" />
+            <apex:outputField value="{!record.Flying_Blue_Number__pc}"/>
+
+            <apex:pageBlockSectionItem />
+            <apex:pageBlockSectionItem />
+
+            <apex:pageBlockSectionItem >
+                <apex:outputPanel id="drop1_MailingAddress" html-data-droptype="address" html-ondrop="drop(event,this)" html-ondragover="allowDrop(event,this)">
+                    <apex:outputLabel value="Mailing Address" ondblclick="showSelect( 'MailingAddress_Select' );" />
+                    <i id="MailingAddress" class="fa fa-map-marker fa-lg" draggable="true" data-dragtype="address" ondragstart="dragStart(event)"></i>
+                    <select id="MailingAddress_Select" class="selectBlock" onblur="hideSelect( 'MailingAddress_Select' );" size="2">
+                        <option onclick="selectCopyInfo( 'MailingAddress_Select', 'address', 'MailingAddress', 'OtherAddress' );">Copy to Other Address</option>
+                    </select>
+                </apex:outputPanel>
+                <apex:outputPanel id="drop2_MailingAddress" html-data-droptype="address" html-ondrop="drop(event,this)" html-ondragover="allowDrop(event,this)" >
+                    <table><tr><td>
+                        <div class="addressBlock" >
+                            <apex:repeat value="{!mailingStreet}" var="street" >
+                                <div>{!street}</div>
+                            </apex:repeat>
+                            <div>{!mailingCityStateZip}</div>
+                            <div>{!record.personMailingCountry}</div>
+                        </div>
+                    </td></tr></table>
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                <apex:outputPanel id="drop1_OtherAddress" html-data-droptype="address" html-ondrop="drop(event,this)" html-ondragover="allowDrop(event,this)">
+                    <apex:outputLabel value="Other Address" ondblclick="showSelect( 'OtherAddress_Select' );" />
+                    <i id="OtherAddress" class="fa fa-map-marker fa-lg" draggable="true" data-dragtype="address" ondragstart="dragStart(event)"></i>
+                    <select id="OtherAddress_Select" class="selectBlock" onblur="hideSelect( 'OtherAddress_Select' );" size="2">
+                        <option onclick="selectCopyInfo( 'OtherAddress_Select', 'address', 'OtherAddress', 'MailingAddress' );">Copy to Mailing Address</option>
+                    </select>
+                </apex:outputPanel>
+                <apex:outputPanel id="drop2_OtherAddress" html-data-droptype="address" html-ondrop="drop(event,this)" html-ondragover="allowDrop(event,this)">
+                    <table><tr><td>
+                        <div class="addressBlock" >
+                            <apex:repeat value="{!otherStreet}" var="street" >
+                                <div>{!street}</div>
+                            </apex:repeat>
+                            <div>{!otherCityStateZip}</div>
+                            <div>{!record.personOtherCountry}</div>
+                        </div>
+                    </td></tr></table>
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>
+
+            <apex:pageBlockSectionItem />
+            <apex:pageBlockSectionItem />
+
+            <apex:outputField value="{!record.Preferred_Phone__pc}" />
+            <apex:outputField value="{!record.Preferred_Email__pc}" />
+
+            <apex:pageBlockSectionItem >
+                <apex:outputPanel id="drop1_MobilePhone" html-data-droptype="phone" html-ondrop="drop(event,this)" html-ondragover="allowDrop(event,this)">
+                    <apex:outputLabel value="Mobile Phone" ondblclick="showSelect( 'MobilePhone_Select' );" />
+                    <i id="MobilePhone" class="fa fa-phone fa-lg" draggable="true" data-dragtype="phone" ondragstart="dragStart(event)"></i>
+                    <select id="MobilePhone_Select" class="selectBlock" onblur="hideSelect( 'MobilePhone_Select' );" size="3">
+                        <option onclick="selectCopyInfo( 'MobilePhone_Select', 'phone', 'MobilePhone', 'HomePhone' );">Copy to Home Phone</option>
+                        <option onclick="selectCopyInfo( 'MobilePhone_Select', 'phone', 'MobilePhone', 'Work_Phone__c' );">Copy to Work Phone</option>
+                        <option onclick="selectCopyInfo( 'MobilePhone_Select', 'phone', 'MobilePhone', 'OtherPhone' );">Copy to Other Phone</option>
+                    </select>
+                </apex:outputPanel>
+                <apex:outputPanel id="drop2_MobilePhone" html-data-droptype="phone" html-ondrop="drop(event,this)" html-ondragover="allowDrop(event,this)">
+                    <apex:outputField value="{!record.personMobilePhone}"/>
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                <apex:outputPanel id="drop1_Personal_Email__c" html-data-droptype="email" html-ondrop="drop(event,this)" html-ondragover="allowDrop(event,this)">
+                    <apex:outputLabel value="Personal Email" ondblclick="showSelect( 'Personal_Email_Select' );" />
+                    <i id="Personal_Email__c" class="fa fa-envelope fa-lg" draggable="true" data-dragtype="email" ondragstart="dragStart(event)"></i>
+                    <select id="Personal_Email_Select" class="selectBlock" onblur="hideSelect( 'Personal_Email_Select' );" size="4">
+                        <option onclick="selectCopyInfo( 'Personal_Email_Select', 'email', 'Personal_Email__c', 'Work_Email__c' );">Copy to Work Email</option>
+                        <option onclick="selectCopyInfo( 'Personal_Email_Select', 'email', 'Personal_Email__c', 'Other_Email__c' );">Copy to Other Email</option>
+                        <option onclick="selectCopyInfo( 'Personal_Email_Select', 'email', 'Personal_Email__c', 'Other_Email_2__c' );">Copy to Other Email 2</option>
+                        <option onclick="selectCopyInfo( 'Personal_Email_Select', 'email', 'Personal_Email__c', 'Other_Email_3__c' );">Copy to Other Email 3</option>
+                    </select>
+                </apex:outputPanel>
+                <apex:outputPanel id="drop2_Personal_Email__c" html-data-droptype="email" html-ondrop="drop(event,this)" html-ondragover="allowDrop(event,this)">
+                    <apex:outputField value="{!record.Personal_Email__pc}"/>
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>
+
+            <apex:pageBlockSectionItem >
+                <apex:outputPanel id="drop1_HomePhone" html-data-droptype="phone" html-ondrop="drop(event,this)" html-ondragover="allowDrop(event,this)">
+                    <apex:outputLabel value="Home Phone" ondblclick="showSelect( 'HomePhone_Select' );" />
+                    <i id="HomePhone" class="fa fa-phone fa-lg" draggable="true" data-dragtype="phone" ondragstart="dragStart(event)"></i>
+                    <select id="HomePhone_Select" class="selectBlock" onblur="hideSelect( 'HomePhone_Select' );" size="3">
+                        <option onclick="selectCopyInfo( 'HomePhone_Select', 'phone', 'HomePhone', 'MobilePhone' );">Copy to Mobile Phone</option>
+                        <option onclick="selectCopyInfo( 'HomePhone_Select', 'phone', 'HomePhone', 'Work_Phone__c' );">Copy to Work Phone</option>
+                        <option onclick="selectCopyInfo( 'HomePhone_Select', 'phone', 'HomePhone', 'OtherPhone' );">Copy to Other Phone</option>
+                    </select>
+                </apex:outputPanel>
+                <apex:outputPanel id="drop2_HomePhone" html-data-droptype="phone" html-ondrop="drop(event,this)" html-ondragover="allowDrop(event,this)">
+                    <apex:outputField value="{!record.personHomePhone}"/>
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                <apex:outputPanel id="drop1_Work_Email__c" html-data-droptype="email" html-ondrop="drop(event,this)" html-ondragover="allowDrop(event,this)">
+                    <apex:outputLabel value="Work Email" ondblclick="showSelect( 'Work_Email_Select' );" />
+                    <i id="Work_Email__c" class="fa fa-envelope fa-lg" draggable="true" data-dragtype="email" ondragstart="dragStart(event)"></i>
+                    <select id="Work_Email_Select" class="selectBlock" onblur="hideSelect( 'Work_Email_Select' );" size="4">
+                        <option onclick="selectCopyInfo( 'Work_Email_Select', 'email', 'Work_Email__c', 'Personal_Email__c' );">Copy to Personal Email</option>
+                        <option onclick="selectCopyInfo( 'Work_Email_Select', 'email', 'Work_Email__c', 'Other_Email__c' );">Copy to Other Email</option>
+                        <option onclick="selectCopyInfo( 'Work_Email_Select', 'email', 'Work_Email__c', 'Other_Email_2__c' );">Copy to Other Email 2</option>
+                        <option onclick="selectCopyInfo( 'Work_Email_Select', 'email', 'Work_Email__c', 'Other_Email_3__c' );">Copy to Other Email 3</option>
+                    </select>
+                </apex:outputPanel>
+                <apex:outputPanel id="drop2_Work_Email__c" html-data-droptype="email" html-ondrop="drop(event,this)" html-ondragover="allowDrop(event,this)">
+                    <apex:outputField value="{!record.Work_Email__pc}"/>
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>
+
+            <apex:pageBlockSectionItem >
+                <apex:outputPanel id="drop1_Work_Phone__c" html-data-droptype="phone" html-ondrop="drop(event,this)" html-ondragover="allowDrop(event,this)">
+                    <apex:outputLabel value="Work Phone" ondblclick="showSelect( 'WorkPhone_Select' );" />
+                    <i id="Work_Phone__c" class="fa fa-phone fa-lg" draggable="true" data-dragtype="phone" ondragstart="dragStart(event)"></i>
+                    <select id="WorkPhone_Select" class="selectBlock" onblur="hideSelect( 'WorkPhone_Select' );" size="3">
+                        <option onclick="selectCopyInfo( 'WorkPhone_Select', 'phone', 'Work_Phone__c', 'MobilePhone' );">Copy to Mobile Phone</option>
+                        <option onclick="selectCopyInfo( 'WorkPhone_Select', 'phone', 'Work_Phone__c', 'HomePhone' );">Copy to Home Phone</option>
+                        <option onclick="selectCopyInfo( 'WorkPhone_Select', 'phone', 'Work_Phone__c', 'OtherPhone' );">Copy to Other Phone</option>
+                    </select>
+                </apex:outputPanel>
+                <apex:outputPanel id="drop2_Work_Phone__c" html-data-droptype="phone" html-ondrop="drop(event,this)" html-ondragover="allowDrop(event,this)">
+                    <apex:outputField value="{!record.Work_Phone__pc}"/>
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                <apex:outputPanel id="drop1_Other_Email__c" html-data-droptype="email" html-ondrop="drop(event,this)" html-ondragover="allowDrop(event,this)">
+                    <apex:outputLabel value="Other Email" ondblclick="showSelect( 'Other_Email_Select' );" />
+                    <i id="Other_Email__c" class="fa fa-envelope fa-lg" draggable="true" data-dragtype="email" ondragstart="dragStart(event)"></i>
+                    <select id="Other_Email_Select" class="selectBlock" onblur="hideSelect( 'Other_Email_Select' );" size="4">
+                        <option onclick="selectCopyInfo( 'Other_Email_Select', 'email', 'Other_Email__c', 'Personal_Email__c' );">Copy to Personal Email</option>
+                        <option onclick="selectCopyInfo( 'Other_Email_Select', 'email', 'Other_Email__c', 'Work_Email__c' );">Copy to Work Email</option>
+                        <option onclick="selectCopyInfo( 'Other_Email_Select', 'email', 'Other_Email__c', 'Other_Email_2__c' );">Copy to Other Email 2</option>
+                        <option onclick="selectCopyInfo( 'Other_Email_Select', 'email', 'Other_Email__c', 'Other_Email_3__c' );">Copy to Other Email 3</option>
+                    </select>
+                </apex:outputPanel>
+                <apex:outputPanel id="drop2_Other_Email__c" html-data-droptype="email" html-ondrop="drop(event,this)" html-ondragover="allowDrop(event,this)">
+                    <apex:outputField value="{!record.Other_Email__pc}"/>
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>
+
+            <apex:pageBlockSectionItem >
+                <apex:outputPanel id="drop1_OtherPhone" html-data-droptype="phone" html-ondrop="drop(event,this)" html-ondragover="allowDrop(event,this)">
+                    <apex:outputLabel value="Other Phone" ondblclick="showSelect( 'OtherPhone_Select' );" />
+                    <i id="OtherPhone" class="fa fa-phone fa-lg" draggable="true" data-dragtype="phone" ondragstart="dragStart(event)"></i>
+                    <select id="OtherPhone_Select" class="selectBlock" onblur="hideSelect( 'OtherPhone_Select' );" size="3">
+                        <option onclick="selectCopyInfo( 'OtherPhone_Select', 'phone', 'OtherPhone', 'MobilePhone' );">Copy to Mobile Phone</option>
+                        <option onclick="selectCopyInfo( 'OtherPhone_Select', 'phone', 'OtherPhone', 'HomePhone' );">Copy to Home Phone</option>
+                        <option onclick="selectCopyInfo( 'OtherPhone_Select', 'phone', 'OtherPhone', 'Work_Phone__c' );">Copy to Work Phone</option>
+                    </select>
+                </apex:outputPanel>
+                <apex:outputPanel id="drop2_OtherPhone" html-data-droptype="phone" html-ondrop="drop(event,this)" html-ondragover="allowDrop(event,this)">
+                    <apex:outputField value="{!record.personOtherPhone}"/>
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>
+            <apex:outputField value="{!record.Other_Email_Description__pc}" />
+
+            <apex:outputField value="{!record.Other_Phone_Description__pc}" />
+            <apex:pageBlockSectionItem >
+                <apex:outputPanel id="drop1_Other_Email_2__c" html-data-droptype="email" html-ondrop="drop(event,this)" html-ondragover="allowDrop(event,this)">
+                    <apex:outputLabel value="Other Email 2" ondblclick="showSelect( 'Other_Email_2_Select' );" />
+                    <i id="Other_Email_2__c" class="fa fa-envelope fa-lg" draggable="true" data-dragtype="email" ondragstart="dragStart(event)"></i>
+                    <select id="Other_Email_2_Select" class="selectBlock" onblur="hideSelect( 'Other_Email_2_Select' );" size="4">
+                        <option onclick="selectCopyInfo( 'Other_Email_2_Select', 'email', 'Other_Email_2__c', 'Personal_Email__c' );">Copy to Personal Email</option>
+                        <option onclick="selectCopyInfo( 'Other_Email_2_Select', 'email', 'Other_Email_2__c', 'Work_Email__c' );">Copy to Work Email</option>
+                        <option onclick="selectCopyInfo( 'Other_Email_2_Select', 'email', 'Other_Email_2__c', 'Other_Email__c' );">Copy to Other Email</option>
+                        <option onclick="selectCopyInfo( 'Other_Email_2_Select', 'email', 'Other_Email_2__c', 'Other_Email_3__c' );">Copy to Other Email 3</option>
+                    </select>
+                </apex:outputPanel>
+                <apex:outputPanel id="drop2_Other_Email_2__c" html-data-droptype="email" html-ondrop="drop(event,this)" html-ondragover="allowDrop(event,this)">
+                    <apex:outputField value="{!record.Other_Email_2__pc}"/>
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>
+
+            <apex:pageBlockSectionItem />
+            <apex:outputField value="{!record.Other_Email_2_Description__pc}" />
+
+            <apex:pageBlockSectionItem />
+            <apex:pageBlockSectionItem >
+                <apex:outputPanel id="drop1_Other_Email_3__c" html-data-droptype="email" html-ondrop="drop(event,this)" html-ondragover="allowDrop(event,this)">
+                    <apex:outputLabel value="Other Email 3" ondblclick="showSelect( 'Other_Email_3_Select' );" />
+                    <i id="Other_Email_3__c" class="fa fa-envelope fa-lg" draggable="true" data-dragtype="email" ondragstart="dragStart(event)"></i>
+                    <select id="Other_Email_3_Select" class="selectBlock" onblur="hideSelect( 'Other_Email_3_Select' );" size="4">
+                        <option onclick="selectCopyInfo( 'Other_Email_3_Select', 'email', 'Other_Email_3__c', 'Personal_Email__c' );">Copy to Personal Email</option>
+                        <option onclick="selectCopyInfo( 'Other_Email_3_Select', 'email', 'Other_Email_3__c', 'Work_Email__c' );">Copy to Work Email</option>
+                        <option onclick="selectCopyInfo( 'Other_Email_3_Select', 'email', 'Other_Email_3__c', 'Other_Email__c' );">Copy to Other Email</option>
+                        <option onclick="selectCopyInfo( 'Other_Email_3_Select', 'email', 'Other_Email_3__c', 'Other_Email_2__c' );">Copy to Other Email 2</option>
+                    </select>
+                </apex:outputPanel>
+                <apex:outputPanel id="drop2_Other_Email_3__c" html-data-droptype="email" html-ondrop="drop(event,this)" html-ondragover="allowDrop(event,this)">
+                    <apex:outputField value="{!record.Other_Email_3__pc}"/>
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>
+
+            <apex:pageBlockSectionItem />
+            <apex:outputField value="{!record.Other_Email_3_Description__pc}" />
+        </apex:pageBlockSection>
+
+<!--    ****************************************************
+                        Web Case Information
+        ****************************************************    -->
+
+        <apex:pageBlockSection title="Information from Web Case (created {!webCase.CreatedDate})" rendered="{!queriedWebCase}" collapsible="true" columns="2">
+            <apex:pageBlockSectionItem rendered="{!webCaseHasName}">
+                <apex:outputPanel >
+                    <apex:outputLabel value="Name" ondblclick="showSelect( 'WebCase_Name_Select' );" />
+                    <i id="WebCase_Name" class="fa fa-user fa-lg" draggable="true" data-dragtype="name" ondragstart="dragStart(event)"></i>
+                    <select id="WebCase_Name_Select" class="selectBlock" onblur="hideSelect( 'WebCase_Name_Select' );" size="6">
+                        <option onclick="selectCopyInfo( 'WebCase_Name_Select', 'name', 'WebCase_Name', 'Name' );">Copy Full Name</option>
+                        <option onclick="selectCopyInfo( 'WebCase_Name_Select', 'name', 'WebCase_Name', 'Salutation' );">Copy Salutation</option>
+                        <option onclick="selectCopyInfo( 'WebCase_Name_Select', 'name', 'WebCase_Name', 'FirstName' );">Copy First Name</option>
+                        <option onclick="selectCopyInfo( 'WebCase_Name_Select', 'name', 'WebCase_Name', 'MiddleName' );">Copy Middle Name</option>
+                        <option onclick="selectCopyInfo( 'WebCase_Name_Select', 'name', 'WebCase_Name', 'LastName' );">Copy Last Name</option>
+                        <option onclick="selectCopyInfo( 'WebCase_Name_Select', 'name', 'WebCase_Name', 'Suffix' );">Copy Suffix</option>
+                    </select>
+                </apex:outputPanel>
+                <apex:outputText value="{!webCase.SuppliedName}" />
+            </apex:pageBlockSectionItem>
+
+            <apex:pageBlockSectionItem rendered="{!webCaseHasAddress}" >
+                <apex:outputPanel >
+                    <apex:outputLabel value="Address" ondblclick="showSelect( 'WebCase_Address_Select' );" />
+                    <i id="WebCase_MailingAddress" class="fa fa-map-marker fa-lg" draggable="true" data-dragtype="address" ondragstart="dragStart(event)"></i>
+                    <select id="WebCase_Address_Select" class="selectBlock" onblur="hideSelect( 'WebCase_Address_Select' );" size="2">
+                        <option onclick="selectCopyInfo( 'WebCase_Address_Select', 'address', 'WebCase_MailingAddress', 'MailingAddress' );">Copy to Mailing Address</option>
+                        <option onclick="selectCopyInfo( 'WebCase_Address_Select', 'address', 'WebCase_MailingAddress', 'OtherAddress' );">Copy to Other Address</option>
+                    </select>
+                </apex:outputPanel>
+                <apex:outputPanel >
+                    <apex:outputPanel rendered="{!!webCaseAddressInfo.isDifferent}">
+                        <div>{!webCaseAddressInfo.address.person_acc.personMailingStreet}</div>
+                        <div>{!webCaseAddressInfo.address.cityStateZip}</div>
+                        <div>{!webCaseAddressInfo.address.person_acc.personMailingCountry}</div>
+                    </apex:outputPanel>
+                    <apex:outputPanel rendered="{!webCaseAddressInfo.isDifferent}" styleClass="different">
+                        <div>{!webCaseAddressInfo.address.person_acc.personMailingStreet}</div>
+                        <div>{!webCaseAddressInfo.address.cityStateZip}</div>
+                        <div>{!webCaseAddressInfo.address.person_acc.personMailingCountry}</div>
+                    </apex:outputPanel>
+                </apex:outputPanel>
+<!--
+                <apex:outputPanel >
+                    <table><tr><td>
+                        <div class="addressBlock" >
+                            <apex:repeat value="{!webCaseStreet}" var="street" >
+                                <div>{!street}</div>
+                            </apex:repeat>
+                            <div>{!webCaseCityStateZip}</div>
+                            <div>{!webCaseCountry}</div>
+                        </div>
+                    </td></tr></table>
+                </apex:outputPanel>
+-->
+            </apex:pageBlockSectionItem>
+
+            <apex:pageBlockSectionItem rendered="{!webCaseHasPhone}" >
+                <apex:outputPanel >
+                    <apex:outputLabel value="Phone" ondblclick="showSelect( 'WebCase_Phone_Select' );" />
+                    <i id="WebCase_Phone" class="fa fa-phone fa-lg" draggable="true" data-dragtype="phone" ondragstart="dragStart(event)"></i>
+                    <select id="WebCase_Phone_Select" class="selectBlock" onblur="hideSelect( 'WebCase_Phone_Select' );" size="4">
+                        <option onclick="selectCopyInfo( 'WebCase_Phone_Select', 'phone', 'WebCase_Phone', 'MobilePhone' );">Copy to Mobile Phone</option>
+                        <option onclick="selectCopyInfo( 'WebCase_Phone_Select', 'phone', 'WebCase_Phone', 'HomePhone' );">Copy to Home Phone</option>
+                        <option onclick="selectCopyInfo( 'WebCase_Phone_Select', 'phone', 'WebCase_Phone', 'Work_Phone__c' );">Copy to Work Phone</option>
+                        <option onclick="selectCopyInfo( 'WebCase_Phone_Select', 'phone', 'WebCase_Phone', 'OtherPhone' );">Copy to Other Phone</option>
+                    </select>
+                </apex:outputPanel>
+                <apex:outputPanel >
+                    <apex:outputText value="{!webCasePhoneInfo.phone.person_acc.Phone}" rendered="{!!webCasePhoneInfo.isDifferent}" />
+                    <apex:outputText value="{!webCasePhoneInfo.phone.person_acc.Phone}" rendered="{!webCasePhoneInfo.isDifferent}" styleClass="different"/>
+                </apex:outputPanel>
+<!--
+                <apex:outputText value="{!webCase.SuppliedPhone}" />
+-->
+            </apex:pageBlockSectionItem>
+
+            <apex:pageBlockSectionItem rendered="{!webCaseHasEmail}" >
+                <apex:outputPanel >
+                    <apex:outputLabel value="Email" ondblclick="showSelect( 'WebCase_Email_Select' );" />
+                    <i id="WebCase_Email" class="fa fa-envelope fa-lg" draggable="true" data-dragtype="email" ondragstart="dragStart(event)"></i>
+                    <select id="WebCase_Email_Select" class="selectBlock" onblur="hideSelect( 'WebCase_Email_Select' );" size="5">
+                        <option onclick="selectCopyInfo( 'WebCase_Email_Select', 'email', 'WebCase_Email', 'Personal_Email__c' );">Copy to Personal Email</option>
+                        <option onclick="selectCopyInfo( 'WebCase_Email_Select', 'email', 'WebCase_Email', 'Work_Email__c' );">Copy to Work Email</option>
+                        <option onclick="selectCopyInfo( 'WebCase_Email_Select', 'email', 'WebCase_Email', 'Other_Email__c' );">Copy to Other Email</option>
+                        <option onclick="selectCopyInfo( 'WebCase_Email_Select', 'email', 'WebCase_Email', 'Other_Email_2__c' );">Copy to Other Email 2</option>
+                        <option onclick="selectCopyInfo( 'WebCase_Email_Select', 'email', 'WebCase_Email', 'Other_Email_3__c' );">Copy to Other Email 3</option>
+                    </select>
+                </apex:outputPanel>
+                <apex:outputPanel >
+                    <apex:outputText value="{!webCaseEmailInfo.email.person_acc.personEmail}" rendered="{!!webCaseEmailInfo.isDifferent}" />
+                    <apex:outputText value="{!webCaseEmailInfo.email.person_acc.personEmail}" rendered="{!webCaseEmailInfo.isDifferent}" styleClass="different"/>
+                </apex:outputPanel>
+<!--
+                <apex:outputText value="{!webCase.SuppliedEmail}" />
+-->
+            </apex:pageBlockSectionItem>
+        </apex:pageBlockSection>
+
+<!--    ****************************************************
+                        SkyMiles Information
+        ****************************************************    -->
+
+        <apex:pageBlockSection title="Information from SkyMiles" rendered="{!queriedSkyMiles}" collapsible="true" columns="2">
+            <apex:pageBlockSectionItem >
+                <apex:outputPanel >
+                    <apex:outputLabel value="Name" ondblclick="showSelect( 'SkyMiles_Name_Select' );" />
+                    <i id="SkyMiles_Name" class="fa fa-user fa-lg" draggable="true" data-dragtype="name" ondragstart="dragStart(event)"></i>
+                    <select id="SkyMiles_Name_Select" class="selectBlock" onblur="hideSelect( 'SkyMiles_Name_Select' );" size="6">
+                        <option onclick="selectCopyInfo( 'SkyMiles_Name_Select', 'name', 'SkyMiles_Name', 'Name' );">Copy Full Name</option>
+                        <option onclick="selectCopyInfo( 'SkyMiles_Name_Select', 'name', 'SkyMiles_Name', 'Salutation' );">Copy Salutation</option>
+                        <option onclick="selectCopyInfo( 'SkyMiles_Name_Select', 'name', 'SkyMiles_Name', 'FirstName' );">Copy First Name</option>
+                        <option onclick="selectCopyInfo( 'SkyMiles_Name_Select', 'name', 'SkyMiles_Name', 'MiddleName' );">Copy Middle Name</option>
+                        <option onclick="selectCopyInfo( 'SkyMiles_Name_Select', 'name', 'SkyMiles_Name', 'LastName' );">Copy Last Name</option>
+                        <option onclick="selectCopyInfo( 'SkyMiles_Name_Select', 'name', 'SkyMiles_Name', 'Suffix' );">Copy Suffix</option>
+                    </select>
+                </apex:outputPanel>
+                <apex:outputText value="{!skyMilesMemberInformation.name}" />
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                <apex:outputPanel >
+                    <apex:outputLabel value="Gender" ondblclick="showSelect( 'SkyMiles_Gender_Select' );" />
+                    <i id="SkyMiles_Gender" class="fa fa-venus-mars fa-lg" draggable="true" data-dragtype="gender" ondragstart="dragStart(event)"></i>
+                    <select id="SkyMiles_Gender_Select" class="selectBlock" onblur="hideSelect( 'SkyMiles_Gender_Select' );" size="2">
+                        <option onclick="selectCopyInfo( 'SkyMiles_Gender_Select', 'gender', 'SkyMiles_Gender', 'Gender__pc' );">Copy Gender</option>
+                    </select>
+                </apex:outputPanel>
+                <apex:outputField value="{!skyMilesMemberInformation.person_acc.Gender__pc}" ><apex:inlineEditSupport disabled="true" /></apex:outputField>
+            </apex:pageBlockSectionItem>
+
+            <apex:outputField value="{!skyMilesMemberInformation.person_acc.SkyMiles_Status__pc}" ><apex:inlineEditSupport disabled="true" /></apex:outputField>
+            <apex:pageBlockSectionItem >
+                <apex:outputPanel >
+                    <apex:outputLabel value="Birthdate" ondblclick="showSelect( 'SkyMiles_Birthdate_Select' );" />
+                    <i id="SkyMiles_Birthdate" class="fa fa-calendar fa-lg" draggable="true" data-dragtype="birthdate" ondragstart="dragStart(event)"></i>
+                    <select id="SkyMiles_Birthdate_Select" class="selectBlock" onblur="hideSelect( 'SkyMiles_Birthdate_Select' );" size="2">
+                        <option onclick="selectCopyInfo( 'SkyMiles_Birthdate_Select', 'birthdate', 'SkyMiles_Birthdate', 'Birthdate' );">Copy Birthdate</option>
+                    </select>
+                </apex:outputPanel>
+                <apex:outputField value="{!skyMilesMemberInformation.person_acc.PersonBirthdate}" ><apex:inlineEditSupport disabled="true" /></apex:outputField>
+            </apex:pageBlockSectionItem>
+
+            <apex:repeat value="{!skyMilesContactInformation}" var="contactInfo" >
+                <apex:pageBlockSectionItem rendered="{!contactInfo.isAddress}" >
+                    <apex:outputPanel >
+                        <apex:outputLabel value="{!contactInfo.address.label}" ondblclick="showSelect( 'SkyMiles_{!contactInfo.indexString}_Select' );" />
+                        <i id="SkyMiles_{!contactInfo.indexString}" class="fa fa-map-marker fa-lg" draggable="true" data-dragtype="address" ondragstart="dragStart(event)"></i>
+                        <select id="SkyMiles_{!contactInfo.indexString}_Select" class="selectBlock" onblur="hideSelect( 'SkyMiles_{!contactInfo.indexString}_Select' );" size="2">
+                            <option onclick="selectCopyInfo( 'SkyMiles_{!contactInfo.indexString}_Select', 'address', 'SkyMiles_{!contactInfo.indexString}', 'MailingAddress' );">Copy to Mailing Address</option>
+                            <option onclick="selectCopyInfo( 'SkyMiles_{!contactInfo.indexString}_Select', 'address', 'SkyMiles_{!contactInfo.indexString}', 'OtherAddress' );">Copy to Other Address</option>
+                        </select>
+                    </apex:outputPanel>
+                    <apex:outputPanel >
+                        <apex:outputPanel rendered="{!!contactInfo.isDifferent}">
+                            <div>{!contactInfo.address.person_acc.personMailingStreet}</div>
+                            <div>{!contactInfo.address.cityStateZip}</div>
+                            <div>{!contactInfo.address.person_acc.personMailingCountry}</div>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!contactInfo.isDifferent}" styleClass="different">
+                            <div>{!contactInfo.address.person_acc.personMailingStreet}</div>
+                            <div>{!contactInfo.address.cityStateZip}</div>
+                            <div>{!contactInfo.address.person_acc.personMailingCountry}</div>
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem rendered="{!contactInfo.isPhone}" >
+                    <apex:outputPanel >
+                        <apex:outputLabel value="{!contactInfo.phone.label}" ondblclick="showSelect( 'SkyMiles_{!contactInfo.indexString}_Select' );" />
+                        <i id="SkyMiles_{!contactInfo.indexString}" class="fa fa-phone fa-lg" draggable="true" data-dragtype="phone" ondragstart="dragStart(event)"></i>
+                        <select id="SkyMiles_{!contactInfo.indexString}_Select" class="selectBlock" onblur="hideSelect( 'SkyMiles_{!contactInfo.indexString}_Select' );" size="4">
+                            <option onclick="selectCopyInfo( 'SkyMiles_{!contactInfo.indexString}_Select', 'phone', 'SkyMiles_{!contactInfo.indexString}', 'MobilePhone' );">Copy to Mobile Phone</option>
+                            <option onclick="selectCopyInfo( 'SkyMiles_{!contactInfo.indexString}_Select', 'phone', 'SkyMiles_{!contactInfo.indexString}', 'HomePhone' );">Copy to Home Phone</option>
+                            <option onclick="selectCopyInfo( 'SkyMiles_{!contactInfo.indexString}_Select', 'phone', 'SkyMiles_{!contactInfo.indexString}', 'Work_Phone__c' );">Copy to Work Phone</option>
+                            <option onclick="selectCopyInfo( 'SkyMiles_{!contactInfo.indexString}_Select', 'phone', 'SkyMiles_{!contactInfo.indexString}', 'OtherPhone' );">Copy to Other Phone</option>
+                        </select>
+                    </apex:outputPanel>
+                    <apex:outputPanel >
+                        <apex:outputText value="{!contactInfo.phone.person_acc.Phone}" rendered="{!!contactInfo.isDifferent}" />
+                        <apex:outputText value="{!contactInfo.phone.person_acc.Phone}" rendered="{!contactInfo.isDifferent}" styleClass="different"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem rendered="{!contactInfo.isEmail}" >
+                    <apex:outputPanel >
+                        <apex:outputLabel value="{!contactInfo.email.label}" ondblclick="showSelect( 'SkyMiles_{!contactInfo.indexString}_Select' );" />
+                        <i id="SkyMiles_{!contactInfo.indexString}" class="fa fa-envelope fa-lg" draggable="true" data-dragtype="email" ondragstart="dragStart(event)"></i>
+                        <select id="SkyMiles_{!contactInfo.indexString}_Select" class="selectBlock" onblur="hideSelect( 'SkyMiles_{!contactInfo.indexString}_Select' );" size="5">
+                            <option onclick="selectCopyInfo( 'SkyMiles_{!contactInfo.indexString}_Select', 'email', 'SkyMiles_{!contactInfo.indexString}', 'Personal_Email__c' );">Copy to Personal Email</option>
+                            <option onclick="selectCopyInfo( 'SkyMiles_{!contactInfo.indexString}_Select', 'email', 'SkyMiles_{!contactInfo.indexString}', 'Work_Email__c' );">Copy to Work Email</option>
+                            <option onclick="selectCopyInfo( 'SkyMiles_{!contactInfo.indexString}_Select', 'email', 'SkyMiles_{!contactInfo.indexString}', 'Other_Email__c' );">Copy to Other Email</option>
+                            <option onclick="selectCopyInfo( 'SkyMiles_{!contactInfo.indexString}_Select', 'email', 'SkyMiles_{!contactInfo.indexString}', 'Other_Email_2__c' );">Copy to Other Email 2</option>
+                            <option onclick="selectCopyInfo( 'SkyMiles_{!contactInfo.indexString}_Select', 'email', 'SkyMiles_{!contactInfo.indexString}', 'Other_Email_3__c' );">Copy to Other Email 3</option>
+                        </select>
+                    </apex:outputPanel>
+                    <apex:outputPanel >
+                        <apex:outputText value="{!contactInfo.email.person_acc.personEmail}" rendered="{!!contactInfo.isDifferent}" />
+                        <apex:outputText value="{!contactInfo.email.person_acc.personEmail}" rendered="{!contactInfo.isDifferent}" styleClass="different"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+            </apex:repeat>
+        </apex:pageBlockSection>
+
+<!--    ****************************************************
+                    Flying Blue Information
+        ****************************************************    -->
+
+        <apex:pageBlockSection title="Information from Flying Blue" rendered="{!queriedFlyingBlue}" collapsible="true" columns="2">
+            <apex:pageBlockSectionItem >
+                <apex:outputPanel >
+                    <apex:outputLabel value="Name" ondblclick="showSelect( 'Flying_Blue_Name_Select' );" />
+                    <i id="Flying_Blue_Name" class="fa fa-user fa-lg" draggable="true" data-dragtype="name" ondragstart="dragStart(event)"></i>
+                    <select id="Flying_Blue_Name_Select" class="selectBlock" onblur="hideSelect( 'Flying_Blue_Name_Select' );" size="6">
+                        <option onclick="selectCopyInfo( 'Flying_Blue_Name_Select', 'name', 'Flying_Blue_Name', 'Name' );">Copy Full Name</option>
+                        <option onclick="selectCopyInfo( 'Flying_Blue_Name_Select', 'name', 'Flying_Blue_Name', 'Salutation' );">Copy Salutation</option>
+                        <option onclick="selectCopyInfo( 'Flying_Blue_Name_Select', 'name', 'Flying_Blue_Name', 'FirstName' );">Copy First Name</option>
+                        <option onclick="selectCopyInfo( 'Flying_Blue_Name_Select', 'name', 'Flying_Blue_Name', 'MiddleName' );">Copy Middle Name</option>
+                        <option onclick="selectCopyInfo( 'Flying_Blue_Name_Select', 'name', 'Flying_Blue_Name', 'LastName' );">Copy Last Name</option>
+                    </select>
+                </apex:outputPanel>
+                <apex:outputText value="{!flyingBlueMemberInformation.name}" />
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                <apex:outputPanel >
+                    <apex:outputLabel value="Gender" ondblclick="showSelect( 'Flying_Blue_Gender_Select' );" />
+                    <i id="Flying_Blue_Gender" class="fa fa-venus-mars fa-lg" draggable="true" data-dragtype="gender" ondragstart="dragStart(event)"></i>
+                    <select id="Flying_Blue_Gender_Select" class="selectBlock" onblur="hideSelect( 'Flying_Blue_Gender_Select' );" size="2">
+                        <option onclick="selectCopyInfo( 'Flying_Blue_Gender_Select', 'gender', 'Flying_Blue_Gender', 'Gender__c' );">Copy Gender</option>
+                    </select>
+                </apex:outputPanel>
+                <apex:outputField value="{!flyingBlueMemberInformation.person_acc.Gender__pc}" ><apex:inlineEditSupport disabled="true" /></apex:outputField>
+            </apex:pageBlockSectionItem>
+
+            <apex:outputField value="{!flyingBlueMemberInformation.person_acc.Flying_Blue_Status__pc}" ><apex:inlineEditSupport disabled="true" /></apex:outputField>
+            <apex:pageBlockSectionItem >
+                <apex:outputPanel >
+                    <apex:outputLabel value="Birthdate" ondblclick="showSelect( 'Flying_Blue_Birthdate_Select' );" />
+                    <i id="FlyingBlue_Birthdate" class="fa fa-calendar fa-lg" draggable="true" data-dragtype="birthdate" ondragstart="dragStart(event)"></i>
+                    <select id="Flying_Blue_Birthdate_Select" class="selectBlock" onblur="hideSelect( 'Flying_Blue_Birthdate_Select' );" size="2">
+                        <option onclick="selectCopyInfo( 'Flying_Blue_Birthdate_Select', 'birthdate', 'Flying_Blue_Birthdate', 'Birthdate' );">Copy Birthdate</option>
+                    </select>
+                </apex:outputPanel>
+                <apex:outputField value="{!flyingBlueMemberInformation.person_acc.PersonBirthdate}" ><apex:inlineEditSupport disabled="true" /></apex:outputField>
+            </apex:pageBlockSectionItem>
+
+            <apex:repeat value="{!flyingBlueContactInformation}" var="contactInfo" >
+                <apex:pageBlockSectionItem rendered="{!contactInfo.isAddress}" >
+                    <apex:outputPanel >
+                        <apex:outputLabel value="{!contactInfo.address.label}" ondblclick="showSelect( 'FlyingBlue_{!contactInfo.indexString}_Select' );" />
+                        <i id="FlyingBlue_{!contactInfo.indexString}" class="fa fa-map-marker fa-lg" draggable="true" data-dragtype="address" ondragstart="dragStart(event)"></i>
+                        <select id="FlyingBlue_{!contactInfo.indexString}_Select" class="selectBlock" onblur="hideSelect( 'FlyingBlue_{!contactInfo.indexString}_Select' );" size="2">
+                            <option onclick="selectCopyInfo( 'FlyingBlue_{!contactInfo.indexString}_Select', 'address', 'FlyingBlue_{!contactInfo.indexString}', 'MailingAddress' );">Copy to Mailing Address</option>
+                            <option onclick="selectCopyInfo( 'FlyingBlue_{!contactInfo.indexString}_Select', 'address', 'FlyingBlue_{!contactInfo.indexString}', 'OtherAddress' );">Copy to Other Address</option>
+                        </select>
+                    </apex:outputPanel>
+                    <apex:outputPanel >
+                        <apex:outputPanel rendered="{!!contactInfo.isDifferent}">
+                            <div>{!contactInfo.address.person_acc.personMailingStreet}</div>
+                            <div>{!contactInfo.address.cityStateZip}</div>
+                            <div>{!contactInfo.address.person_acc.personMailingCountry}</div>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!contactInfo.isDifferent}" styleClass="different">
+                            <div>{!contactInfo.address.person_acc.personMailingStreet}</div>
+                            <div>{!contactInfo.address.cityStateZip}</div>
+                            <div>{!contactInfo.address.person_acc.personMailingCountry}</div>
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem rendered="{!contactInfo.isPhone}" >
+                    <apex:outputPanel >
+                        <apex:outputLabel value="{!contactInfo.phone.label}" ondblclick="showSelect( 'FlyingBlue_{!contactInfo.indexString}_Select' );" />
+                        <i id="FlyingBlue_{!contactInfo.indexString}" class="fa fa-phone fa-lg" draggable="true" data-dragtype="phone" ondragstart="dragStart(event)"></i>
+                        <select id="FlyingBlue_{!contactInfo.indexString}_Select" class="selectBlock" onblur="hideSelect( 'FlyingBlue_{!contactInfo.indexString}_Select' );" size="4">
+                            <option onclick="selectCopyInfo( 'FlyingBlue_{!contactInfo.indexString}_Select', 'phone', 'FlyingBlue_{!contactInfo.indexString}', 'MobilePhone' );">Copy to Mobile Phone</option>
+                            <option onclick="selectCopyInfo( 'FlyingBlue_{!contactInfo.indexString}_Select', 'phone', 'FlyingBlue_{!contactInfo.indexString}', 'HomePhone' );">Copy to Home Phone</option>
+                            <option onclick="selectCopyInfo( 'FlyingBlue_{!contactInfo.indexString}_Select', 'phone', 'FlyingBlue_{!contactInfo.indexString}', 'Work_Phone__c' );">Copy to Work Phone</option>
+                            <option onclick="selectCopyInfo( 'FlyingBlue_{!contactInfo.indexString}_Select', 'phone', 'FlyingBlue_{!contactInfo.indexString}', 'OtherPhone' );">Copy to Other Phone</option>
+                        </select>
+                    </apex:outputPanel>
+                    <apex:outputPanel >
+                        <apex:outputText value="{!contactInfo.phone.person_acc.Phone}" rendered="{!!contactInfo.isDifferent}" />
+                        <apex:outputText value="{!contactInfo.phone.person_acc.Phone}" rendered="{!contactInfo.isDifferent}" styleClass="different"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem rendered="{!contactInfo.isEmail}" >
+                    <apex:outputPanel >
+                        <apex:outputLabel value="{!contactInfo.email.label}" ondblclick="showSelect( 'FlyingBlue_{!contactInfo.indexString}_Select' );" />
+                        <i id="FlyingBlue_{!contactInfo.indexString}" class="fa fa-envelope fa-lg" draggable="true" data-dragtype="email" ondragstart="dragStart(event)"></i>
+                        <select id="FlyingBlue_{!contactInfo.indexString}_Select" class="selectBlock" onblur="hideSelect( 'FlyingBlue_{!contactInfo.indexString}_Select' );" size="5">
+                            <option onclick="selectCopyInfo( 'FlyingBlue_{!contactInfo.indexString}_Select', 'email', 'FlyingBlue_{!contactInfo.indexString}', 'Personal_Email__c' );">Copy to Personal Email</option>
+                            <option onclick="selectCopyInfo( 'FlyingBlue_{!contactInfo.indexString}_Select', 'email', 'FlyingBlue_{!contactInfo.indexString}', 'Work_Email__c' );">Copy to Work Email</option>
+                            <option onclick="selectCopyInfo( 'FlyingBlue_{!contactInfo.indexString}_Select', 'email', 'FlyingBlue_{!contactInfo.indexString}', 'Other_Email__c' );">Copy to Other Email</option>
+                            <option onclick="selectCopyInfo( 'FlyingBlue_{!contactInfo.indexString}_Select', 'email', 'FlyingBlue_{!contactInfo.indexString}', 'Other_Email_2__c' );">Copy to Other Email 2</option>
+                            <option onclick="selectCopyInfo( 'FlyingBlue_{!contactInfo.indexString}_Select', 'email', 'FlyingBlue_{!contactInfo.indexString}', 'Other_Email_3__c' );">Copy to Other Email 3</option>
+                        </select>
+                    </apex:outputPanel>
+                    <apex:outputPanel >
+                        <apex:outputText value="{!contactInfo.email.person_acc.personEmail}" rendered="{!!contactInfo.isDifferent}" />
+                        <apex:outputText value="{!contactInfo.email.person_acc.personEmail}" rendered="{!contactInfo.isDifferent}" styleClass="different"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                
+            </apex:repeat>
+        </apex:pageBlockSection>
+    </apex:pageBlock>
+
+<!--    ****************************************************
+                    Action Functions/Statuses
+        ****************************************************    -->
+
+    <apex:actionFunction name="copyInfo" action="{!copyContactInfo}" status="waitStatus" reRender="contactRecordInfo">
+        <apex:param name="dragType" assignTo="{!dragType}" value=""/>
+        <apex:param name="dragElement" assignTo="{!dragElement}" value=""/>
+        <apex:param name="dropElement" assignTo="{!dropElement}" value=""/>
+    </apex:actionFunction>
+
+    <apex:actionFunction name="checkInformation" action="{!checkInformation}" status="waitStatus" reRender="contactRecordInfo"/>
+
+    <apex:actionStatus id="waitStatus" >
+        <apex:facet name="stop" >
+        </apex:facet>
+        <apex:facet name="start" >
+            <i class="fa fa-refresh fa-spin spinner contactColor"></i>
+        </apex:facet>
+    </apex:actionStatus>
+
+</apex:form>
+</apex:page>

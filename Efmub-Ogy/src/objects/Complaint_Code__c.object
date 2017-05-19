@@ -1,0 +1,577 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>Basic_Compact_Layout</compactLayoutAssignment>
+    <compactLayouts>
+        <fullName>Basic_Compact_Layout</fullName>
+        <fields>Type__c</fields>
+        <fields>Name</fields>
+        <fields>Level_1__c</fields>
+        <fields>Level_2__c</fields>
+        <fields>Level_3__c</fields>
+        <fields>Level_4__c</fields>
+        <fields>Keywords__c</fields>
+        <fields>Compensable__c</fields>
+        <label>Basic Compact Layout</label>
+    </compactLayouts>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableEnhancedLookup>true</enableEnhancedLookup>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Active__c</fullName>
+        <defaultValue>true</defaultValue>
+        <externalId>false</externalId>
+        <label>Active</label>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Compensable__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Compensable</label>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Concord_Code_Number__c</fullName>
+        <externalId>false</externalId>
+        <label>Concord Code Number</label>
+        <length>40</length>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Description__c</fullName>
+        <externalId>false</externalId>
+        <label>Description</label>
+        <length>2000</length>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Disability_Code_Required__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Disability Code Required</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Display_Name__c</fullName>
+        <externalId>false</externalId>
+        <formula>If( ISPICKVAL(Type__c, &apos;Delta&apos;), Level_1__c+ &apos; | &apos;+ Level_2__c+ &apos; | &apos;+ Level_3__c+ &apos; | &apos;+ Level_4__c+ &apos; | &apos;+ Keywords__c, IF(ISPICKVAL(Type__c, &apos;DOT&apos;), Name+ &apos; | &apos;+ Level_1__c+ &apos; | &apos;+ Level_2__c+ &apos; | &apos;+ Level_3__c+ &apos; | &apos;+ Level_4__c+ &apos; | &apos;+ Keywords__c,TEXT(Type__c)+ &apos; | &apos;+ Name+ &apos; | &apos;+ Level_1__c+ &apos; | &apos;+ Level_2__c+ &apos; | &apos;+ Level_3__c+ &apos; | &apos;+ Level_4__c+ &apos; | &apos;+ Keywords__c) )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Display Name</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Keywords__c</fullName>
+        <externalId>false</externalId>
+        <label>Keywords</label>
+        <length>60</length>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Level_1__c</fullName>
+        <externalId>false</externalId>
+        <label>Level 1</label>
+        <length>90</length>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Level_2__c</fullName>
+        <externalId>false</externalId>
+        <label>Level 2</label>
+        <length>90</length>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Level_3__c</fullName>
+        <externalId>false</externalId>
+        <label>Level 3</label>
+        <length>90</length>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Level_4__c</fullName>
+        <externalId>false</externalId>
+        <label>Level 4</label>
+        <length>90</length>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Lowest_Level__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(!ISBLANK(Level_1__c) &amp;&amp; ISBLANK(Level_2__c), Level_1__c,
+IF(!ISBLANK(Level_2__c) &amp;&amp; ISBLANK(Level_3__c), Level_2__c,
+IF(!ISBLANK(Level_3__c) &amp;&amp; ISBLANK(Level_4__c), Level_3__c,
+Level_4__c)))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Lowest Level</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Notification_Type__c</fullName>
+        <description>This is the Notification Type passed to the Mercury arbitration service.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>This is the Notification Type passed to the Mercury arbitration service.</inlineHelpText>
+        <label>Mercury Notification Type</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>CMPT</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>CMPL</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>PSRY</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Phoenix_L1__c</fullName>
+        <externalId>false</externalId>
+        <label>Phoenix L1</label>
+        <length>2</length>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Phoenix_L2__c</fullName>
+        <externalId>false</externalId>
+        <label>Phoenix L2</label>
+        <length>3</length>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Phoenix_L3__c</fullName>
+        <externalId>false</externalId>
+        <label>Phoenix L3</label>
+        <length>4</length>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Phoenix_L4__c</fullName>
+        <externalId>false</externalId>
+        <label>Phoenix L4</label>
+        <length>4</length>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Possible_Complaint_Locations__c</fullName>
+        <externalId>false</externalId>
+        <label>Possible Complaint Locations</label>
+        <length>1000</length>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Priority__c</fullName>
+        <description>Added to support the eTCV flight number associated with the service recovery.</description>
+        <externalId>false</externalId>
+        <label>Priority</label>
+        <precision>5</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Type__c</fullName>
+        <externalId>false</externalId>
+        <label>Type</label>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Delta</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>DOT</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Special PSR</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Dot Disability</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <label>Complaint Code</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>Level_1__c</columns>
+        <columns>Level_2__c</columns>
+        <columns>Level_3__c</columns>
+        <columns>Level_4__c</columns>
+        <columns>Description__c</columns>
+        <columns>RECORDTYPE</columns>
+        <columns>Type__c</columns>
+        <columns>Display_Name__c</columns>
+        <columns>NAME</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
+    <listViews>
+        <fullName>All1</fullName>
+        <columns>Type__c</columns>
+        <columns>RECORDTYPE</columns>
+        <columns>Description__c</columns>
+        <columns>NAME</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Type__c</field>
+            <operation>equals</operation>
+            <value>DOT</value>
+        </filters>
+        <label>All</label>
+    </listViews>
+    <nameField>
+        <label>Code Name</label>
+        <trackHistory>true</trackHistory>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Complaint Codes</pluralLabel>
+    <recordTypeTrackHistory>false</recordTypeTrackHistory>
+    <recordTypes>
+        <fullName>DOT</fullName>
+        <active>true</active>
+        <label>DOT</label>
+        <picklistValues>
+            <picklist>Notification_Type__c</picklist>
+            <values>
+                <fullName>CMPL</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>CMPT</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PSRY</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Type__c</picklist>
+            <values>
+                <fullName>DOT</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Delta</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Special PSR</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>Delta</fullName>
+        <active>true</active>
+        <label>Delta</label>
+        <picklistValues>
+            <picklist>Notification_Type__c</picklist>
+            <values>
+                <fullName>CMPL</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>CMPT</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PSRY</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Type__c</picklist>
+            <values>
+                <fullName>DOT</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Delta</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Special PSR</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>Dot_Disability</fullName>
+        <active>true</active>
+        <label>Dot Disability</label>
+        <picklistValues>
+            <picklist>Notification_Type__c</picklist>
+            <values>
+                <fullName>CMPL</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>CMPT</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PSRY</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Type__c</picklist>
+            <values>
+                <fullName>DOT</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Delta</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Dot Disability</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Special PSR</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>Special_PSR</fullName>
+        <active>true</active>
+        <label>Special PSR</label>
+        <picklistValues>
+            <picklist>Notification_Type__c</picklist>
+            <values>
+                <fullName>CMPL</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>CMPT</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PSRY</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Type__c</picklist>
+            <values>
+                <fullName>DOT</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Delta</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Special PSR</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <searchLayouts>
+        <customTabListAdditionalFields>Type__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Level_1__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Level_2__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Level_3__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Level_4__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Description__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Compensable__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Keywords__c</customTabListAdditionalFields>
+        <listViewButtons>Delete</listViewButtons>
+        <lookupDialogsAdditionalFields>Level_1__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Level_2__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Level_3__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Level_4__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Description__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Keywords__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Compensable__c</lookupDialogsAdditionalFields>
+        <searchFilterFields>NAME</searchFilterFields>
+        <searchFilterFields>Type__c</searchFilterFields>
+        <searchFilterFields>Level_1__c</searchFilterFields>
+        <searchFilterFields>Level_2__c</searchFilterFields>
+        <searchFilterFields>Level_3__c</searchFilterFields>
+        <searchFilterFields>Level_4__c</searchFilterFields>
+        <searchFilterFields>Compensable__c</searchFilterFields>
+        <searchResultsAdditionalFields>Type__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Level_1__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Level_2__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Level_3__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Level_4__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Description__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Compensable__c</searchResultsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
+    <webLinks>
+        <fullName>Delete</fullName>
+        <availability>online</availability>
+        <displayType>massActionButton</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Delete</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <requireRowSelection>true</requireRowSelection>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/21.0/connection.js&quot;)}
+
+//Below ObjectType can be replaced by anyObject. I have used &quot;Test Name&quot;
+var records = {!GETRECORDIDS($ObjectType.Complaint_Code__c)};
+
+if (records[0] == null) {
+    alert(&quot;Please select at least one record.&quot;)
+} else {
+
+    var opt = confirm(&quot;Are you sure you want to delete selected records ?&quot;);
+    if (opt == true) {
+        var errors = [];
+        var result = sforce.connection.deleteIds(records);
+        if (result &amp;&amp; result.length) {
+            var numFailed = 0;
+            var numSucceeded = 0;
+            for (var i = 0; i &lt; result.length; i++) {                 var res = result[i];                 if (res &amp;&amp; res.success == &apos;true&apos;) {                     numSucceeded++;                 } else {                     var es = res.getArray(&quot;errors&quot;);                     if (es.length &gt; 0) {
+                        errors.push(es[0].message);
+                    }
+                    numFailed++;
+                }
+            }
+            if (numFailed &gt; 0) {
+                alert(&quot;Failed: &quot; + numFailed + &quot;nSucceeded: &quot; + numSucceeded + &quot; n Due to: &quot; + errors.join(&quot;n&quot;));
+            } else {
+                alert(&quot;Number of records deleted: &quot; + numSucceeded);
+            }
+        }
+        window.location.reload();
+    }
+}</url>
+    </webLinks>
+</CustomObject>

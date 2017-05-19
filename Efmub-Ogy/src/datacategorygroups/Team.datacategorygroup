@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DataCategoryGroup xmlns="http://soap.sforce.com/2006/04/metadata">
+    <active>true</active>
+    <dataCategory>
+        <dataCategory>
+            <dataCategory>
+                <label>Correspondence</label>
+                <name>Correspondence</name>
+            </dataCategory>
+            <dataCategory>
+                <label>Call Center</label>
+                <name>Call_Center</name>
+            </dataCategory>
+            <dataCategory>
+                <label>Support</label>
+                <name>Support</name>
+            </dataCategory>
+            <dataCategory>
+                <label>Executive</label>
+                <name>Executive</name>
+            </dataCategory>
+            <dataCategory>
+                <label>HVC</label>
+                <name>HVC</name>
+            </dataCategory>
+            <dataCategory>
+                <label>Leadership</label>
+                <name>Leadership</name>
+            </dataCategory>
+            <dataCategory>
+                <label>Quality</label>
+                <name>Quality</name>
+            </dataCategory>
+            <dataCategory>
+                <label>International</label>
+                <name>International</name>
+            </dataCategory>
+            <dataCategory>
+                <label>OCC PSR</label>
+                <name>OCC_PSR</name>
+            </dataCategory>
+            <label>Care</label>
+            <name>Care</name>
+        </dataCategory>
+        <dataCategory>
+            <label>Baggage</label>
+            <name>Baggage</name>
+        </dataCategory>
+        <label>All</label>
+        <name>All</name>
+    </dataCategory>
+    <label>Team</label>
+    <objectUsage>
+        <object>KnowledgeArticleVersion</object>
+    </objectUsage>
+</DataCategoryGroup>

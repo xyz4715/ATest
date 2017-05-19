@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customSettingsType>Hierarchy</customSettingsType>
+    <description>Personal configuration settings for the ClosedWon Core</description>
+    <enableFeeds>false</enableFeeds>
+    <fields>
+        <fullName>AF_Endpoint__c</fullName>
+        <description>This is the SOA service call endpoint for all Air France web services.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>This is the SOA service call endpoint for all Air France web services.</inlineHelpText>
+        <label>AF Endpoint</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Url</type>
+    </fields>
+    <fields>
+        <fullName>Allow_Deployment__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Check this to allow this User/Profile to deploy to this org.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Check this to allow this User/Profile to deploy to this org.</inlineHelpText>
+        <label>Allow Deployment</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Bypass_Valdiation_Rule__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Allows the user to bypass Validation Rules</description>
+        <externalId>false</externalId>
+        <label>Bypass Validation Rule</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Bypass_Workflow_Rule__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Bypass the Workflow Rules</description>
+        <externalId>false</externalId>
+        <label>Bypass Workflow Rule</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Check_Limit_Level_2__c</fullName>
+        <description>Req-276 : Ability to control or limit the value that an Agent can submit for compensation based upon their position within the organization</description>
+        <externalId>false</externalId>
+        <label>Check Limit Level 2</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Check_Limit__c</fullName>
+        <description>Req-276 : Ability to control or limit the value that an Agent can submit for compensation based upon their position within the organization</description>
+        <externalId>false</externalId>
+        <label>Check Limit</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Default_ErrorHandler__c</fullName>
+        <defaultValue>&quot;CWException.IgnoreError&quot;</defaultValue>
+        <description>The fully qualified class name for the default ErrorHandler</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The fully qualified class name for the default ErrorHandler</inlineHelpText>
+        <label>Default ErrorHandler</label>
+        <length>80</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Default_Queue_Name__c</fullName>
+        <externalId>false</externalId>
+        <label>Default Queue Name</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Disable_Rollups__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Check this to disable automatic rollups defined in the CWRollup custom setting.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Check this to disable automatic rollups defined in the CWRollup custom setting.</inlineHelpText>
+        <label>Disable Rollups</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Disable_Triggers__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Check this to disable all triggers that have been implemented using CWTrigger.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Check this to disable all triggers that have been implemented using CWTrigger.</inlineHelpText>
+        <label>Disable Triggers</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Google_API_Key__c</fullName>
+        <description>The API Key to use with Google Maps and other APIs</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The API Key to use with Google Maps and other APIs</inlineHelpText>
+        <label>Google API Key</label>
+        <length>80</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Language_Detection_Endpoint__c</fullName>
+        <externalId>false</externalId>
+        <label>Language Detection Endpoint</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Url</type>
+    </fields>
+    <fields>
+        <fullName>Language_Detection_Key__c</fullName>
+        <externalId>false</externalId>
+        <label>Language Detection Key</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>SOA_Certificate__c</fullName>
+        <description>This is the name of the Certificate to use when making SOA Service callouts.</description>
+        <externalId>false</externalId>
+        <label>SOA Certificate</label>
+        <length>40</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>SOA_Endpoint__c</fullName>
+        <description>This is the base endpoint used when making SOA Service callouts.</description>
+        <externalId>false</externalId>
+        <label>SOA Endpoint</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Url</type>
+    </fields>
+    <fields>
+        <fullName>SkyMiles_Limit__c</fullName>
+        <description>Req-276 : Ability to control or limit the value that an Agent can submit for compensation based upon their position within the organization</description>
+        <externalId>false</externalId>
+        <label>SkyMiles Limit</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Sky_Miles_Limit_Level_2__c</fullName>
+        <description>Req-276 : Ability to control or limit the value that an Agent can submit for compensation based upon their position within the organization</description>
+        <externalId>false</externalId>
+        <label>Sky Miles Limit Level 2</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Update_Locked_Service_Recovery_Status__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>True if the user should be able to adjust a locked Service Recovery Record.</description>
+        <externalId>false</externalId>
+        <label>Update Locked Service Recovery Status</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>eTCV_Limit_Level_2__c</fullName>
+        <description>Req-276 : Ability to control or limit the value that an Agent can submit for compensation based upon their position within the organization</description>
+        <externalId>false</externalId>
+        <label>eTCV Limit Level 2</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>eTCV_Limit__c</fullName>
+        <description>Req-276 : Ability to control or limit the value that an Agent can submit for compensation based upon their position within the organization</description>
+        <externalId>false</externalId>
+        <label>eTCV Limit</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <label>CWCoreConfiguration</label>
+    <visibility>Public</visibility>
+</CustomObject>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>CWRollup</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>CWRollup</value>
+    </caseValues>
+    <fields>
+        <label><!-- Child Additional Logic --></label>
+        <name>Child_Additional_Logic__c</name>
+    </fields>
+    <fields>
+        <label><!-- Child Field --></label>
+        <name>Child_Field__c</name>
+    </fields>
+    <fields>
+        <label><!-- Child Object --></label>
+        <name>Child_Object__c</name>
+    </fields>
+    <fields>
+        <label><!-- Child Parent Field --></label>
+        <name>Child_Parent_Field__c</name>
+    </fields>
+    <fields>
+        <label><!-- Child Sort Field --></label>
+        <name>Child_Sort_Field__c</name>
+    </fields>
+    <fields>
+        <label><!-- Function --></label>
+        <name>Function__c</name>
+    </fields>
+    <fields>
+        <label><!-- Inactive --></label>
+        <name>Inactive__c</name>
+    </fields>
+    <fields>
+        <label><!-- Parent Child Field --></label>
+        <name>Parent_Child_Field__c</name>
+    </fields>
+    <fields>
+        <label><!-- Parent Field --></label>
+        <name>Parent_Field__c</name>
+    </fields>
+    <fields>
+        <label><!-- Parent Object --></label>
+        <name>Parent_Object__c</name>
+    </fields>
+    <fields>
+        <label><!-- Parent Other Field --></label>
+        <name>Parent_Other_Field__c</name>
+    </fields>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

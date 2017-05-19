@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Customer Compensation</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Customer Compensations</value>
+    </caseValues>
+    <fields>
+        <label><!-- Account --></label>
+        <name>Account__c</name>
+        <relationshipLabel><!-- Customer Compensations --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Case --></label>
+        <name>Case__c</name>
+        <relationshipLabel><!-- Customer Compensations --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Claim Amount --></label>
+        <name>Claim_Amount__c</name>
+    </fields>
+    <fields>
+        <label><!-- Claim Type --></label>
+        <name>Claim_Type__c</name>
+        <picklistValues>
+            <masterLabel>Domestic</masterLabel>
+            <translation><!-- Domestic --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>International</masterLabel>
+            <translation><!-- International --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Exclusion Amount --></label>
+        <name>Exclusion_Amount__c</name>
+    </fields>
+    <fields>
+        <label><!-- Exclusion Reason --></label>
+        <name>Exclusion_Reason__c</name>
+        <picklistValues>
+            <masterLabel>Artistic Items</masterLabel>
+            <translation><!-- Artistic Items --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Cash High Value</masterLabel>
+            <translation><!-- Cash High Value --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Confiscation of Items by Local Government</masterLabel>
+            <translation><!-- Confiscation of Items by Local Government --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Cremains</masterLabel>
+            <translation><!-- Cremains --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Electronic or Mechanical Items</masterLabel>
+            <translation><!-- Electronic or Mechanical Items --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Fragile Items</masterLabel>
+            <translation><!-- Fragile Items --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Jewelry or Precious Metals</masterLabel>
+            <translation><!-- Jewelry or Precious Metals --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Musical instrumentals and Equipment</masterLabel>
+            <translation><!-- Musical instrumentals and Equipment --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Perishable Items</masterLabel>
+            <translation><!-- Perishable Items --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Photographic/Cinematographic Equipment</masterLabel>
+            <translation><!-- Photographic/Cinematographic Equipment --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Precision Items</masterLabel>
+            <translation><!-- Precision Items --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Religious Totems/Artifacts</masterLabel>
+            <translation><!-- Religious Totems/Artifacts --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Security Non-Sanctioned Items</masterLabel>
+            <translation><!-- Security Non-Sanctioned Items --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Sporting Goods</masterLabel>
+            <translation><!-- Sporting Goods --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Valuable Papers</masterLabel>
+            <translation><!-- Valuable Papers --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Goodwill Amount --></label>
+        <name>Goodwill_Amount__c</name>
+    </fields>
+    <layouts>
+        <layout>Customer Compensation Feed Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <quickActions>
+        <label><!-- New Compensation Type --></label>
+        <name>New_Compensation_Type</name>
+    </quickActions>
+    <startsWith>Consonant</startsWith>
+    <validationRules>
+        <errorMessage><!-- Exclusion Reason is required --></errorMessage>
+        <name>Exclusion_Reason_Required</name>
+    </validationRules>
+</CustomObjectTranslation>

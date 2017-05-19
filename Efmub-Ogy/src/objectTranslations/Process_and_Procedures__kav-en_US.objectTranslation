@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Process and Procedures</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Process and Procedures</value>
+    </caseValues>
+    <fields>
+        <label><!-- Procedure Change Notes --></label>
+        <name>Procedure_Change_Notes__c</name>
+    </fields>
+    <fields>
+        <label><!-- Reference Link --></label>
+        <name>Reference_Link__c</name>
+    </fields>
+    <fields>
+        <label><!-- Usage --></label>
+        <name>Usage__c</name>
+    </fields>
+    <fields>
+        <label><!-- Valid From --></label>
+        <name>Valid_From__c</name>
+    </fields>
+    <fields>
+        <label><!-- Valid To --></label>
+        <name>Valid_To__c</name>
+    </fields>
+    <fields>
+        <label><!-- When to use this process --></label>
+        <name>When_to_use_this_process__c</name>
+    </fields>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DataCategoryGroup xmlns="http://soap.sforce.com/2006/04/metadata">
+    <active>true</active>
+    <dataCategory>
+        <dataCategory>
+            <dataCategory>
+                <label>Baggage</label>
+                <name>Baggage_Care</name>
+            </dataCategory>
+            <dataCategory>
+                <label>Baggage Mandate</label>
+                <name>Baggage_Mandate</name>
+            </dataCategory>
+            <dataCategory>
+                <label>Callback</label>
+                <name>Callback</name>
+            </dataCategory>
+            <dataCategory>
+                <label>Cargo</label>
+                <name>Cargo</name>
+            </dataCategory>
+            <dataCategory>
+                <label>Carry-on Bag/Contents &amp; Lost Found Lost</label>
+                <name>Carry_on_Bag_Contents_Lost_Found_Lost</name>
+            </dataCategory>
+            <dataCategory>
+                <label>Corporate Accounts</label>
+                <name>Corporate_Accounts</name>
+            </dataCategory>
+            <dataCategory>
+                <label>Compensation Not Received/Check</label>
+                <name>Compensation_Not_Received_Check</name>
+            </dataCategory>
+            <dataCategory>
+                <label>Corporate Communications</label>
+                <name>Corporate_Communications</name>
+            </dataCategory>
+            <dataCategory>
+                <label>Delta Private Jets (DPJ)</label>
+                <name>Delta_Private_Jets_DPJ</name>
+            </dataCategory>
+            <dataCategory>
+                <label>Disability</label>
+                <name>Disability</name>
+            </dataCategory>
+            <dataCategory>
+                <label>Discrimination</label>
+                <name>Discrimination</name>
+            </dataCategory>
+            <dataCategory>
+                <label>Donations &amp; Sponsorships</label>
+                <name>Donations_Sponsorships</name>
+            </dataCategory>
+            <dataCategory>
+                <label>Downgrades</label>
+                <name>Downgrades</name>
+            </dataCategory>
+            <dataCategory>
+                <label>EU 261</label>
+                <name>EU_261</name>
+            </dataCategory>
+            <dataCategory>
+                <label>Executive</label>
+                <name>Executive</name>
+            </dataCategory>
+            <dataCategory>
+                <label>Flight Disruptions</label>
+                <name>Flight_Disruptions</name>
+            </dataCategory>
+            <dataCategory>
+                <label>Flight Verification</label>
+                <name>Flight_Verification</name>
+            </dataCategory>
+            <dataCategory>
+                <label>Flying Blue</label>
+                <name>Flying_Blue</name>
+            </dataCategory>
+            <dataCategory>
+                <label>Flying Club</label>
+                <name>Flying_Club</name>
+            </dataCategory>
+            <dataCategory>
+                <label>Foreign Address</label>
+                <name>Foreign_Address</name>
+            </dataCategory>
+            <dataCategory>
+                <label>Foreign Language</label>
+                <name>Foreign_Language</name>
+            </dataCategory>
+            <dataCategory>
+                <label>Fraudulent/Unauth Usage &amp; Charges</label>
+                <name>Fraudulent_Unauth_Usage_Charges</name>
+            </dataCategory>
+            <dataCategory>
+                <label>HVC/360/Elite</label>
+                <name>HVC_360_Elite</name>
+            </dataCategory>
+            <dataCategory>
+                <label>Legal</label>
+                <name>Legal</name>
+            </dataCategory>
+            <dataCategory>
+                <label>Media</label>
+                <name>Media</name>
+            </dataCategory>
+            <dataCategory>
+                <label>No Fly</label>
+                <name>No_Fly</name>
+            </dataCategory>
+            <dataCategory>
+                <label>Need Manager Approval</label>
+                <name>Need_Manager_Approval</name>
+            </dataCategory>
+            <dataCategory>
+                <label>Non-Revenue Employees</label>
+                <name>Non_Revenue_Employees</name>
+            </dataCategory>
+            <dataCategory>
+                <label>Oversales</label>
+                <name>Oversales</name>
+            </dataCategory>
+            <dataCategory>
+                <label>Passenger Injury</label>
+                <name>Passenger_Injury</name>
+            </dataCategory>
+            <dataCategory>
+                <label>Personal Property</label>
+                <name>Personal_Property</name>
+            </dataCategory>
+            <dataCategory>
+                <label>Pre-Travel</label>
+                <name>Pre_Travel</name>
+            </dataCategory>
+            <dataCategory>
+                <label>Refunds</label>
+                <name>Refunds</name>
+            </dataCategory>
+            <dataCategory>
+                <label>Regulatory &amp; Consumer Advocacy</label>
+                <name>Regulatory_Consumer_Advocacy</name>
+            </dataCategory>
+            <dataCategory>
+                <label>Richard</label>
+                <name>Richard</name>
+            </dataCategory>
+            <dataCategory>
+                <label>Sky Club and Partner Lounges</label>
+                <name>Sky_Club_and_Partner_Lounges</name>
+            </dataCategory>
+            <dataCategory>
+                <label>SkyMiles</label>
+                <name>SkyMiles</name>
+            </dataCategory>
+            <dataCategory>
+                <label>Specially Designated Nationals</label>
+                <name>Specially_Designated_Nationals</name>
+            </dataCategory>
+            <dataCategory>
+                <label>Ticket &amp; Document Copies or Receipts</label>
+                <name>Ticket_Document_Copies_or_Receipts</name>
+            </dataCategory>
+            <dataCategory>
+                <label>Voucher Exception Requests</label>
+                <name>Voucher_Exception_Requests</name>
+            </dataCategory>
+            <dataCategory>
+                <label>Unaccompanied Minor (UMNR)</label>
+                <name>Unaccompanied_Minor_UMNR</name>
+            </dataCategory>
+            <dataCategory>
+                <label>Wipro Escalations</label>
+                <name>Wipro_Escalations</name>
+            </dataCategory>
+            <dataCategory>
+                <label>DOT</label>
+                <name>DOT</name>
+            </dataCategory>
+            <dataCategory>
+                <label>Executive (placeholder for processes)</label>
+                <name>Executive_placeholder_for_processes</name>
+            </dataCategory>
+            <dataCategory>
+                <label>PSR</label>
+                <name>PSR</name>
+            </dataCategory>
+            <dataCategory>
+                <label>Support (processes such as fulfillment)</label>
+                <name>Support_processes_such_as_fulfillment</name>
+            </dataCategory>
+            <label>Care</label>
+            <name>Care</name>
+        </dataCategory>
+        <dataCategory>
+            <label>Baggage</label>
+            <name>Baggage</name>
+        </dataCategory>
+        <label>All</label>
+        <name>All</name>
+    </dataCategory>
+    <label>Case Type</label>
+    <objectUsage>
+        <object>KnowledgeArticleVersion</object>
+    </objectUsage>
+</DataCategoryGroup>

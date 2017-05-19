@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Responsible Party</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Responsible Parties</value>
+    </caseValues>
+    <fields>
+        <help><!-- The Case to which this Responsible Party is related. --></help>
+        <label><!-- Case --></label>
+        <name>Case__c</name>
+        <relationshipLabel><!-- Responsible Parties --></relationshipLabel>
+    </fields>
+    <fields>
+        <help><!-- The Delta employee Contact who is the Responsible Party. --></help>
+        <label><!-- Contact --></label>
+        <name>Contact__c</name>
+        <relationshipLabel><!-- Responsible Parties --></relationshipLabel>
+    </fields>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

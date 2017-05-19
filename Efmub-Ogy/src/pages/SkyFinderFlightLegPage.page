@@ -1,0 +1,672 @@
+<apex:page controller="SkyFinderFlightLegController" docType="html-5.0" showHeader="false" sidebar="false" id="page">
+  <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <head>
+    <apex:stylesheet value="{!URLFOR($Resource.SLDS, 'assets/styles/salesforce-lightning-design-system-vf.css')}"/>
+    <apex:includeScript value="{!$Resource.jQuery}"/>
+    <apex:stylesheet value="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css"/>
+    <apex:includeScript value="{!$Resource.CWAutoComplete}"/>
+    <apex:includeScript value="/support/console/35.0/integration.js"/>
+    <apex:includeScript value="{!$Resource.CWConsole}"/>
+</head>
+<style>
+        .spinner {
+            position:    fixed;
+            top:         50%;
+            left:        50%;
+            margin-top:  -150px;
+            margin-left: -175px;
+            font-size:   1200%;
+        }
+
+        .indent {
+            margin-left: 1in;
+        }
+        
+        .label-style {
+            text-align:  right;
+        }
+        
+        .flightlegBkgrd
+        {
+            background:#48C7C8;
+            text-align:center;
+            align:center;
+        }
+    </style>
+    <script>
+      
+      
+        var errorFound = false,
+            flConsole = CWConsole({subTabTitle:"SkyFinder:Flight Leg", returnURL:""});
+        window.onerror = function(msg, url, line, col, error) {
+            if(errorFound == false) {
+                alert('bbb' + msg + ' - ' + line);
+            }
+            errorFound = true;
+        }
+        
+        
+        function test(a, control) {
+            if(!control) {
+                alert('no control');
+                return;
+            }
+            a = control.value;
+
+            if(control.tagName != 'INPUT') {
+                alert('wrong control ' + control.tagName);
+                return;
+            }
+
+            var selectList = document.getElementById("complaint-codes");
+            var locations = control.parentNode.nextSibling.firstChild;
+
+            while ( locations.lastChild ) {
+                locations.removeChild( locations.lastChild );
+            }
+            locations.value = '';
+            var optionIndex;
+            for(optionIndex = 0; optionIndex < selectList.options.length; optionIndex++ ) {
+                var option = selectList.options[optionIndex];
+                if(option.innerHTML && option.innerHTML != '' && option.innerHTML.substring(0, a.length) === a) {
+                    if(option.innerHTML.split("\n")[1]) {
+                        var options2 = option.innerHTML.split("\n")[1].split(',');
+
+                        var optionIndex2;
+                        for(optionIndex2 = 0; optionIndex2 < options2.length; optionIndex2++) {
+                            var newOption           = document.createElement( "OPTION" );
+                            newOption.innerHTML     = options2[optionIndex2].trim();
+                            newOption.value         = options2[optionIndex2].trim();
+                            newOption.selected      = false;
+                            newOption.style.display = 'block';
+                            locations.appendChild( newOption );
+                        }
+                    }
+                }
+            }
+        }
+      
+      var airlineList     = CWAutoComplete({showAllOptions: true, autoSelect: false, multiMatch: true, top: 20, left: 10});
+      //var OperatingairlineList     = CWAutoComplete({showAllOptions: true, autoSelect: false, multiMatch: true, top: 20, left: 10});
+        var originList      = CWAutoComplete({showAllOptions: true, autoSelect: false, multiMatch: true, top: 20, left: 10});
+
+        function formOk() {
+            var a = document.getElementById("carrier-td");
+            var b = a.children[0].value;
+            var c = document.getElementById("flight-td");
+            var d = c.children[0].value;
+            var e = document.getElementById("date-td");
+            var f = e.children[0].children[0].value;
+            var g = document.getElementById("pnr-td");
+            var h = g.children[0].value;
+
+            alert('carrier = ' + b + '\n' +
+                  'flight  = ' + d + '\n' +
+                  'date    = ' + f + '\n' +
+                  'pnr     = ' + h);
+
+            return false;
+        }
+
+        j$ = jQuery.noConflict();
+        j$(document).ready(function(){
+            initPage();
+
+        });
+
+        function initPage()
+        {
+            sforce.console.onFocusedSubtab(handleFocus);
+        }   
+
+        var handleFocus = function (result) 
+        {
+            sforce.console.getTabLink( sforce.console.TabLink.TAB_ONLY, result.id, refreshVfPage )
+        };
+
+        var refreshVfPage = function(result)
+        {
+            console.log( '---->' + result.tabLink );
+            if( result.success && result.tabLink.indexOf('SkyFinder:Flight') != -1 )
+            {
+                refreshPageAF();
+            }
+        }
+        
+        /* function fillOperatingCarrier()
+      	{
+            var a = document.getElementById("page:theForm:input-carrier");
+            var c = document.getElementById("page:theForm:operating-carrier");
+            c.value = a.value;
+             
+        }*/
+        
+    </script>
+    <style>
+    .alerts
+    {
+        height: 10px;
+    }
+    </style>
+    <style type="text/css">
+.dateFormat{
+   display: none;
+        width:1px;
+}
+</style>
+  <apex:pageMessages id="pagemessage"/>
+  
+  <apex:form id="theForm" style="padding:10px">
+  <apex:outputpanel id="check">
+   
+    <apex:inputHidden value="{!idCheck}" id="hidden"/>
+    <script>
+    function closeIframe()
+        {
+           
+           if('{!casecomplaint}' != '')
+               {
+                alert('value check '+ sforce.console.isInConsole());
+                if (sforce.console.isInConsole()){
+                    alert('hi');
+                    //var valueCheck = sforce.console.getFocusedSubtabId();
+                    //alert('hi '+valueCheck);
+                    var valueCheck = sforce.console.getEnclosingTabId();
+                    sforce.console.closeTab(valueCheck.id);
+                    
+                }
+                else{
+                    
+                    window.opener.location = '/'+'{!casecomplaint}';
+                    window.close();
+                }
+               }
+            else{
+                var valuecheck = document.getElementById('page:theForm:hidden').value;
+                parent.closeIframe(valuecheck);
+            }
+            
+        }
+    </script>
+    </apex:outputpanel>
+  <div class="slds"> <!-- SLDS wrapper div -->
+        <apex:outputPanel id="topPanel">
+            <div class="slds-page-header" role="banner">
+                <div class="slds-media">
+                    <div class="slds-media__figure">
+                        <div aria-hidden="true" class="slds-icon slds-icon--large slds-icon-standard-user">
+                            <img class="flightlegBkgrd" src="{!URLFOR($Resource.SLDS, 'assets/icons/custom/custom20_120.png')}"/>
+                        </div>
+                    </div>
+                    <div class="slds-media__body">
+                        <apex:outputPanel rendered="{!hasCaseId}">
+                            <div>
+                            <apex:outputText value="Case " />
+                            <apex:outputlink value="javascript:flConsole.openNewSubTab('/{!caseId}', '{!flightLegCase.CaseNumber}' );">
+                                {!flightLegCase.CaseNumber}
+                            </apex:outputlink>
+                            </div>
+                            <div>
+                            <h1 class="slds-text-heading--medium">
+                                Flights Search
+                            </h1>
+                            </div> 
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!!hasCaseId}">
+                            <apex:outputText value="" />
+                            <h1 class="slds-text-heading--medium">
+                                Skyfinder | Find Flight
+                            </h1> 
+                        </apex:outputPanel>
+                    </div>
+                </div>
+            </div>
+        </apex:outputPanel>
+    </div> <!-- SLDS wrapper div -->
+    
+    <!--****************************************************
+                    Top Panel
+    ****************************************************    -->
+<!--****************************************************
+                    Search Input SLDS styled
+    ****************************************************    -->
+<div class="slds"><!-- SLDS wrapper div --> 
+    <apex:outputPanel id="FlightLegsSearchInput">
+        <fieldset class="slds-form--compound">
+           <!-- <legend class="slds-form-element__label">Flight Legs</legend>-->
+            <div class="form-element__group">
+                <div class="slds-form-element__row">
+                    <div class="slds-form-element slds-size--1-of-2">
+                        <label class="slds-form-element__label" for="input-pnr">PNR</label>
+                        <apex:inputText value="{!params.PNR}" html-autocomplete="off" 
+                            id="input-pnr" html-class="slds-input"/>
+                    </div>
+                    <div class="slds-form-element slds-size--1-of-2">
+                    </div>
+                </div>
+            </div>
+            <div class="form-element__group">
+                <div class="slds-form-element__row">
+                    <div class="slds-form-element slds-size--1-of-2">
+                        <label class="slds-form-element__label" for="input-carrier">Marketing Carrier</label>
+                        <apex:inputText value="{!params.Carrier}" onfocus="airlineList.focus(event, 'airline-codes', {});" html-autocomplete="off" 
+                            id="input-carrier" html-class="slds-input"/>
+                    </div>
+                    <div class="slds-form-element slds-size--1-of-2">
+                        <label class="slds-form-element__label" for="input-fn">Flight Number</label>
+                        <apex:inputText value="{!params.FlightNumber}" html-autocomplete="off" 
+                            id="input-fn" html-class="slds-input"/>
+                    </div>
+                </div>
+            </div>
+            <div class="form-element__group">
+                <div class="slds-form-element__row">
+                    <div class="slds-form-element slds-size--1-of-2">
+                        <label class="slds-form-element__label" for="input-fltOrigin">Origin</label>
+                        <apex:inputText value="{!params.Origin}" onfocus="originList.focus(event, 'airport-codes', {});" html-autocomplete="off" 
+                            id="input-fltOrigin" html-class="slds-input"/>
+                    </div>
+                    <div class="slds-form-element slds-size--1-of-2">
+                        <label class="slds-form-element__label" for="input-fltDestination">Destination</label>
+                        <apex:inputText value="{!params.Destination}" onfocus="originList.focus(event, 'airport-codes', {});" html-autocomplete="off" 
+                            id="input-fltDestination" html-class="slds-input"/>
+                    </div>
+                </div>
+            </div> 
+            <div class="form-element__group">
+                <div class="slds-form-element__row">
+                    <div class="slds-form-element slds-size--1-of-2"  style="width: 98%; padding-right:10px;">
+                        <label class="slds-form-element__label" for="input-fltDate">Date</label>
+                        <apex:inputField value="{!params.Task.ActivityDate}"
+                            id="input-fltDate" html-class="slds-input" html-min="2000-01-01"/>
+                    </div>
+                   <div styleClass="slds-form-element slds-size--1-of-2" style="width: 98%;">
+                   <!--  <apex:outputPanel rendered="{!Render_OperCarrier}">
+                    
+                        <label class="slds-form-element__label" for="input-operatingcarrier">Operating Carrier</label>
+                        <apex:inputText value="{!params.operatingCarrier}" onfocus="OperatingairlineList.focus(event, 'airline-codes', {});" html-autocomplete="off" 
+                            id="operating-carrier" html-class="slds-input"/>
+                    
+                    </apex:outputPanel>-->
+                        </div>
+                </div>
+            </div> 
+            
+             <apex:commandButton id="FltLegSearchBtn" title="Search for Flight Leg" 
+                    value="  Search   " action="{!clickSearch}"
+                            status="waitStatus"  styleClass="slds-button slds-button--brand slds-m-bottom--medium" rerender="theForm,pagemessage"/>
+             <apex:commandButton id="ClearSearchBtn" title="Clear" 
+                    value="  Clear   " action="{!clearSearch}" rerender="theForm"
+                            status="waitStatus"  styleClass="slds-button slds-button--brand slds-m-bottom--medium"/>
+              <apex:commandButton id="CreateManuallyBtn" title="Create Flight Leg Manually" 
+                    value="  Create Manually  " action="{!clickCreateManuallyFlightLeg}" rerender="theForm,pagemessage"
+                            status="waitStatus"  styleClass="slds-button slds-button--brand slds-m-bottom--medium"/>
+              
+                             
+   </fieldset>
+    </apex:outputPanel><!-- FlightLegsSearchInput -->
+</div><!-- SLDS wrapper div -->
+<!--****************************************************
+                    End Search Input SLDS styled
+    ****************************************************    -->
+ <!--****************************************************
+                    Search Results SLDS styled
+    ****************************************************    -->
+    <div class="slds" id="div1"><!-- SLDS wrapper div -->
+        <apex:outputPanel id="SearchResultsPanel" rendered="{!hasPotentialFlightLegs}">
+            <fieldset class="slds-box slds-theme--default slds-container--xlarge">
+                <legend id="searchWithCaseContacts" class="slds-text-heading--medium slds-p-vertical--medium">
+                    <span aria-hidden="true" class="slds-icon slds-icon--small slds-icon-text-default" style="cursor:pointer">
+                        <img src="{!URLFOR($Resource.SLDS, 'assets/icons/utility/chevrondown_60.png')}"
+                                 class="expandIcon" width="10px"/>
+                        <img src="{!URLFOR($Resource.SLDS, 'assets/icons/utility/chevronright_60.png')}"
+                                 class="slds-hide expandIcon" width="10px"/>
+                    </span>                   
+                    <span class="slds-text-heading--medium">Flight Results</span>
+                </legend>
+
+                <div class="CurrentCaseTable" id="SearchResultsTable">
+                    <table class="slds-table slds-table--bordered slds-no-row-hover slds-table--striped">
+                        <thead class="tableHdr">
+                            <tr class="slds-text-heading--label">
+                                <apex:repeat value="{!collumnNames}" var="Hdrname">
+                                    <th class="slds-is-sortable" scope="col">
+                                        <div class="slds-truncate">
+                                            <div class="tblHdrText">
+                                                {!Hdrname}
+                                            </div>
+                                        </div> 
+                                    </th>
+                                </apex:repeat>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <apex:repeat value="{!potentialFlightLegs}" var="found">
+                                <tr class="slds-hint-parent">
+                                    
+                                    <td class="slds-truncate" scope="row">
+                                        <apex:outputPanel rendered="{!hasCaseId}">
+                                            <apex:commandLink style="color:#0000FF" value="" rendered="{!!found.attached}" 
+                                                    action="{!AcceptContactforCreate}" 
+                                                        rerender="SearchResultsPanel, FLlistsPanels,check" status="waitStatus" oncomplete="closeIframe();">
+                                                <apex:param name="searchIndex" assignTo="{!selectedFlightLegName}" 
+                                                        value="{!found.name}"/> 
+                                                <span class="slds-badge">Attach</span>                
+                                            </apex:commandLink>
+                                            <apex:commandLink style="color:#0000FF" value="" 
+                                                    action="{!clickRemoveFlightLeg}" rendered="{!found.attached}"
+                                                        rerender="SearchResultsPanel, FLlistsPanels" status="waitStatus">
+                                                <apex:param name="attachedRemoval" assignTo="{!selectedFlightLegName}" value="{!found.name}" />
+                                                <span class="slds-badge slds-theme--inverse">Detach</span>                 
+                                            </apex:commandLink>
+                                        </apex:outputPanel>
+                                        <apex:outputPanel rendered="{!!hasCaseId}">
+                                            <apex:commandLink style="color:#0000FF" value="" rendered="{!!found.hasFlightID}" 
+                                                    action="{!AcceptContactforCreate}" 
+                                                        rerender="SearchResultsPanel" status="waitStatus">
+                                                <apex:param name="searchIndex" assignTo="{!selectedFlightLegName}" 
+                                                        value="{!found.name}"/> 
+                                                <span class="slds-badge">Create</span>
+                                            </apex:commandLink>
+                                        </apex:outputPanel>
+                                    </td>
+                                    <td class="slds-truncate" scope="row">
+                                        <apex:outputlink rendered="{!found.hasFlightID}"
+                                            value="javascript:flConsole.openNewSubTab('/{!found.Id}', 
+                                                    '{!found.LightningFltNumber}' );">
+                                            {!found.LightningFltNumber}
+                                        </apex:outputlink>
+
+                                        <apex:outputText value="{!found.LightningFltNumber}" 
+                                            rendered="{!!found.hasFlightID}"/>
+                                    </td>
+
+                                    <td class="slds-truncate" scope="row">
+                                        <apex:outputText value="{!found.LightningDepartureTime}"/>
+                                    </td>
+                                    <td class="slds-truncate" scope="row">
+                                        <apex:outputText value="{!found.departureAirport}"/>
+                                    </td>
+                                    <td class="slds-truncate" scope="row">
+                                        <apex:outputText value="{!found.LightningArrivalTime}"/>
+                                    </td>
+                                    <td class="slds-truncate" scope="row">
+                                        <apex:outputText value="{!found.arrivalAirport}"/>    
+                                    </td>
+                                    <td class="slds-truncate" scope="row">
+                                        <apex:outputText value="{!found.caseCount}"/>      
+                                    </td>
+                                    <td class="slds-truncate" scope="row">
+                                        <apex:outputPanel styleClass="alerts">
+                                       <!-- <apex:outputField value="{!found.flightleg.Alerts__c}"/>-->
+                                        </apex:outputPanel>
+                                    </td>
+                                </tr>
+                            </apex:repeat>
+                        </tbody>
+                    </table>
+                </div>
+            </fieldset>
+            <script>
+                j$ = jQuery.noConflict();
+                j$(document).ready(function(){
+                    j$('#searchWithCaseContacts').click(function(){
+                        j$(this).parent().find('#SearchResultsTable').slideToggle("slow");
+                        j$(this).find('.expandIcon').toggleClass( 'slds-hide' );
+                    });        
+                });
+            </script>
+        </apex:outputPanel>
+    </div><!-- SLDS wrapper div -->
+
+<!--****************************************************
+                    End Search Results SLDS styled
+    ****************************************************    -->   
+    <!--****************************************************
+                    SLDS Attached FlightLegs Section - WITH case
+    ****************************************************    -->
+    <apex:outputPanel id="FLlistsPanels">
+    
+    <div class="slds"><!-- SLDS wrapper div -->
+       <!-- <apex:outputPanel id="FLinCurrentCasePanel" rendered="{!hasCaseId}">
+          <fieldset class="slds-box slds-theme--default slds-container--xlarge">
+                <legend id="attachedWithCaseContacts" class="slds-text-heading--medium slds-p-vertical--medium">
+                    <span aria-hidden="true" class="slds-icon slds-icon--small slds-icon-text-default" style="cursor:pointer">
+                        <img src="{!URLFOR($Resource.SLDS, 'assets/icons/utility/chevrondown_60.png')}"
+                                 class="expandIcon" width="10px"/>
+                        <img src="{!URLFOR($Resource.SLDS, 'assets/icons/utility/chevronright_60.png')}"
+                                 class="slds-hide expandIcon" width="10px"/>
+                    </span>                   
+                    <span class="slds-text-heading--medium">Included in Current Case</span>
+                </legend>
+
+                <div class="CurrentCaseTable" id="FLinCurrentCaseTable">
+                    <table class="slds-table slds-table--bordered slds-no-row-hover slds-table--striped">
+                        <thead class="tableHdr">
+                            <tr class="slds-text-heading--label">
+                                <apex:repeat value="{!collumnNames}" var="Hdrname">
+                                    <th class="slds-is-sortable" scope="col">
+                                        <div class="slds-truncate">
+                                            <div class="tblHdrText">
+                                                {!Hdrname}
+                                            </div>
+                                        </div> 
+                                    </th>
+                                </apex:repeat>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                           <!-- <apex:repeat value="{!attachedComplaints}" var="complaint">
+                                <tr class="slds-hint-parent">
+                                    
+                                    <td class="slds-truncate" scope="row">
+                                    <apex:outputPanel rendered="true">
+                                        <apex:commandLink style="color:#0000FF" value="" 
+                                                action="{!clickRemoveFlightLeg}" 
+                                                    rerender="SearchResultsPanel, FLlistsPanels" status="waitStatus">
+                                                <apex:param name="removeComplaint" assignTo="{!selectedFlightLegName}" 
+                                                        value="{!complaint.flightName}" />
+                                            <span class="slds-badge slds-theme--inverse">Detach</span>                 
+                                        </apex:commandLink>
+                                    </apex:outputPanel>
+                                    <apex:outputPanel rendered="false">
+                                    </apex:outputPanel>
+                                    </td>
+                                    <td class="slds-truncate" scope="row">
+                                        <apex:outputlink rendered="{!complaint.hasFlightID}"
+                                            value="javascript:flConsole.openNewSubTab('/{!complaint.flightID}', 
+                                                    '{!complaint.LightningFltNumber}' );">
+                                            {!complaint.LightningFltNumber}
+                                        </apex:outputlink>
+
+                                        <apex:outputText value="{!complaint.LightningFltNumber}" 
+                                            rendered="{!!complaint.hasFlightID}"/>
+                                    </td>
+                                    <td class="slds-truncate" scope="row">
+                                        <apex:outputText value="{!complaint.LightningDepartureTime}"/>
+                                    </td>
+                                    <td class="slds-truncate" scope="row">
+                                        <apex:outputText value="{!complaint.departureAirport}"/>
+                                    </td>
+                                    <td class="slds-truncate" scope="row">
+                                        <apex:outputText value="{!complaint.LightningArrivalTime}"/>
+                                    </td>
+                                    <td class="slds-truncate" scope="row">
+                                        <apex:outputText value="{!complaint.arrivalAirport}"/>    
+                                    </td>
+                                    <td class="slds-truncate" scope="row">
+                                        <apex:outputText value="{!complaint.caseCount}"/>    
+                                    </td>
+                                    <td class="slds-truncate" scope="row">
+                                        <apex:outputPanel styleClass="alerts">
+                                        <apex:outputField value="{!complaint.flightleg.Alerts__c}"/>
+                                        </apex:outputPanel>
+                                    </td>
+                                </tr>
+                            </apex:repeat>-->
+                        <!--   
+                        </tbody>
+                    </table>
+                </div>
+            </fieldset>
+            <script>
+                j$ = jQuery.noConflict();
+                j$(document).ready(function(){
+                    j$('#attachedWithCaseContacts').click(function(){
+                        j$(this).parent().find('#FLinCurrentCaseTable').slideToggle("slow");
+                        j$(this).find('.expandIcon').toggleClass( 'slds-hide' );
+                    });        
+                });
+            </script>
+        </apex:outputPanel>-->
+    </div><!-- SLDS wrapper div -->
+
+<!--****************************************************
+                    End SLDS Attached FlightLegs Section - WITH case
+    ****************************************************    -->
+    <!--****************************************************
+                    FlightLegs on PNR
+    ****************************************************    -->
+    <div class="slds"><!-- SLDS wrapper div -->
+        <apex:outputPanel id="PNRFlightLegPanel" rendered="{!hasPNRFlightLegs}">
+            <fieldset class="slds-box slds-theme--default slds-container--xlarge">
+                <legend id="pnrFlightLegsLegend" class="slds-text-heading--medium slds-p-vertical--medium">
+                    <span aria-hidden="true" class="slds-icon slds-icon--small slds-icon-text-default" style="cursor:pointer">
+                        <img src="{!URLFOR($Resource.SLDS, 'assets/icons/utility/chevrondown_60.png')}"
+                                 class="expandIcon" width="10px"/>
+                        <img src="{!URLFOR($Resource.SLDS, 'assets/icons/utility/chevronright_60.png')}"
+                                 class="slds-hide expandIcon" width="10px"/>
+                    </span>                   
+                    <span class="slds-text-heading--medium">PNR Flight Legs</span>
+                </legend>
+
+                <div class="pnrFLTableClass" id="pnrFLTable">
+                    <table class="slds-table slds-table--bordered slds-no-row-hover slds-table--striped">
+                        <thead class="tableHdr">
+                            <tr class="slds-text-heading--label">
+                                <apex:repeat value="{!collumnNames}" var="Hdrname">
+                                    <th class="slds-is-sortable" scope="col">
+                                        <div class="slds-truncate">
+                                            <div class="tblHdrText">
+                                                {!Hdrname}
+                                            </div>
+                                        </div> 
+                                    </th>
+                                </apex:repeat>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <apex:repeat value="{!pnrFlightLegList}" var="pnr">
+                                <tr class="slds-hint-parent">                                   
+                                    <td class="slds-truncate" scope="row">
+                                    <apex:outputPanel rendered="true">
+                                        <apex:commandLink style="color:#0000FF" value="" rendered="{!!pnr.attached}" 
+                                                action="{!AcceptContactforCreate}" 
+                                                    rerender="SearchResultsPanel, FLlistsPanels" status="waitStatus">
+                                            <apex:param name="searchIndex" assignTo="{!selectedFlightLegName}" value="{!pnr.Name}"/> 
+                                            <span class="slds-badge">Attach</span>                
+                                        </apex:commandLink>
+                                        <apex:commandLink style="color:#0000FF" value="" 
+                                                action="{!clickRemoveFlightLeg}" rendered="{!pnr.attached}"
+                                                    rerender="SearchResultsPanel, FLlistsPanels" status="waitStatus">
+                                            <apex:param name="attachedRemoval" assignTo="{!selectedFlightLegName}" 
+                                                value="{!pnr.Name}" />
+                                            <span class="slds-badge slds-theme--inverse">Detach</span>                 
+                                        </apex:commandLink>
+                                    </apex:outputPanel>
+                                    <apex:outputPanel rendered="false">
+                                    </apex:outputPanel>
+                                    </td>
+                                    <td class="slds-truncate" scope="row">
+                                        <apex:outputlink rendered="{!pnr.hasFlightID}"
+                                            value="javascript:flConsole.openNewSubTab('/{!pnr.Id}', 
+                                                    '{!pnr.LightningFltNumber}' );">
+                                            {!pnr.LightningFltNumber}
+                                        </apex:outputlink>
+
+                                        <apex:outputText value="{!pnr.LightningFltNumber}" 
+                                            rendered="{!!pnr.hasFlightID}"/>
+                                    </td>
+
+                                    <td class="slds-truncate" scope="row">
+                                        <apex:outputText value="{!pnr.LightningDepartureTime}"/>
+                                    </td>                                    
+
+                                    <td class="slds-truncate" scope="row">
+                                        <apex:outputText value="{!pnr.departureAirport}"/>
+                                    </td>
+                                    <td class="slds-truncate" scope="row">
+                                        <apex:outputText value="{!pnr.LightningArrivalTime}"/>
+                                    </td>
+                                    <td class="slds-truncate" scope="row">
+                                        <apex:outputText value="{!pnr.arrivalAirport}"/>    
+                                    </td>
+                                    <td class="slds-truncate" scope="row">
+                                        <apex:outputText value="{!pnr.caseCount}"/>   
+                                    </td>
+                                    <td class="slds-truncate" scope="row">
+                                        <apex:outputPanel styleClass="alerts">
+                                        <apex:outputField value="{!pnr.flightleg.Alerts__c}"/>
+                                        </apex:outputPanel>
+                                    </td>
+                                </tr>
+                            </apex:repeat>
+
+
+                        </tbody>
+                    </table>
+                </div>
+            </fieldset>
+            <script>
+                j$ = jQuery.noConflict();
+                j$(document).ready(function(){
+                    j$('#pnrFlightLegsLegend').click(function(){
+                        j$(this).parent().find('#pnrFLTable').slideToggle("slow");
+                        j$(this).find('.expandIcon').toggleClass( 'slds-hide' );
+                    });        
+                });
+            </script>
+        </apex:outputPanel>
+    </div><!-- SLDS wrapper div -->
+    </apex:outputPanel> <!-- id="FLlistsPanels" -->
+<!--****************************************************
+                    End FlightLegs on PNR
+    ****************************************************    -->
+  <div class="slds"><!-- SLDS wrapper div --> 
+    <apex:actionStatus id="waitStatus">
+        <apex:facet name="stop" >
+        </apex:facet>
+        <apex:facet name="start" >
+            <!-- spinner -->
+            <div class="slds-spinner_container" style="z-index:1 !Important">
+                <div class="slds-spinner--brandContact slds-spinner slds-spinner--large" aria-hidden="false" role="alert">
+                    <div class="slds-spinner__dot-a"></div>
+                    <div class="slds-spinner__dot-b"></div>
+                </div>
+            </div>    
+        </apex:facet>
+    </apex:actionStatus>
+</div><!-- SLDS wrapper div --> 
+  </apex:form>
+  <div style="display:none">
+        <select id="airline-codes" >
+            <apex:repeat value="{!airlineCodes}" var="airlineCode">
+                <option value="{!airlineCode.value}">{!airlineCode.label}</option>
+            </apex:repeat>
+        </select>
+        <select id="airport-codes" >
+            <apex:repeat value="{!airportCodes}" var="airportCode">
+                <option value="{!airportCode.value}">{!airportCode.label}</option>
+            </apex:repeat>
+        </select>
+    </div>
+
+    
+
+      
+  </html>
+  
+</apex:page>

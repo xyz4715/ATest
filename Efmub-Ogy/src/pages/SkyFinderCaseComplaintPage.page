@@ -1,0 +1,1222 @@
+<apex:page controller="SkyFinderCaseComplaintController" sidebar="false" showHeader="false" id="page">
+    
+    <apex:stylesheet value="{!URLFOR($Resource.SLDS, 'assets/styles/salesforce-lightning-design-system-vf.css')}"/>
+    <apex:stylesheet value="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css"/>
+    <apex:stylesheet value="{!$Resource.bootstrap_css}"/>
+    <apex:stylesheet value="{!$Resource.bootstrap_theme_css}"/>
+    
+    <apex:includeScript value="{!$Resource.CWAutoComplete}"/>
+    <apex:includeScript value="/support/console/35.0/integration.js"/>
+    <apex:includeScript value="{!$Resource.CWConsole}"/>
+    <apex:includeScript value="{!$Resource.jQuery}"/>
+    <apex:includeScript value="{!$Resource.bootstrap}"/>
+    <style>
+        .spinner {
+        position:    fixed;
+        top:         50%;
+        left:        50%;
+        margin-top:  -150px;
+        margin-left: -175px;
+        font-size:   1200%;
+        }
+        
+        .indent {
+        margin-left: 1in;
+        }
+        .label-style {
+        text-align:  right;
+        }
+    </style>
+    
+    <script>
+    
+    var errorFound = false;
+    window.onerror = function(msg, url, line, col, error) {
+        if(errorFound == false) {
+            alert('error ' + msg + ' - ' + line);
+        }
+        errorFound = true;
+    }
+    
+    var treeData = '{!JSENCODE(dataJson)}';
+    
+    var parsedTreeData = JSON.parse(treeData);
+    
+    $("form").bind("keypress", function (e) {
+        if (e.keyCode == 13) {
+            $("#btnSearch").attr('value');
+            //add more buttons here
+            return false;
+        }
+    });
+    
+    var console = CWConsole({subTabTitle: 'Complaint Codes'});
+    
+    function assignComplaintLocations(input, locationCodes) {
+        var locations = input.parentNode.parentNode.nextSibling.nextSibling.firstChild;
+        
+        locations.value = '';
+        while ( locations.lastChild ) {
+            locations.removeChild( locations.lastChild );
+        }
+        
+        if(locationCodes && locationCodes!= '') {
+            var options2 = locationCodes.split(',');
+            
+            if(options2.length > 1) {
+                var newOption           = document.createElement( "OPTION" );
+                newOption.innerHTML     = '-- select one --';
+                newOption.value         = '';
+                newOption.selected      = true;
+                newOption.style.display = 'block';
+                locations.appendChild( newOption );
+            }
+            
+            var optionIndex2;
+            for(optionIndex2 = 0; optionIndex2 < options2.length && options2[optionIndex2] != null; optionIndex2++) {
+                var newOption           = document.createElement( "OPTION" );
+                newOption.innerHTML     = options2[optionIndex2].trim();
+                newOption.value         = options2[optionIndex2].trim();
+                newOption.selected      = false;
+                newOption.style.display = 'block';
+                locations.appendChild( newOption );
+            }
+        }
+    }
+    
+    function getTreeNodeByLabel(treenodes, label) {
+        if(label == null || label == '') {
+            return null;
+        }
+        if(treenodes != null) {
+            var i;
+            
+            for(i = 0; i < treenodes.length; i++) {
+                var treenode = treenodes[i];
+                if(treenode == null) {
+                    return null;
+                }
+                if(treenode.display == label) {
+                    return treenode;
+                }
+                
+                var result = getTreeNodeByLabel(treenode.children, label);
+                if(result != null) {
+                    return result;
+                }
+            }
+        }
+        
+        return null;
+    }
+    
+    function showDeltaFields(lookup) {
+        
+        /*var input = document.getElementById("complaintcodes").previousElementSibling;
+            var tbody = input.parentNode.parentNode.parentNode.parentNode;
+
+            var treenode = getTreeNodeByLabel(parsedTreeData, input != null ? input.value : input);
+            var showDelta = treenode != null && treenode.isDeltaCode;
+            var showDisability = treenode != null && treenode.showDisabilityCode;
+            var isSpecialPsrCase = {!IF(isSpecialPsrCase, 'true', 'false')};
+
+            if(showDelta) {
+                $(tbody.children[1].children[2]).show();
+                $(tbody.children[1].children[3]).show();
+                $(tbody.children[2].children[2]).show();
+                $(tbody.children[2].children[3]).show();
+            } else {
+                $(tbody.children[1].children[2]).hide();
+                $(tbody.children[1].children[3]).hide();
+                $(tbody.children[2].children[2]).hide();
+                $(tbody.children[2].children[3]).hide();
+            }
+
+            if(showDisability) {
+                $(tbody.children[3].children[0]).show();
+                $(tbody.children[3].children[1]).show();
+                $(tbody.children[3].children[2]).show();
+                $(tbody.children[3].children[3]).show();
+                $(tbody.children[4].children[2]).hide();
+                $(tbody.children[4].children[3]).hide();
+            } else {
+                $(tbody.children[3].children[0]).hide();
+                $(tbody.children[3].children[1]).hide();
+                $(tbody.children[3].children[2]).hide();
+                $(tbody.children[3].children[3]).hide();
+                $(tbody.children[4].children[2]).hide();
+                $(tbody.children[4].children[3]).hide();
+            }
+
+            if(isSpecialPsrCase) {
+                $(tbody.children[2].children[0]).hide();
+                $(tbody.children[2].children[1]).hide();
+                $(tbody.children[2].children[2]).hide();
+                $(tbody.children[2].children[3]).hide();
+                $(tbody.children[5].children[0]).hide();
+                $(tbody.children[5].children[1]).hide();
+                $(tbody.children[5].children[2]).hide();
+                $(tbody.children[5].children[3]).hide();
+            }
+
+            onChangeDisabilityGroup(tbody.children[3].children[1].children[0]);*/
+        }
+    
+    function setComplaintLocationOptions(a, control) {
+        
+        locationCheck();
+        /*if(!control) {
+              //  alert('no control '+control.tagName);
+                return;
+            }
+
+            if(control.tagName != 'INPUT') {
+                alert('wrong control ' + control.tagName);
+                return;
+            }
+
+            var selectList = document.getElementById("complaint-codes");
+
+            var optionIndex;
+            for(optionIndex = 0; optionIndex < selectList.options.length; optionIndex++ ) {
+                var option = selectList.options[optionIndex];
+                if(option.value == a && option.innerHTML.indexOf("\n") >= 0) {
+                    var locationCodes = option.innerHTML.split("\n");
+                    if(locationCodes && locationCodes.length > 1 && locationCodes[1] && locationCodes[1].trim() != "") {
+                        assignComplaintLocations(control, locationCodes[1]);
+                        showDeltaFields(true);
+                    } else {
+                        assignComplaintLocations(control, null);
+                        showDeltaFields(false);
+                    }
+                }
+            }*/
+        }
+    
+    var complaintList   = CWAutoComplete({showAllOptions: true, autoSelect: false, multiMatch: true, selectFunction: setComplaintLocationOptions, splitRegExp: "[-\\s]" });
+    var ComplaintCity = CWAutoComplete({showAllOptions: true, autoSelect: false, multiMatch: true});
+    var Disability = CWAutoComplete({showAllOptions: true, autoSelect: false, multiMatch: true});
+    var DisabilityCode = CWAutoComplete({showAllOptions: true, autoSelect: false, multiMatch: true});
+    
+    $(document).ready(function() {
+        
+        //var input = document.getElementById("complaintcodes").previousElementSibling;
+        //assignComplaintLocations(input, null);
+        showDeltaFields(false);
+    });
+    </script>
+    
+    <script>
+    var ccListMode = true;
+    
+    function makeLabel(li, treenode) {
+        if(!treenode) {
+            return;
+        }
+        
+        var a = document.createElement("a");
+        
+        if(treenode.hover) {
+            a.href      = '#';
+            a.title     = treenode.hover;
+            a.innerHTML = treenode.label;
+            a.onclick   = function() { setCC(treenode); };
+            a.treenode  = treenode;
+            // data-toggle="tooltip" 
+        } else {
+            a.href      = '#';
+            a.innerHTML = treenode.label;
+            a.onclick   = function() { toggleBranch(a); };
+            a.treenode  = treenode;
+        }
+        
+        li.appendChild(a);
+    }
+    
+    function makeList(uli, treenodes, top) {
+        var i, s = '';
+        
+        if(treenodes && treenodes.length > 0) {
+            var ul = document.createElement("ul");
+            if(top <= 0) ul.class = "collapse";
+            uli.appendChild(ul);
+            
+            for(i = 0; i < treenodes.length; i++) {
+                var treenode = treenodes[i];
+                var li = document.createElement("li");
+                makeLabel(li, treenode);
+                makeList(li, treenode.children, top - 1);
+                ul.appendChild(li);
+            }
+        }
+    }
+    
+    function showTree(inputElement) {
+        var complaintCodesDivElement = document.getElementById("complaintcodes");
+        $(complaintCodesDivElement).empty();
+        makeList(complaintCodesDivElement, parsedTreeData, 1);
+    }
+    
+    function hideTree() {
+        var complaintCodesDivElement = document.getElementById("complaintcodes");
+        $(complaintCodesDivElement).empty();
+    }
+    
+    function removeAllEventListeners(obj) {
+        if ( typeof obj._eventListeners == 'undefined' || obj._eventListeners.length == 0 ) {
+            return; 
+        }
+        
+        for(var i = 0, len = obj._eventListeners.length; i < len; i++) {
+            var e = obj._eventListeners[i];
+            obj.removeEventListener(e.event, e.callback);
+        }
+        
+        obj._eventListeners = [];
+    }
+    
+    function adjust(element) {
+        var rootElement       = element.parentNode.parentNode;
+        var listButtonElement = document.getElementById("listButton");
+        var treeButtonElement = document.getElementById("treeButton");
+        
+        var complaintCodesDivElement = document.getElementById("complaintcodes");
+        var inputElement             = complaintCodesDivElement.previousElementSibling;
+        
+        if(element.id == "listButton") {
+            if(!$(listButtonElement).hasClass("toggleSelect")) {
+                $(listButtonElement).addClass("toggleSelect");
+                $(treeButtonElement).removeClass("toggleSelect");
+                ccListMode = true;
+                hideTree();
+            }
+        }
+        if(element.id == "treeButton") {
+            if(!$(treeButtonElement).hasClass("toggleSelect")) {
+                $(treeButtonElement).addClass("toggleSelect");
+                $(listButtonElement).removeClass("toggleSelect");
+                ccListMode = false;
+                showTree(element);
+                
+                if(inputElement) {
+                    removeAllEventListeners(inputElement);
+                    inputElement.onkeyup = doonkeyup;
+                }
+            }
+        }
+    }
+    
+    function toggleClass(node, className) {
+        var jqnode = $(node);
+        
+        /* if(jqnode.hasClass(className)) {
+                jqnode.removeClass(className);
+            } else {
+                jqnode.addClass(className);
+            }*/
+        }
+    
+    function toggleBranch(node) {
+        if(node.parentNode.tagName == 'LI') {
+            var i;
+            for(i = 0; i < node.parentNode.children.length; i++) {
+                var child = node.parentNode.children[i];
+                if(child.tagName == "UL") {
+                    toggleClass(child, "collapse");
+                }
+            }
+        }
+        return false;
+    }
+    
+    function setCC(treenode) {
+        var input = document.getElementById("complaintcodes").previousElementSibling;
+        input.value = treenode.display;
+        assignComplaintLocations(input, treenode.locations);
+        showDeltaFields(true);
+    }
+    
+    var hits = 0;
+    
+    function walkTree(element, filterPattern) {
+        var matchingPassToRoot = false;
+        
+        if(!element) {
+            return matchingPassToRoot;
+        }
+        
+        if(element.children) {
+            var i;
+            for(i = 0; i < element.children.length; i++) {
+                var child = element.children[i];
+                if(child.tagName == 'A') {
+                    if(filterPattern && child.treenode) {
+                        var lctext = (!child.textContent ? '' : child.textContent);
+                        if(filterPattern.test(child.treenode.display)) {
+                            matchingPassToRoot = true;
+                            $(child).addClass("textmatch");
+                        } else {
+                            $(child).removeClass("textmatch");
+                        }
+                    } else {
+                        $(child).removeClass("textmatch");
+                    }
+                } else {
+                    if(walkTree(child, filterPattern)) {
+                        matchingPassToRoot = true;
+                    }
+                }
+            }
+        }
+        if(element.tagName == 'UL') {
+            if(!filterPattern || matchingPassToRoot) {
+                $(element.parentNode).removeClass("nomatchhide");
+            } else {
+                $(element.parentNode).addClass("nomatchhide");
+            }
+        }
+        return matchingPassToRoot;
+    }
+    
+    function makeMatcher(base) {
+        if(!base)
+            return null;
+        var base2 = base.replace( /([.*+?^=!:${}()|[\]\/\\])/g, ' ' );
+        if(base2.trim() == '')
+            return null;
+        
+        var parts = base.split(" ");
+        var i;
+        var pattern = '';
+        for(i = 0; i < parts.length; i++) {
+            if(parts[i] && parts[i] != '')
+                pattern += '(?=^' + parts[i] + '|.* ' + parts[i] + '|.*-' + parts[i] + ')';
+        }
+        
+        return new RegExp( pattern, 'i' );;
+    }
+    
+    function rematchTree() {
+        if(ccListMode) {
+            return;
+        }
+        
+        var root      = document.getElementById("complaintcodes");
+        var input     = root.previousElementSibling;
+        var toMatch   = makeMatcher(input.value);
+        
+        walkTree(root, toMatch);
+        return false;
+    }
+    
+    function doonfocus(event) {
+        if(ccListMode) {
+            complaintList.focus(event, 'complaint-codes', {});
+        } else {
+        }
+    }
+     function doonkeyup() {
+        /*if(ccListMode) {
+            
+        } else {
+            
+            rematchTree();
+        }*/
+    }
+    
+   /* var presentGroups = [
+        "Refusal to Board Passenger",
+        "Refusal to Board w/o Attendant",
+        "Security Issues Regarding Disability",
+        "Aircraft Not Accessible",
+        "Airport Not Accessible",
+        "Advance Notice Dispute",
+        "Seating Accommodation",
+        "Failure to Provide Assistance",
+        "Damage to Assistive Device",
+        "Storage and Delay of Assistive Device",
+        "Service Animal Problem",
+        "Unsatisfactory Info.",
+        "Other"
+    ];
+    var absentGroups = [
+        "No DOT Code"
+    ];
+    var presentCodes = [
+        "Vision Impaired",
+        "Hearing Impaired",
+        "Vision & Hearing Impaired",
+        "Paraplegic",
+        "Quadriplegic",
+        "Other Wheelchair",
+        "Oxygen",
+        "Stretcher",
+        "Other Disability",
+        "Other Assistive Device",
+        "Mentally Impaired",
+        "Communicable Disease",
+        "Allergies",
+    ];
+        var absentCodes = [
+        "Case is greater than 45 days",
+        "Telephone case",
+        "No flight info",
+        "Other",
+    ];*/
+    
+    function setSelectOptions(control, values) {
+        $(control).empty();
+        
+        var opt = document.createElement('option');
+        opt.innerHTML = '--None--';
+        opt.value = '';
+        control.appendChild(opt);
+        
+        var i;
+        for(i = 0; i < values.length; i++) {
+            var opt = document.createElement('option');
+            opt.innerHTML = values[i];
+            opt.value = values[i];
+            control.appendChild(opt);
+        }
+    }
+    
+    function inList(str, listOfStrs) {
+        var i;
+        for(i = 0; i < listOfStrs.length; i++ ) {
+            if(str == listOfStrs[i])
+                return true;
+        }
+        return false;
+    }
+    
+    function onChangeDisabilityGroup(groupControl) {
+        var codeControl = groupControl.parentNode.parentNode.children[3].children[0];
+        if(inList(groupControl.value, presentGroups)) {
+            codeControl.value = null;
+            setSelectOptions(codeControl, presentCodes);
+        } else if(inList(groupControl.value, absentGroups)) {
+            codeControl.value = null;
+            setSelectOptions(codeControl, absentCodes);
+        } else {
+            codeControl.value = null;
+        }
+        onChangeDisabilityCode(codeControl);
+    }
+    
+    function onChangeDisabilityCode(codeControl) {
+        var trControl = codeControl.parentNode.parentNode.nextSibling;
+        if(codeControl.value == 'Other') {
+            $(trControl.children[2]).show();
+            $(trControl.children[3]).show();
+        } else {
+            $(trControl.children[2]).hide();
+            $(trControl.children[3]).hide();
+        }
+    }
+    
+    function setSelected(selectedComp,level)
+    {
+        
+        selectedComp.style.backgroundColor = "#778899";
+        levelSet(selectedComp.innerHTML.trim(),level);
+        return false;
+    }
+    
+    function appearbrowseDiv(selctedVal)
+    {
+        if(selctedVal.value == 'BrowseCategories'){
+            
+            document.getElementById('browseDiv').style.display = '';
+            document.getElementById('page:form:pageblock:searchText').style.display='none';
+            document.getElementById('outputText').style.display='inline-block';
+        }
+        else{
+            
+            document.getElementById('browseDiv').style.display = 'none';
+            document.getElementById('page:form:pageblock:searchText').style.display='inline-block';
+            document.getElementById('outputText').style.display='none';
+        }
+    }
+    
+    function disableButton(buton)
+    {
+        buton.disabled = true;
+    }
+    
+    function closeIframe(idValue)
+    {
+        if(idValue == 'noValue'){
+            document.getElementById('page:abovepop').style.display = 'none';
+            document.getElementById('page:outerLayer').style.display = 'none';
+        }
+        else{
+            assignValue(idValue);
+        }
+    }
+    function closeRespIframe(idValue)
+    {
+        
+        
+        if(idValue == 'noValue'){
+            document.getElementById('page:abovepopResp').style.display = 'none';
+            document.getElementById('page:outerLayerResp').style.display = 'none';
+        }
+        else{
+            
+            assignValueResp(idValue);
+        }
+    }
+    
+    function redirectConsole(complaintId)
+    {
+        
+        
+        if (sforce.console.isInConsole()){
+            
+            sforce.console.openPrimaryTab(null,'/'+complaintId, true);
+        }
+        else{
+            
+            window.open('/'+complaintId,'_top');
+        }
+        
+    }
+    
+    <!-- VL - TEST CLOSE TAB FEATURE -->
+        
+        var callback = function () {
+            if (result.error) {
+                alert("Error message is " + result.error);
+            }
+        };
+    
+    function CloseTab() {
+        sforce.console.getEnclosingPrimaryTabId(refreshPrimaryTab); 
+        sforce.console.getEnclosingTabId(closeSubtab);
+    }
+    
+    function RefreshTab() {
+        sforce.console.getEnclosingPrimaryTabId(refreshPrimaryTab); 
+    }
+    
+    var closeSubtab = function closeSubtab(result) {
+        var tabId = result.id;
+        sforce.console.closeTab(tabId, callback);
+    };
+    
+    var refreshPrimaryTab = function showTabId(result) {
+        var tabId = result.id;
+        sforce.console.refreshPrimaryTabById(tabId, callback);
+    };
+    
+    RefreshTab();
+    <!-- VL - TEST CLOSE TAB FEATURE -->
+        </script>
+    
+    <style>
+        .tree, .tree ul {
+        margin:0;
+        padding:0;
+        list-style:none
+        }
+        .tree ul {
+        margin-left:1em;
+        position:relative
+        }
+        .tree ul ul {
+        margin-left:.5em
+        }
+        .tree ul:before {
+        content:"";
+        /* display:block; */
+        width:0;
+        position:absolute;
+        top:0;
+        bottom:0;
+        left:0;
+        border-left:1px solid
+        }
+        .tree li {
+        margin:0;
+        padding:0 1em;
+        line-height:2em;
+        color:#369;
+        font-weight:700;
+        position:relative
+        }
+        .tree ul li:before {
+        content:"";
+        /* display:block; */
+        width:10px;
+        height:0;
+        border-top:1px solid;
+        margin-top:-1px;
+        position:absolute;
+        top:1em;
+        left:0
+        }
+        .tree ul li:last-child:before {
+        background:#fff;
+        height:auto;
+        top:1em;
+        bottom:0
+        }
+        .indicator {
+        margin-right:5px;
+        }
+        .tree li a {
+        text-decoration: none;
+        color:#369;
+        }
+        .tree li button, .tree li button:active, .tree li button:focus {
+        text-decoration: none;
+        color:#369;
+        border:none;
+        background:transparent;
+        margin:0px 0px 0px 0px;
+        padding:0px 0px 0px 0px;
+        outline: 0;
+        }
+        
+        .toggleSelect {
+        background-image: none !important;
+        background-color: LightGreen !important;
+        }
+        .collapse {
+        display: none;
+        }
+        .textmatch {
+        background-color: yellow;
+        }
+        .nomatchhide {
+        display: none;
+        }
+    </style>
+    <style type="text/css">
+        
+        .popup
+        {
+        background-color: white;
+        //border-width: 2px;
+        border-style: solid;
+        z-index: 9999;
+        left: 20%;
+        padding: 0px;
+        position: absolute;
+        width: 1006px;
+        height: 510px;
+        margin-left: -50px;
+        top: 20px;
+        
+        }
+        .closeImage
+        {
+        z-index: 10000;
+        width: 50px;
+        height: 50px;
+        }   
+        .popupBg
+        {
+        background-color:black;
+        opacity: 0.20;
+        filter: alpha(opacity = 70);
+        position: absolute;
+        width: 100%;
+        height: 1500px;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        z-index: 9998;
+        }
+        
+    </style>
+    
+    <apex:pageMessages id="pageMessage"/>
+    
+    <apex:form id="form">
+        <div class="slds">
+            <apex:outputPanel id="topPanel">
+                <div class="slds-page-header" role="banner">
+                    <div class="slds-media">
+                        <div class="slds-media__figure">
+                            <div aria-hidden="true" class="slds-icon slds-icon--large slds-icon-standard-user">
+                                <img class="flightlegBkgrd" src="{!URLFOR($Resource.SLDS, 'assets/icons/custom/custom94_120.png')}"/>
+                            </div>
+                        </div>
+                        <div class="slds-media__body">
+                            <h1 class="slds-text-heading--medium">
+                                Complaint Codes
+                            </h1> 
+                            <!-- <apex:outputPanel rendered="{!hasPnr}">
+<apex:outputText value="PNR {!pnr}" /> &bull;&nbsp;
+</apex:outputPanel>
+<apex:outputPanel rendered="{!hasCaseId}">
+<apex:outputText value="Case " />
+<a style="color:#0000ff" target="_tab" href="{!URLFOR($Action.Case.View,topCaseId)}">{!caseNumber}</a>
+</apex:outputPanel>
+<apex:outputPanel rendered="{!hasContactName}">
+&bull;
+<a style="color:#0000ff" target="_tab" href="{!URLFOR($Action.Contact.View,contactId)}">{!contactName}</a>
+</apex:outputPanel>
+<apex:outputPanel rendered="{!hasComplaintCity}">
+&bull;&nbsp; <apex:outputText value="{!complaintCity}" />
+</apex:outputPanel>
+<apex:outputPanel rendered="{!hasSkyMilesNumber}">
+&bull;&nbsp; <apex:outputText value="Sky Miles {!skyMilesNumber}" />
+</apex:outputPanel> -->                            
+                        </div>
+                    </div>
+                </div>
+            </apex:outputPanel>
+        </div>
+        
+        <div class="slds" id="NewComplaintCodeBlock">
+            <fieldset class="slds-box slds-theme--default slds-container--xlarge">
+                <legend id="NewComplaintCodeBlockLegend" class="slds-text-heading--medium slds-p-vertical--medium">
+                    <span class="slds-text-heading--medium">New Complaint Code</span>
+                </legend>
+                
+                
+                
+                
+                <apex:pageBlock id="pageblock">
+                    <div class="slds-grid"> 
+                        <div style="display:inline-block;border-radius:0px;width:30%" styleClass="slds-col;slds-select_container">
+                            <apex:selectList value="{!searchType}" size="1" onchange="appearbrowseDiv(this);" styleclass="slds-box" style="border-radius: 0px;width:100%">
+                                <apex:selectOption itemLabel="Search Complaint Code" itemValue="searchComplainCode"/>
+                                <apex:selectOption itemLabel="Browse Categories" itemValue="BrowseCategories"/>
+                            </apex:selectList>
+                        </div>
+                        <apex:inputText id="searchText" value="{!newComplaintDescription}" onfocus="doonfocus(event);" onkeyup="doonkeyup();" styleClass="slds-col;slds-box" style="border-radius:0px;display:inline-block;width:70%" html-autocomplete="off"/>
+                        
+                        <div class=" slds-col slds-box slds-box--small" style="display:none;text-align:center;border-radius: 0px; width:70%" id="outputText">
+                            <apex:outputText value="Browse Categories and Select a Complaint Code"/>
+                        </div>
+                    </div>
+                    
+                    <div style='display:none' id='browseDiv' class="slds-grid">
+                        <div class="slds-col slds-small-size--1-of-5" style="display: inline-block;width:25%">
+                            <apex:outputPanel id="selectList">
+                                <div class="slds-box" id="complaintcodesBrowse" style="height: 200px;overflow: scroll">
+                                    <apex:repeat value="{!level1}" var="lev1" id="rep1">
+                                        <apex:outputlabel value="{!lev1}" style="cursor:pointer;width: 100%;background-color:{!IF(selectedLevel1 == lev1,'#778899','')};" onclick="setSelected(this,'level1');" id="level1"/><br/>
+                                    </apex:repeat>
+                                </div>
+                            </apex:outputPanel></div>
+                        <div class="slds-col slds-small-size--1-of-5" style="display: inline-block;width:25%">
+                            <apex:outputPanel id="selectList1">
+                                <apex:outputPanel rendered="{!lev2}">
+                                    <div class="slds-box" id="complaintcodes1" style="height: 200px;overflow: scroll">
+                                        
+                                        <apex:repeat value="{!level2val}" var="lev1" id="rep2">
+                                            <apex:outputlabel value="{!lev1}" style="cursor:pointer;width: 100%;background-color:{!IF(selectedLevel2 == lev1,'#778899','')}" onclick="setSelected(this,'level2');" id="level1"/><br/>
+                                        </apex:repeat>
+                                    </div></apex:outputPanel>
+                            </apex:outputPanel>
+                        </div>
+                        <div class="slds-col slds-small-size--1-of-5" style="display: inline-block;width:25%">
+                            <apex:outputPanel id="selectList2">
+                                <apex:outputPanel rendered="{!lev3}">
+                                    <div class="slds-box" id="complaintcodesBrowse" style="height: 200px;overflow: scroll;">
+                                        <apex:repeat value="{!level3val}" var="lev1" id="rep3">
+                                            <apex:outputlabel value="{!lev1}" style="cursor:pointer;width:100%;background-color:{!IF(selectedLevel3 == lev1,'#778899','')}" onclick="setSelected(this,'level3')" id="level1"/><br/>
+                                        </apex:repeat>
+                                    </div></apex:outputPanel>
+                            </apex:outputPanel></div>
+                        <div class="slds-col slds-small-size--1-of-5" style="display: inline-block;width:25%">
+                            <apex:outputPanel id="selectList3">
+                                <apex:outputPanel rendered="{!lev4}">
+                                    <div class="slds-box slds-box--small" id="complaintcodesBrowse" style="height: 200px;overflow: scroll; ">
+                                        <apex:repeat value="{!level4val}" var="lev1" id="rep4">
+                                            <apex:outputlabel value="{!lev1}" style="cursor:pointer;width: 100%;background-color:{!IF(selectedLevel4 == lev1,'#778899','')}" onclick="setSelected(this,'level4')" id="level1"/><br/>
+                                        </apex:repeat>
+                                    </div>
+                                </apex:outputPanel>
+                                <apex:outputPanel rendered="{!IF(lev5 == 'lev4',true,false)}">
+                                    <div class="slds-box" id="complaintcodesBrowse" style="height: 200px; width: 100%; overflow: scroll;display: inline-block; ">
+                                        <apex:outputlabel value="Complaint Code" style="font-weight: bold; text-align:center;"/><br/><br/>
+                                        <apex:outputtext value="{!description}"/>
+                                        <apex:commandButton value="Select Code" action="{!selectCode}" rerender="inputValue" style="margin-left:25%;margin-top: 60%;" onclick="disableButton(this);"/>
+                                    </div>
+                                </apex:outputpanel>
+                            </apex:outputPanel>
+                        </div>
+                        <!--<div class="slds-col slds-small-size--1-of-5" style="display: inline-block;width:20%">
+<apex:outputPanel id="Description">
+<apex:outputPanel rendered="{!IF(lev5 == 'true',True,False)}">
+
+<div class="slds-box" id="complaintcodesBrowse" style="height: 200px; width: 100%; overflow: scroll;display: inline-block; ">
+
+<apex:outputtext value="{!description}"/>
+<apex:commandButton value="Select Code" action="{!selectCode}" rerender="inputValue" style="margin-left:25%;margin-top: 60%;"/>
+</div>
+</apex:outputPanel>
+<apex:outputPanel rendered="{!IF(lev5 == 'Not True',True,False)}">
+<div class="slds-box" id="complaintcodesBrowse" style="height: 200px; width: 100%; overflow: scroll;display: inline-block; ">
+<apex:outputtext value="No Description Available"/>
+<apex:commandButton value="Select Code" action="{!selectCode}" rerender="dummy" style="margin-left:25%;margin-top: 60%;" onclick="disableButton(this);"/>
+</div>
+</apex:outputPanel>
+
+</apex:outputPanel>
+</div>-->
+                    </div>
+                    <apex:outputPanel id="dummy"/>
+                    <div class="slds-grid">
+                        
+                        <div class=" slds-col slds-small-size--1-of-4 slds-box slds-box--small" style="display:inline-block;text-align:center;border-radius: 0px;width:25%">
+                            <apex:outputText value="Flight"/>
+                        </div>
+                        <div styleClass="slds-form-element slds-lookup" data-select="single" style="display:inline-block;width:25%" >
+                            <div styleClass="slds-size--1-of-4 " style="width:100%">
+                                <div styleclass="slds-col" style="border:1px solid #DADADA;background-color:white;height:54px;">
+                                    <apex:inputtext value="{!flightName}" styleClass="slds-box" style="border: none; width:90%;" id="flightValue">
+                                        <apex:image url="{!URLFOR($Resource.SLDS, '/assets/icons/utility/search_120.png')}" width="20" height="20" styleclass="slds-input__icon" style="cursor:pointer;position: absolute;border: none;background-color:white;margin-left:22%;margin-top:1%" onclick="enablePopup();"/>
+                                    </apex:inputtext>
+                                </div>
+                            </div>
+                        </div>
+                        <div class=" slds-col slds-small-size--1-of-4 slds-box" style="display:inline-block;text-align:center;border-radius: 0px;width:25%">
+                            <apex:outputText value="Complaint City"/>
+                        </div>
+                        <div style="width:25%">
+                            <apex:inputField value="{!caseComplaint.Complaint_City__c}" onfocus="ComplaintCity.focus(event, 'City-codes', {});" html-autocomplete="off" styleClass="slds-box slds-col slds-small-size--1-of-4" style="display: inline-block;border-radius:0px;width:100%;height:56px;"/>
+                        </div>
+                        <!--<div style="display:inline-block;border-radius: 0px;width:25%" styleClass="slds-col slds-select_container;slds-small-size--1-of-4">
+<apex:selectList value="{!newFlightLegId}" multiselect="false" size="1" styleclass="slds-box" style="border-radius: 0px;width:100%">
+<apex:selectOptions value="{!flightLegs}" />
+</apex:selectList>
+</div>-->
+                        
+                    </div>
+                    <div class="slds-grid">
+                        <div class=" slds-col slds-box slds-box--small" style="display:inline-block;text-align:center;border-radius: 0px; width:25%">
+                            <apex:outputText value="Complaint Location"/>
+                        </div>
+                        <div style="display:inline-block;border-radius:0px; width:25%" styleClass="slds-col slds-select_container;slds-small-size--1-of-4">
+                            <apex:selectList value="{!newComplaintLocation}" multiselect="false" size="1" styleclass="slds-box slds-box--medium" style="border-radius: 0px;width:100%" id="ComplaintLocation">
+                                <apex:selectOptions value="{!ComplaintLocations}" />
+                            </apex:selectList>
+                        </div>
+                        
+                        <!--<div class=" slds-col slds-small-size--1-of-4 slds-box slds-box--small" style="display:inline-block;text-align:center;border-radius: 0px;width:25%">
+<apex:outputText value="Airport Location"/>
+</div>
+
+<div style="display:inline-block;border-radius: 0px;width:25%" styleClass="slds-col slds-select_container;slds-small-size--1-of-4">
+<apex:selectList value="{!newFlightLegAirport}" multiselect="false" size="1" styleclass="slds-box" style="border-radius: 0px;width:100%">
+<apex:selectOptions value="{!AirportLocations}" />
+</apex:selectList>
+</div>-->
+                        <!--<div class=" slds-col slds-small-size--1-of-4 slds-box slds-box--small" style="display:inline-block;text-align:center;border-radius: 0px;width:25%">
+<apex:outputText value="Disability Group"/>
+</div>
+<div style="display:inline-block;width:25%" styleClass="slds-col slds-select_container slds-small-size--1-of-4">
+<apex:inputField value="{!caseComplaint.Disability_Group__c}" onchange="onChangeDisabilityCode(this);" styleClass="slds-box" style="border-radius: 0px;width:100%"/>
+</div>
+</div>
+<div class="slds-grid">
+<div class=" slds-col slds-small-size--1-of-4 slds-box slds-box--small" style="display:inline-block;text-align:center;border-radius: 0px;">
+<apex:outputText value="Disability Code"/>
+</div>
+<div style="display:inline-block;width:25%" styleClass="slds-col slds-select_container slds-small-size--1-of-4">
+<apex:inputField value="{!caseComplaint.Disability_Code__c}" onchange="onChangeDisabilityCode(this);" styleClass="slds-box" style="border-radius: 0px;width:100%"/>
+</div>
+<div styleClass="slds-col slds-small-size--2-of-4 slds-box slds-box--small" style="display:inline-block;border-radius:0px;width:50%"/>
+</div>
+<div styleclass="slds-grid">
+<div class=" slds-col slds-size--1-of-4 slds-box" style="display:inline-block;text-align:center;border-radius: 0px;width:25%">
+<apex:outputText value="Disability Code Other Reason"/>
+</div>
+
+<apex:inputtext value="{!caseComplaint.Disability_Code_Other_Reason__c}" styleClass="slds-box slds-col slds-size--1-of-4" style="display: inline-block;border-radius:0px;width:25%"/>
+-->
+                        
+                        <!-- <apex:outputText value="Responsible Party" styleclass=" slds-col slds-size--1-of-4 slds-box" style="display:inline-block;text-align:center;border-radius: 0px;"/>
+<apex:inputField value="{!caseComplaint.Responsible_Party__c}" styleClass="slds-box slds-col slds-size--1-of-4" style="display: inline-block;border-radius:0px;width:25%"/>
+-->
+                        <div class=" slds-col slds-small-size--1-of-4 slds-box slds-box--small" style="display:inline-block;text-align:center;border-radius: 0px;width:25%">
+                            <apex:outputText value="Responsible party"/>
+                        </div>
+                        <div styleClass="slds-form-element slds-lookup" data-select="single" style="display:inline-block;width:25%" >
+                            <div styleClass="slds-size--1-of-4 " style="width:100%">
+                                <div styleclass="slds-col" style="border:1px solid #DADADA;background-color:white;height:54px;">
+                                    <apex:inputtext value="{!responsiblePerson}" styleClass="slds-box" style="border: none; width:90%;" id="responsible">
+                                        <apex:image url="{!URLFOR($Resource.SLDS, '/assets/icons/utility/search_120.png')}" width="20" height="20" styleclass="slds-input__icon" style="cursor:pointer;position: absolute;border: none;background-color:white;margin-left:22%;margin-top:1%" onclick="enableResponsible();"/>
+                                    </apex:inputtext>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    
+                    <!-- Start Added by Anil -->
+                     <div class="slds-grid">
+                        
+                        <div class=" slds-col slds-small-size--1-of-4 slds-box slds-box--small" style="display:inline-block;text-align:center;border-radius: 0px;width:25%">
+                            <apex:outputText value="Operating Carrier Of Cabin Class"/>
+                        </div>
+                        <div styleClass="slds-form-element slds-lookup" data-select="single" style="display:inline-block;width:25%" >
+                            <apex:inputField value="{!caseComplaint.Operating_Carrier__c}" styleClass="slds-box slds-col slds-small-size--1-of-4" style="display: inline-block;border-radius:0px;width:100%;height:56px;">
+                                    <apex:actionSupport event="onchange" status="spin" rerender="CabinClass"/>
+                            </apex:inputField>
+                        </div>
+                        <div class=" slds-col slds-small-size--1-of-4 slds-box" style="display:inline-block;text-align:center;border-radius: 0px;width:25%">
+                            <apex:outputText value="Cabin Class"/>
+                        </div>
+                        <div style="width:25%">
+                            <apex:selectList id="CabinClass" multiselect="false" value="{!strCabinClass}" size="1" styleclass="slds-box slds-box--medium" style="display: inline-block;border-radius:0px;width:100%;height:56px;">
+                                <apex:selectOptions value="{!CabinClass}" />
+                            </apex:selectList>
+                           <!-- <apex:inputField value="{!caseComplaint.Cabin_Class__c}" styleClass="slds-box slds-col slds-small-size--1-of-4" style="display: inline-block;border-radius:0px;width:100%;height:56px;"/>
+                                -->
+                        </div>
+                    </div>
+                    <!-- End Added by Anil-->
+                    
+                   
+                   <apex:outputpanel rendered="{!IF(($Profile.Name == 'DOT Coordinator') || ($Profile.Name == 'Disability Coordinator'),true,false)}" >
+                    <div class="slds-grid">
+                    <div class=" slds-col slds-small-size--1-of-4 slds-box slds-box--small" style="display:inline-block;text-align:center;border-radius: 0px;width:25%">
+                            <apex:outputText value="DOT Disability Code"/>
+                    </div>
+                    <div style="display:inline-block;width:25%" styleClass="slds-col slds-select_container slds-small-size--1-of-4">
+                        <apex:inputText value="{!dotDiabilityCode}" onfocus="DisabilityCode.focus(event, 'Diability-codes', {});" html-autocomplete="off" styleClass="slds-box" style="border-radius: 0px;width:100%"/>
+                    </div>
+                    
+                    <div class=" slds-col" style="display:inline-block;width:50%"/>
+                   
+                    </div>
+                    </apex:outputpanel>
+                    
+                   
+                    
+                    <apex:pageBlockSection >
+                        <!-- <apex:pageBlockSectionItem>
+<apex:outputText value="Complaint Location" />
+<apex:selectList value="{!newComplaintLocation}" multiselect="false" size="1">
+<apex:selectOptions value="{!ComplaintLocations}" />
+</apex:selectList>
+</apex:pageBlockSectionItem>
+<apex:pageBlockSectionItem >
+<apex:outputText value="Flight" />
+<apex:selectList value="{!newFlightLegId}" multiselect="false" size="1">
+<apex:selectOptions value="{!flightLegs}" />
+</apex:selectList>
+</apex:pageBlockSectionItem>-->
+                        <!--<apex:pageBlockSectionItem >
+<apex:outputText value="Airport Location" />
+<apex:selectList value="{!newFlightLegAirport}" multiselect="false" size="1">
+<apex:selectOptions value="{!AirportLocations}" />
+</apex:selectList>
+</apex:pageBlockSectionItem>
+<apex:pageBlockSectionItem >
+<apex:outputText value="Disability Group" />
+<apex:inputField value="{!caseComplaint.Disability_Group__c}" onchange="onChangeDisabilityGroup(this);" />
+</apex:pageBlockSectionItem>
+<apex:pageBlockSectionItem >
+<apex:outputText value="Disability Code" />
+<apex:inputField value="{!caseComplaint.Disability_Code__c}" onchange="onChangeDisabilityCode(this);" />
+</apex:pageBlockSectionItem>
+<apex:pageBlockSectionItem >
+</apex:pageBlockSectionItem>
+<apex:pageBlockSectionItem >
+<apex:outputText value="Disability Code Other Reason" />
+<apex:inputField value="{!caseComplaint.Disability_Code_Other_Reason__c}" />
+</apex:pageBlockSectionItem>
+<apex:pageBlockSectionItem >
+<apex:outputText value="Complaint City" />
+<apex:inputField value="{!caseComplaint.Complaint_City__c}" />
+</apex:pageBlockSectionItem>
+<apex:pageBlockSectionItem >
+<apex:outputText value="Responsible Party" />
+<apex:inputField value="{!caseComplaint.Responsible_Party__c}" />
+</apex:pageBlockSectionItem>-->
+                    </apex:pageBlockSection>
+                    <br/> <apex:commandButton value="Add" action="{!clickAddComplaint}" styleClass="slds-button slds-button--brand slds-m-bottom--medium" rerender="form,pageMessage"/>
+                    <apex:commandButton value="Clear" action="{!clickResetComplaint}" styleClass="slds-button slds-button--brand slds-m-bottom--medium" rerender="form,pageMessage"/>
+                    
+                    <!-- VL - TEST CLOSE AND REFRESH FEATURE: -->
+                    <apex:CommandButton value="Close" onclick="CloseTab()"  styleClass="slds-button slds-button--brand slds-m-bottom--medium" />
+                    <!-- <apex:CommandButton value="Refresh" onclick="RefreshTab()" onComplete="return null" styleClass="slds-button slds-button--brand slds-m-bottom--medium"/>-->
+                    <!-- VL - TEST CLOSE AND REFRESH FEATURE: -->
+                    
+                    <!--
+<apex:outputLink value="/apex/ComplaintCodes" styleClass="slds-button slds-button--brand slds-m-bottom--medium" style="text-decoration: none; " >View All Complaint Codes</apex:outputLink>
+-->
+                </apex:pageBlock>
+            </fieldset>
+        </div>
+        
+        <div class="slds" id="flightLegsBlock">
+            <fieldset class="slds-box slds-theme--default slds-container--xlarge">
+                <legend id="searchWithCaseContacts" class="slds-text-heading--medium slds-p-vertical--medium">
+                    <span class="slds-text-heading--medium">Added Complaint Codes</span>
+                </legend>
+                
+                <apex:pageBlock >
+                    <div id="table-div">
+                        <table class="slds-table slds-table--bordered slds-no-row-hover slds-table--striped">
+                            <thead class="slds-text-heading--label">
+                                <tr>
+                                    <td>
+                                        Actions
+                                    </td>
+                                    <td>
+                                        Complaint
+                                    </td>
+                                    <td>
+                                        Flight
+                                    </td>
+                                    <td>
+                                        Operated Flight Number
+                                    </td>
+                                    <td>
+                                        Complaint City
+                                    </td>
+                                    <td>
+                                        Complaint Location
+                                    </td>
+                                    <td>
+                                        Responsible Party
+                                    </td>
+                                </tr>
+                            </thead>
+                            
+                            <tbody>
+                                <apex:repeat value="{!attachedComplaints}" var="complaint" >
+                                    <tr>
+                                        <td>
+                                            <apex:commandLink styleClass="slds-button slds-theme--info" action="{!clickRemoveComplaint}" value="Delete" rendered="{! complaint.canDelete}" reRender="form" >
+                                                <apex:param name="nickName" assignTo="{!complaintCodeId}" value="{!complaint.Id}" />
+                                            </apex:commandLink>
+                                            <!--<apex:outputLink styleClass="slds-button slds-theme--info" onclick="redirectConsole('{!complaint.Id}')">View</apex:outputLink>-->
+                                            <apex:outputlabel value="View" styleClass="slds-button slds-theme--info" style="cursor:pointer" onclick="redirectConsole('{!complaint.Id}')"></apex:outputlabel>
+                                        </td>
+                                        <td>
+                                           <!-- <a style="color:#0000ff" target="_tab" href="{!URLFOR($Action.Complaint_Code__c.View,complaint.complaintId)}">
+                                                <apex:outputText value="{!complaint.ComplaintDescription}" />
+                                            </a> -->
+                                            <apex:outputlink value="javascript:console.openNewSubTab('/{!complaint.complaintId}',
+                                             '{!complaint.ComplaintDescription}' );">
+                                                {!complaint.ComplaintDescription} 
+                                            </apex:outputlink>
+                                        </td>
+                                        <td>
+                                            <apex:outputPanel rendered="{!complaint.flightLegId != Null}">
+                                               <!-- <a style="color:#0000ff" target="_tab" href="{!URLFOR($Action.Flight_Leg__c.View,complaint.flightLegId)}">
+                                                    <apex:outputText value="{!complaint.flightLegName}" />
+                                                </a>  -->
+                                             <apex:outputlink value="javascript:console.openNewSubTab('/{!complaint.flightLegId}',
+                                             '{!complaint.flightLegName}' );">
+                                                {!complaint.flightLegName} 
+                                            </apex:outputlink>
+                                            </apex:outputPanel>                                            
+                                        </td>
+                                        <td>
+                                            <apex:outputText value="{!complaint.OperatedFlightNumber}" />
+                                        </td>
+                                        <td>
+                                            <apex:outputText value="{!complaint.ComplaintCity}" />
+                                        </td>
+                                        <td>
+                                            <apex:outputText value="{!complaint.ComplaintLocation}" />
+                                        </td>
+                                        <td>
+                                            <apex:outputText value="{!complaint.responsibleParty}" />
+                                        </td>
+                                    </tr>
+                                </apex:repeat>                    
+                            </tbody>
+                        </table>
+                    </div>
+                </apex:pageBlock>
+            </fieldset>
+        </div>
+        
+        <apex:actionFunction name="levelSet" action="{!levelSetting}" reRender="selectList,selectList1,selectList2,selectList3">
+            <apex:param name="selectedVal" value="" assignTo="{!selectedValue}"/>
+            <apex:param value="" name="Level" assignTo="{!level}"/>
+        </apex:actionFunction>
+        <apex:actionFunction name="enablePopup" action="{!displayPopup}" rerender="popup"/> 
+        <apex:actionFunction name="assignValue" action="{!assignValue}" rerender="flightValue,popup">
+            <apex:param name="received" value="" assignTo="{!receivedId}"/>
+        </apex:actionFunction>
+        <apex:actionFunction name="locationCheck" rerender="ComplaintLocation"/>
+        
+        <apex:actionFunction name="enableResponsible" action="{!displayResponsible}" reRender="resp"/>
+        <apex:actionFunction name="assignValueResp" action="{!assignResponsible}" rerender="responsible,resp">
+            <apex:param name="resp" value="" assignTo="{!respId}"/>
+        </apex:actionFunction> 
+    </apex:form>
+    <apex:outputPanel id="popup">
+        <apex:outputPanel styleClass="popupBg" layout="block" rendered="{!displayPopup}" id="outerLayer"/>
+        <apex:outputPanel rendered="{!displayPopup}" styleClass="popup" id="abovepop">
+            
+            <apex:image value="{!$Resource.close}" width="50" height="50" style="top:-25px;right:-25px;position:absolute;cursor:pointer;" onclick="closeIframe('noValue');"/>
+            <iframe src="apex/SkyFinderFlightLegPage?id={!caseId}" id="theIframe" style="border:none;width:1000px;height:500px">
+                
+            </iframe>
+            
+            <!--<apex:commandButton value="Hide" action="{!closePopup}" rerender="popup"/>-->
+        </apex:outputPanel>
+    </apex:outputPanel>
+    <apex:outputPanel id="resp">
+        <apex:outputPanel styleClass="popupBg" layout="block" rendered="{!displayResp}" id="outerLayerResp"/>
+        <apex:outputPanel rendered="{!displayResp}" styleClass="popup" id="abovepopResp">
+            
+            <apex:image value="{!$Resource.close}" width="50" height="50" style="top:-25px;right:-25px;position:absolute;cursor:pointer;" onclick="closeRespIframe('noValue');"/>
+            <iframe src="apex/SkyFinderEmployeePage?flightId={!receivedId}" id="theIframe" style="border:none;width:1000px;height:500px">
+                
+            </iframe>
+            
+            <!--<apex:commandButton value="Hide" action="{!closePopup}" rerender="popup"/>-->
+        </apex:outputPanel>
+    </apex:outputPanel>
+    <div style="display:none">
+        <select id="complaint-codes" >
+            <apex:repeat value="{!complaintCodesList2}" var="complaintCodes2">
+                <apex:repeat value="{!complaintCodes2}" var="complaintCode2">
+                    <option value="{!complaintCode2.value}">{!complaintCode2.label}</option>
+                </apex:repeat>
+            </apex:repeat>
+        </select>
+        <select id="City-codes" >
+            <apex:repeat value="{!airportCodes}" var="airportCode">
+                <option value="{!airportCode.value}">{!airportCode.label}</option>
+            </apex:repeat>
+            <!--<apex:repeat value="{!airportCodes1}" var="airportCode">
+<option value="{!airportCode.value}">{!airportCode.label}</option>
+</apex:repeat> -->
+            
+        </select>
+        <select id="Diability-codes" >
+            <apex:repeat value="{!disabilityCode}" var="disability">
+                    <option value="{!disability.value}">{!disability.label}</option>
+                
+            </apex:repeat>
+        </select>
+        
+    </div>
+    
+    
+    
+    
+  <div class="slds"><!-- SLDS wrapper div --> 
+            <apex:actionStatus id="spin">
+                <apex:facet name="stop" >
+                </apex:facet>
+                <apex:facet name="start" >
+                    <!-- spinner -->
+                    <div class="slds-spinner_container" style="z-index:1 !Important">
+                        <div class="slds-spinner--brandContact slds-spinner slds-spinner--large" aria-hidden="false" role="alert">
+                            <div class="slds-spinner__dot-a"></div>
+                            <div class="slds-spinner__dot-b"></div>
+                        </div>
+                    </div>    
+                </apex:facet>
+            </apex:actionStatus>
+        </div><!-- SLDS wrapper div --> 
+    
+</apex:page>

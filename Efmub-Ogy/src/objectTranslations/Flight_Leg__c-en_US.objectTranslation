@@ -1,0 +1,561 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Flight Leg</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Flight Legs</value>
+    </caseValues>
+    <fields>
+        <label><!-- Accumulated Time --></label>
+        <name>AccumulatedTime__c</name>
+    </fields>
+    <fields>
+        <label><!-- Actual Arrival GMT Time --></label>
+        <name>ActualArrivalGMTTime__c</name>
+    </fields>
+    <fields>
+        <label><!-- Actual Arrival Time --></label>
+        <name>ActualArrivalTime__c</name>
+    </fields>
+    <fields>
+        <label><!-- Actual Departure GMT Time --></label>
+        <name>ActualDepartureGMTTime__c</name>
+    </fields>
+    <fields>
+        <label><!-- Actual Departure Time --></label>
+        <name>ActualDepartureTime__c</name>
+    </fields>
+    <fields>
+        <label><!-- ActualInGMTTimestamp --></label>
+        <name>ActualInGMTTimestamp__c</name>
+    </fields>
+    <fields>
+        <label><!-- ActualInTimestamp --></label>
+        <name>ActualInTimestamp__c</name>
+    </fields>
+    <fields>
+        <label><!-- ActualOffGMTTimestamp --></label>
+        <name>ActualOffGMTTimestamp__c</name>
+    </fields>
+    <fields>
+        <label><!-- ActualOffTimestamp --></label>
+        <name>ActualOffTimestamp__c</name>
+    </fields>
+    <fields>
+        <label><!-- ActualOnGMTTimestamp --></label>
+        <name>ActualOnGMTTimestamp__c</name>
+    </fields>
+    <fields>
+        <label><!-- ActualOnTimestamp --></label>
+        <name>ActualOnTimestamp__c</name>
+    </fields>
+    <fields>
+        <label><!-- ActualOutGMTTimestamp --></label>
+        <name>ActualOutGMTTimestamp__c</name>
+    </fields>
+    <fields>
+        <label><!-- ActualOutTimestamp --></label>
+        <name>ActualOutTimestamp__c</name>
+    </fields>
+    <fields>
+        <label><!-- Actual Arrival Date/Time --></label>
+        <name>Actual_Arrival_Date_Time_calc__c</name>
+    </fields>
+    <fields>
+        <label><!-- Actual Departure Date/Time --></label>
+        <name>Actual_Departure_Date_Time_calc__c</name>
+    </fields>
+    <fields>
+        <label><!-- Actual Duration --></label>
+        <name>Actual_Duration__c</name>
+    </fields>
+    <fields>
+        <help><!-- Actual Taxi in Minute Count reflects the actual time in minutes from Wheels On Time (wheels on the runway) to Gate In Time. --></help>
+        <label><!-- Actual Taxi In (Min) --></label>
+        <name>Actual_Taxi_In__c</name>
+    </fields>
+    <fields>
+        <help><!-- Actual Taxi Out Minute Count reflects the actual time in minutes from Gate Out Time to Wheels Off Time (wheels off the runway). --></help>
+        <label><!-- Actual Taxi Out (Min) --></label>
+        <name>Actual_Taxi_Out__c</name>
+    </fields>
+    <fields>
+        <label><!-- Alerts --></label>
+        <name>Alerts__c</name>
+    </fields>
+    <fields>
+        <label><!-- Arrival Airport --></label>
+        <name>ArrivalAirport__c</name>
+    </fields>
+    <fields>
+        <label><!-- ArrivalDelay --></label>
+        <name>ArrivalDelay__c</name>
+    </fields>
+    <fields>
+        <label><!-- Arrival GMT Difference --></label>
+        <name>ArrivalGMTDifference__c</name>
+    </fields>
+    <fields>
+        <help><!-- Actual arrival gate --></help>
+        <label><!-- Arrival Gate ID --></label>
+        <name>ArrivalGateID__c</name>
+    </fields>
+    <fields>
+        <label><!-- Arrival State Code --></label>
+        <name>ArrivalStateCode__c</name>
+    </fields>
+    <fields>
+        <label><!-- Arrival Delay (Min) --></label>
+        <name>Arrival_Delay__c</name>
+    </fields>
+    <fields>
+        <label><!-- BoardCityCancelledIndicator2 --></label>
+        <name>BoardCityCancelledIndicator2__c</name>
+    </fields>
+    <fields>
+        <label><!-- BoardCityCancelledIndicator --></label>
+        <name>BoardCityCancelledIndicator__c</name>
+    </fields>
+    <fields>
+        <label><!-- BoardCity --></label>
+        <name>BoardCity__c</name>
+    </fields>
+    <fields>
+        <label><!-- Flight Canceled Indicator --></label>
+        <name>CancelIndicator__c</name>
+    </fields>
+    <fields>
+        <label><!-- Case Complaint --></label>
+        <name>Case_Complaint__c</name>
+        <relationshipLabel><!-- Flight Legs --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- CompositeFlightFlagstopIndicator --></label>
+        <name>CompositeFlightFlagstopIndicator__c</name>
+    </fields>
+    <fields>
+        <label><!-- CompositeFlightNoOpIndicator --></label>
+        <name>CompositeFlightNoOpIndicator__c</name>
+    </fields>
+    <fields>
+        <label><!-- CompositeFlightStubbedIndicator --></label>
+        <name>CompositeFlightStubbedIndicator__c</name>
+    </fields>
+    <fields>
+        <label><!-- Controllable --></label>
+        <name>Controllable__c</name>
+    </fields>
+    <fields>
+        <label><!-- Created Manually --></label>
+        <name>Created_Manually__c</name>
+    </fields>
+    <fields>
+        <label><!-- Delta Aircraft Code --></label>
+        <name>DeltaAircraftCode__c</name>
+    </fields>
+    <fields>
+        <label><!-- Departure Airport --></label>
+        <name>DepartureAirport__c</name>
+    </fields>
+    <fields>
+        <label><!-- Departure GMT Difference --></label>
+        <name>DepartureGMTDifference__c</name>
+    </fields>
+    <fields>
+        <help><!-- Actual departure gate --></help>
+        <label><!-- Departure Gate ID --></label>
+        <name>DepartureGateID__c</name>
+    </fields>
+    <fields>
+        <label><!-- Departure State Code --></label>
+        <name>DepartureStateCode__c</name>
+    </fields>
+    <fields>
+        <label><!-- Departure Delay (Min) --></label>
+        <name>Departure_Delay__c</name>
+    </fields>
+    <fields>
+        <label><!-- ElapsedTime2 --></label>
+        <name>ElapsedTime2__c</name>
+    </fields>
+    <fields>
+        <label><!-- Elapsed Time --></label>
+        <name>ElapsedTime__c</name>
+    </fields>
+    <fields>
+        <label><!-- Equipment Type --></label>
+        <name>EquipmentType__c</name>
+    </fields>
+    <fields>
+        <label><!-- Estimated Arrival GMT Time --></label>
+        <name>EstimatedArrivalGMTTime__c</name>
+    </fields>
+    <fields>
+        <label><!-- Estimated Arrival Time --></label>
+        <name>EstimatedArrivalTime__c</name>
+    </fields>
+    <fields>
+        <label><!-- Estimated Departure GMT Time --></label>
+        <name>EstimatedDepartureGMTTime__c</name>
+    </fields>
+    <fields>
+        <label><!-- Estimated Departure Time --></label>
+        <name>EstimatedDepartureTime__c</name>
+    </fields>
+    <fields>
+        <label><!-- FactsItemNumber --></label>
+        <name>FactsItemNumber__c</name>
+    </fields>
+    <fields>
+        <label><!-- FactsText --></label>
+        <name>FactsText__c</name>
+    </fields>
+    <fields>
+        <label><!-- FlagstopIndicator2 --></label>
+        <name>FlagstopIndicator2__c</name>
+    </fields>
+    <fields>
+        <label><!-- FlagstopIndicator --></label>
+        <name>FlagstopIndicator__c</name>
+    </fields>
+    <fields>
+        <label><!-- FlagstopTimesIndicator --></label>
+        <name>FlagstopTimesIndicator__c</name>
+    </fields>
+    <fields>
+        <label><!-- FlightCancellationReasonCode --></label>
+        <name>FlightCancellationReasonCode__c</name>
+    </fields>
+    <fields>
+        <label><!-- FlightCancelledIndicator --></label>
+        <name>FlightCancelledIndicator__c</name>
+    </fields>
+    <fields>
+        <label><!-- FlightHistoryExistsIndicator --></label>
+        <name>FlightHistoryExistsIndicator__c</name>
+    </fields>
+    <fields>
+        <label><!-- Flight Number --></label>
+        <name>FlightNumber__c</name>
+    </fields>
+    <fields>
+        <label><!-- FlightStubbedIndicator --></label>
+        <name>FlightStubbedIndicator__c</name>
+    </fields>
+    <fields>
+        <label><!-- Flight Type Code --></label>
+        <name>FlightTypeCode__c</name>
+    </fields>
+    <fields>
+        <label><!-- FlightTypeIndicator --></label>
+        <name>FlightTypeIndicator__c</name>
+    </fields>
+    <fields>
+        <help><!-- Date of Scheduled Departure --></help>
+        <label><!-- Flight Date --></label>
+        <name>Flight_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- Flight Grid Alert --></label>
+        <name>Flight_Grid_Alert__c</name>
+    </fields>
+    <fields>
+        <label><!-- Flight Grid Handling --></label>
+        <name>Flight_Grid_Handling__c</name>
+        <picklistValues>
+            <masterLabel>ASL - Comp Due</masterLabel>
+            <translation><!-- ASL - Comp Due --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Chile - Comp Due</masterLabel>
+            <translation><!-- Chile - Comp Due --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>EU - Comp Due</masterLabel>
+            <translation><!-- EU - Comp Due --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>No Comp Due</masterLabel>
+            <translation><!-- No Comp Due --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Flight Grid Notes --></label>
+        <name>Flight_Grid_Notes__c</name>
+    </fields>
+    <fields>
+        <label><!-- Flight Grid? --></label>
+        <name>Flight_Grid__c</name>
+        <picklistValues>
+            <masterLabel>ASL Research complete</masterLabel>
+            <translation><!-- ASL Research complete --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>ASL Research in process</masterLabel>
+            <translation><!-- ASL Research in process --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Chile Research complete</masterLabel>
+            <translation><!-- Chile Research complete --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Chile Research in process</masterLabel>
+            <translation><!-- Chile Research in process --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>EU Research complete</masterLabel>
+            <translation><!-- EU Research complete --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>EU Research in process</masterLabel>
+            <translation><!-- EU Research in process --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>No</masterLabel>
+            <translation><!-- No --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <help><!-- Description of Flight Type Code returned from Deltamatic --></help>
+        <label><!-- Flight Type Description --></label>
+        <name>Flight_Type_Description__c</name>
+    </fields>
+    <fields>
+        <label><!-- Great Circle Mileage --></label>
+        <name>GreatCircleMileage__c</name>
+    </fields>
+    <fields>
+        <label><!-- Handling Notes Alert --></label>
+        <name>Handling_Notes_Alert__c</name>
+    </fields>
+    <fields>
+        <label><!-- Other Flight Leg Notes --></label>
+        <name>Handling_Notes__c</name>
+    </fields>
+    <fields>
+        <help><!-- Actual Time during arrival when the Flight is at the Gate --></help>
+        <label><!-- In Time --></label>
+        <name>InTime__c</name>
+    </fields>
+    <fields>
+        <label><!-- Industry Standard Aircraft Code --></label>
+        <name>IndustryStandardAircraftCode__c</name>
+    </fields>
+    <fields>
+        <label><!-- InputDate --></label>
+        <name>InputDate__c</name>
+    </fields>
+    <fields>
+        <label><!-- LegCancelledIndicator --></label>
+        <name>LegCancelledIndicator__c</name>
+    </fields>
+    <fields>
+        <label><!-- Leg Mileage --></label>
+        <name>LegMileage__c</name>
+    </fields>
+    <fields>
+        <help><!-- This indicates that the flight returned to the originating station of the flight leg --></help>
+        <label><!-- Leg Return Indicator --></label>
+        <name>LegReturnIndicator__c</name>
+    </fields>
+    <fields>
+        <label><!-- Manifest --></label>
+        <name>Manifest__c</name>
+        <relationshipLabel><!-- Flight Legs --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Marketing Carrier --></label>
+        <name>MarketingAirlineCode__c</name>
+    </fields>
+    <fields>
+        <label><!-- F Meal Description --></label>
+        <name>MealCodeForFCabinDesc__c</name>
+    </fields>
+    <fields>
+        <label><!-- F Cabin --></label>
+        <name>MealCodeForFCabin__c</name>
+    </fields>
+    <fields>
+        <label><!-- J Meal Description --></label>
+        <name>MealCodeForJCabinDesc__c</name>
+    </fields>
+    <fields>
+        <label><!-- J Cabin --></label>
+        <name>MealCodeForJCabin__c</name>
+    </fields>
+    <fields>
+        <label><!-- Other Meal Description --></label>
+        <name>MealCodeForOtherCabinDesc__c</name>
+    </fields>
+    <fields>
+        <label><!-- Other Cabin --></label>
+        <name>MealCodeForOtherCabin__c</name>
+    </fields>
+    <fields>
+        <label><!-- Y Meal Description --></label>
+        <name>MealCodeForYCabinDesc__c</name>
+    </fields>
+    <fields>
+        <label><!-- Y Cabin --></label>
+        <name>MealCodeForYCabin__c</name>
+    </fields>
+    <fields>
+        <label><!-- Mileage --></label>
+        <name>Mileage__c</name>
+    </fields>
+    <fields>
+        <help><!-- Indicator that a movie is available on the flight --></help>
+        <label><!-- Movie Indicator --></label>
+        <name>MovieIndicator__c</name>
+    </fields>
+    <fields>
+        <label><!-- NoMealsThisLegIndicator --></label>
+        <name>NoMealsThisLegIndicator__c</name>
+    </fields>
+    <fields>
+        <label><!-- OffCity --></label>
+        <name>OffCity__c</name>
+    </fields>
+    <fields>
+        <help><!-- Actual Time during departure Time when the wheels of the Flight take off from the Ground --></help>
+        <label><!-- Off Time --></label>
+        <name>OffTime__c</name>
+    </fields>
+    <fields>
+        <label><!-- Official Tarmac Delay --></label>
+        <name>Official_Tarmac_Delay__c</name>
+    </fields>
+    <fields>
+        <help><!-- Actual Time during the arrival when the wheels of the Flight are on the Ground --></help>
+        <label><!-- On Time --></label>
+        <name>OnTime__c</name>
+    </fields>
+    <fields>
+        <label><!-- Operating Carrier --></label>
+        <name>OperatingAirlineCode__c</name>
+    </fields>
+    <fields>
+        <label><!-- Operating Flight Number --></label>
+        <name>OperatingFlightNumber__c</name>
+    </fields>
+    <fields>
+        <label><!-- OperlArlnCd --></label>
+        <name>OperlArlnCd__c</name>
+    </fields>
+    <fields>
+        <label><!-- OperlArlnNbr --></label>
+        <name>OperlArlnNbr__c</name>
+    </fields>
+    <fields>
+        <label><!-- Out Time --></label>
+        <name>OutTime__c</name>
+    </fields>
+    <fields>
+        <label><!-- PDAgentIndicator --></label>
+        <name>PDAgentIndicator__c</name>
+    </fields>
+    <fields>
+        <label><!-- ScheduleArrivalGMTTimestamp --></label>
+        <name>ScheduleArrivalGMTTimestamp__c</name>
+    </fields>
+    <fields>
+        <label><!-- ScheduleArrivalTimestamp --></label>
+        <name>ScheduleArrivalTimestamp__c</name>
+    </fields>
+    <fields>
+        <label><!-- ScheduleDepartureGMTTimestamp --></label>
+        <name>ScheduleDepartureGMTTimestamp__c</name>
+    </fields>
+    <fields>
+        <label><!-- ScheduleDepartureTimestamp --></label>
+        <name>ScheduleDepartureTimestamp__c</name>
+    </fields>
+    <fields>
+        <label><!-- Scheduled Arrival GMT Time --></label>
+        <name>ScheduledArrivalGMTTime__c</name>
+    </fields>
+    <fields>
+        <label><!-- ScheduledArrivalTimeFI --></label>
+        <name>ScheduledArrivalTimeFI__c</name>
+    </fields>
+    <fields>
+        <label><!-- Scheduled Arrival Time --></label>
+        <name>ScheduledArrivalTime__c</name>
+    </fields>
+    <fields>
+        <label><!-- Scheduled Departure GMT Time --></label>
+        <name>ScheduledDepartureGMTTime__c</name>
+    </fields>
+    <fields>
+        <label><!-- ScheduledDepartureTimeFI --></label>
+        <name>ScheduledDepartureTimeFI__c</name>
+    </fields>
+    <fields>
+        <label><!-- Scheduled Departure Time --></label>
+        <name>ScheduledDepartureTime__c</name>
+    </fields>
+    <fields>
+        <label><!-- Scheduled Arrival Date/Time --></label>
+        <name>Scheduled_Arrival_Date_Time__c</name>
+    </fields>
+    <fields>
+        <label><!-- Scheduled Arrival Time (Local) --></label>
+        <name>Scheduled_Arrival_Time_Local__c</name>
+    </fields>
+    <fields>
+        <label><!-- Scheduled Departure Date/Time --></label>
+        <name>Scheduled_Departure_Date_Time__c</name>
+    </fields>
+    <fields>
+        <label><!-- Scheduled Departure Date/Time --></label>
+        <name>Scheduled_Departure_Date_Time_calc__c</name>
+    </fields>
+    <fields>
+        <label><!-- Scheduled Duration --></label>
+        <name>Scheduled_Duration__c</name>
+    </fields>
+    <fields>
+        <label><!-- Scope Indicator --></label>
+        <name>ScopeIndicator__c</name>
+    </fields>
+    <fields>
+        <label><!-- Ship Number --></label>
+        <name>ShipNumber__c</name>
+    </fields>
+    <fields>
+        <label><!-- Take Off Number --></label>
+        <name>TakeoffNumber__c</name>
+    </fields>
+    <fields>
+        <label><!-- TaxiInTime --></label>
+        <name>TaxiInTime__c</name>
+    </fields>
+    <fields>
+        <label><!-- TaxiOutTime --></label>
+        <name>TaxiOutTime__c</name>
+    </fields>
+    <fields>
+        <label><!-- Ticket --></label>
+        <name>Ticket__c</name>
+        <relationshipLabel><!-- Flight Legs --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Flight Number --></label>
+        <name>X4_Digit_Flight_Number__c</name>
+    </fields>
+    <layouts>
+        <layout>Flight Leg Feed Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <startsWith>Consonant</startsWith>
+    <webLinks>
+        <label><!-- New_Flight --></label>
+        <name>New_Flight</name>
+    </webLinks>
+</CustomObjectTranslation>

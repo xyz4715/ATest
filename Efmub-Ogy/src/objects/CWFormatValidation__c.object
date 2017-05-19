@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customSettingsType>List</customSettingsType>
+    <description>Allows the end user to specify valid formats (as regular expressions) for fields in objects.</description>
+    <enableFeeds>false</enableFeeds>
+    <fields>
+        <fullName>Error_Message__c</fullName>
+        <description>The error message to be displayed if the field in not formatted correctly.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The error message to be displayed if the field in not formatted correctly.</inlineHelpText>
+        <label>Error Message</label>
+        <length>255</length>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Field_Name__c</fullName>
+        <description>The API name of the field to be validated.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The API name of the field to be validated.</inlineHelpText>
+        <label>Field Name</label>
+        <length>40</length>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Object_Name__c</fullName>
+        <description>The API name of the sObject that contains the field of interest.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The API name of the sObject that contains the field of interest.</inlineHelpText>
+        <label>Object Name</label>
+        <length>40</length>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Regular_Expression__c</fullName>
+        <description>The regular expression used to validate the field format.  For help with regular expressions, see http://docs.oracle.com/javase/7/docs/api/java/util/regex/Pattern.html</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The regular expression used to validate the field format.  For help with regular expressions, see http://docs.oracle.com/javase/7/docs/api/java/util/regex/Pattern.html</inlineHelpText>
+        <label>Regular Expression</label>
+        <length>255</length>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>CWFormatValidation</label>
+    <visibility>Public</visibility>
+</CustomObject>

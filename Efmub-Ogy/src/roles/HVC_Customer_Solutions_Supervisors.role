@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Role xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseAccessLevel>Edit</caseAccessLevel>
+    <contactAccessLevel>Edit</contactAccessLevel>
+    <description>CC_INTL_CCSup</description>
+    <mayForecastManagerShare>false</mayForecastManagerShare>
+    <name>HVC Customer Solutions Supervisors</name>
+    <opportunityAccessLevel>Edit</opportunityAccessLevel>
+    <parentRole>HVC_Customer_Solutions_Lead_Reserve</parentRole>
+</Role>

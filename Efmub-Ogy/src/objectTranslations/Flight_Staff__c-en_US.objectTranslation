@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Flight Staff</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Flight Staff</value>
+    </caseValues>
+    <fields>
+        <label><!-- Account --></label>
+        <name>Account__c</name>
+        <relationshipLabel><!-- Flight Staff --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- BsAssgn --></label>
+        <name>BsAssgn__c</name>
+    </fields>
+    <fields>
+        <label><!-- EmplDt --></label>
+        <name>EmplDt__c</name>
+    </fields>
+    <fields>
+        <label><!-- FADeptNb --></label>
+        <name>FADeptNb__c</name>
+    </fields>
+    <fields>
+        <label><!-- FAFsmBase --></label>
+        <name>FAFsmBase__c</name>
+    </fields>
+    <fields>
+        <label><!-- FAFsmId --></label>
+        <name>FAFsmId__c</name>
+    </fields>
+    <fields>
+        <label><!-- Flight Leg Flight Crew --></label>
+        <name>Flight_Leg_Flight_Crew__c</name>
+        <relationshipLabel><!-- Flight Crew --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Flight Leg Gate Agent --></label>
+        <name>Flight_Leg_Gate_Agent__c</name>
+        <relationshipLabel><!-- Gate Agents --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- MgrFrstNm --></label>
+        <name>MgrFrstNm__c</name>
+    </fields>
+    <fields>
+        <label><!-- MgrLstNm --></label>
+        <name>MgrLstNm__c</name>
+    </fields>
+    <fields>
+        <label><!-- MgrNb --></label>
+        <name>MgrNb__c</name>
+    </fields>
+    <fields>
+        <label><!-- SnrtyDt --></label>
+        <name>SnrtyDt__c</name>
+    </fields>
+    <fields>
+        <label><!-- SnrtyNb --></label>
+        <name>SnrtyNb__c</name>
+    </fields>
+    <fields>
+        <label><!-- bsCd --></label>
+        <name>bsCd__c</name>
+    </fields>
+    <fields>
+        <label><!-- city --></label>
+        <name>city__c</name>
+    </fields>
+    <fields>
+        <label><!-- crrCd --></label>
+        <name>crrCd__c</name>
+    </fields>
+    <fields>
+        <label><!-- crrnLgTypCd --></label>
+        <name>crrnLgTypCd__c</name>
+    </fields>
+    <fields>
+        <label><!-- destArptCd --></label>
+        <name>destArptCd__c</name>
+    </fields>
+    <fields>
+        <label><!-- eqpTypCd --></label>
+        <name>eqpTypCd__c</name>
+    </fields>
+    <fields>
+        <label><!-- fltArrDt --></label>
+        <name>fltArrDt__c</name>
+    </fields>
+    <fields>
+        <label><!-- fltArrTm --></label>
+        <name>fltArrTm__c</name>
+    </fields>
+    <fields>
+        <label><!-- fltCrrCd --></label>
+        <name>fltCrrCd__c</name>
+    </fields>
+    <fields>
+        <label><!-- fltDestArptCd --></label>
+        <name>fltDestArptCd__c</name>
+    </fields>
+    <fields>
+        <label><!-- fltDprtDt --></label>
+        <name>fltDprtDt__c</name>
+    </fields>
+    <fields>
+        <label><!-- fltDprtTm --></label>
+        <name>fltDprtTm__c</name>
+    </fields>
+    <fields>
+        <label><!-- fltDt --></label>
+        <name>fltDt__c</name>
+    </fields>
+    <fields>
+        <label><!-- fltIntlCd --></label>
+        <name>fltIntlCd__c</name>
+    </fields>
+    <fields>
+        <label><!-- fltNb --></label>
+        <name>fltNb__c</name>
+    </fields>
+    <fields>
+        <label><!-- fltOrigArptCd --></label>
+        <name>fltOrigArptCd__c</name>
+    </fields>
+    <fields>
+        <label><!-- fltSchdArrDt --></label>
+        <name>fltSchdArrDt__c</name>
+    </fields>
+    <fields>
+        <label><!-- fltSchdArrTm --></label>
+        <name>fltSchdArrTm__c</name>
+    </fields>
+    <fields>
+        <label><!-- fltSchdDprtDt --></label>
+        <name>fltSchdDprtDt__c</name>
+    </fields>
+    <fields>
+        <label><!-- fltSchdDprtTm --></label>
+        <name>fltSchdDprtTm__c</name>
+    </fields>
+    <fields>
+        <label><!-- fltSchdDprtUtcDt --></label>
+        <name>fltSchdDprtUtcDt__c</name>
+    </fields>
+    <fields>
+        <label><!-- fltTm --></label>
+        <name>fltTm__c</name>
+    </fields>
+    <fields>
+        <label><!-- ibFltArrDtTm --></label>
+        <name>ibFltArrDtTm__c</name>
+    </fields>
+    <fields>
+        <label><!-- ibFltNb --></label>
+        <name>ibFltNb__c</name>
+    </fields>
+    <fields>
+        <label><!-- incnlFaCt --></label>
+        <name>incnlFaCt__c</name>
+    </fields>
+    <fields>
+        <label><!-- isShowPsptNm --></label>
+        <name>isShowPsptNm__c</name>
+    </fields>
+    <fields>
+        <label><!-- lckd --></label>
+        <name>lckd__c</name>
+    </fields>
+    <fields>
+        <label><!-- mbrCtrt --></label>
+        <name>mbrCtrt__c</name>
+    </fields>
+    <fields>
+        <label><!-- mbrIdNb --></label>
+        <name>mbrIdNb__c</name>
+    </fields>
+    <fields>
+        <label><!-- mbrNm --></label>
+        <name>mbrNm__c</name>
+    </fields>
+    <fields>
+        <label><!-- mbrPsptNm --></label>
+        <name>mbrPsptNm__c</name>
+    </fields>
+    <fields>
+        <label><!-- mbrTypCd --></label>
+        <name>mbrTypCd__c</name>
+    </fields>
+    <fields>
+        <label><!-- minFaRqdCt --></label>
+        <name>minFaRqdCt__c</name>
+    </fields>
+    <fields>
+        <label><!-- origArptCd --></label>
+        <name>origArptCd__c</name>
+    </fields>
+    <fields>
+        <label><!-- originating --></label>
+        <name>originating__c</name>
+    </fields>
+    <fields>
+        <label><!-- pstnCd --></label>
+        <name>pstnCd__c</name>
+    </fields>
+    <fields>
+        <label><!-- rotnBegDt --></label>
+        <name>rotnBegDt__c</name>
+    </fields>
+    <fields>
+        <label><!-- rotnDupNb --></label>
+        <name>rotnDupNb__c</name>
+    </fields>
+    <fields>
+        <label><!-- rotnNb --></label>
+        <name>rotnNb__c</name>
+    </fields>
+    <fields>
+        <label><!-- rotnPstnCd --></label>
+        <name>rotnPstnCd__c</name>
+    </fields>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

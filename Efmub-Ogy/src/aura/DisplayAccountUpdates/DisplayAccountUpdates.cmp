@@ -1,0 +1,305 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes" controller="FetchContactDetails" access="global">
+    <aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="skyMilesNumber" type="String"/>
+     <aura:attribute name="SearchErrorMessage" type="String"/>
+    <aura:attribute name="LoyaltyNumber" type="String"/>
+    <aura:attribute name="skyMilesNumberTemp" type="String"/>
+    <aura:attribute name="LoyaltyNumberTemp" type="String"/>
+    <aura:attribute name="existingAccount" type="Account" />
+    <aura:attribute name="WSDLAccount" type="Account" />
+    <aura:attribute name="newAccount" type="Account" />
+    <aura:attribute name="spinnerVisible" type="Boolean" default="true" access="PRIVATE" />
+    <aura:attribute name="contantVisible" type="Boolean" default="true" access="PRIVATE" />
+    <aura:attribute name="dataBaseName" type="string" default="Loyalty" access="PRIVATE" />
+    <aura:attribute name="accountUpdateError" type="Boolean" default="false" access="PRIVATE" />
+    <aura:attribute name="accountUpdateErrorMessage" type="String"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:registerEvent name="refreshView" type="force:refreshView" />
+    <div>
+        <lightning:layout horizontalAlign="center">
+            <lightning:layoutItem padding="around-small">
+                <div><lightning:button variant="brand" label="Back to Account" onclick="{! c.backToAccount }" /></div>
+            </lightning:layoutItem>
+            <lightning:layoutItem padding="around-small" class="{!if(v.contantVisible, '', 'slds-hide')}">
+                <div><lightning:button variant="brand" label="Update" onclick="{! c.updateNewValue }" /></div>
+            </lightning:layoutItem>
+            <lightning:layoutItem padding="around-small" class="{!if(((v.skyMilesNumber.length>0) &amp;&amp; (v.LoyaltyNumber.length>0)), '', 'slds-hide')}">
+                <div><lightning:button variant="brand" label="{!'Update from ' + if((v.dataBaseName=='Loyalty'), 'FlyingBlue', 'Loyalty')+''}" onclick="{! c.showOtherDatabaseValue }" /></div>
+            </lightning:layoutItem>
+        </lightning:layout>
+    </div> 
+    <div class="{!if(v.accountUpdateError, '', 'slds-hide')}">
+    <div class="demo-only" style="height:4rem;">
+  <div class="slds-notify_container slds-is-relative">
+    <div class="slds-notify slds-notify_toast slds-theme_info" role="alert">
+      <span class="slds-assistive-text">info</span>
+      <span class="slds-icon_container slds-icon-utility-info slds-m-right_small slds-no-flex slds-align-top" title="Description of icon when needed">
+       
+          <lightning:icon class="slds-icon slds-icon_small" iconName="utility:info_alt"  variant="warning"/>
+
+      </span>
+      <div class="slds-notify__content">
+        <h2 class="slds-text-heading_small">{!v.accountUpdateErrorMessage}
+        </h2>
+      </div>
+      
+    </div>
+  </div>
+        </div></div>
+    <div onkeyup="{!c.formPress}" class="{!if(((v.skyMilesNumber=='') &amp;&amp; (v.LoyaltyNumber=='')), '', 'slds-hide')}">
+        <lightning:layout horizontalAlign="center" >
+            <lightning:layoutItem padding="around-small">
+                <div><lightning:input type="text" name="skymiles" pattern="[0-9]{10}" aura:id="skymilesID" minlength="10"  label="SkyMiles Number*&nbsp;&nbsp;" maxlength="10" value="{!v.skyMilesNumberTemp}" /></div>
+            </lightning:layoutItem>
+            <lightning:layoutItem padding="around-small" >
+                <div><lightning:input type="text" name="FlyingBlue" pattern="[0-9]{10}" aura:id="FlyingBlueID" minlength="10"  label="FlyingBlue Number*&nbsp;&nbsp;" maxlength="10" value="{!v.LoyaltyNumberTemp}" /></div>
+            </lightning:layoutItem>
+            <lightning:layoutItem padding="around-small"  >
+                <div style="margin-top:20px;"><lightning:button variant="brand" label="Search" onclick="{!c.doSearch}" /></div>
+            </lightning:layoutItem>
+        </lightning:layout>
+    </div>
+    <div >
+        <lightning:layout horizontalAlign="center">
+            <lightning:layoutItem padding="around-small">
+                <div class="fontColor">{!v.SearchErrorMessage}</div>
+            </lightning:layoutItem>
+        </lightning:layout>
+    </div>
+     <div class="{!if(v.contantVisible, '', 'slds-hide')}">
+    <div class="slds-grid">
+        
+        <div class="slds-col">
+            <div class="slds-box slds-box--small slds-theme--shade slds-text-align--center">Phoenix</div>
+            <div class="slds-panel slds-grid slds-grid--vertical slds-nowrap">
+                <div class="slds-form--stacked slds-grow slds-scrollable--y">
+                    
+                    <div class="slds-panel__section" >
+                        
+                        <div class="slds-form-element slds-hint-parent slds-has-divider--bottom"  >
+                            <span class="slds-form-element__label"><b>Name</b></span> 
+                            <div class="slds-form-element__control">
+                                
+                                <span class="slds-form-element__static"> {!(v.existingAccount.FirstName+' '+v.existingAccount.LastName)}</span>
+                            </div>
+                        </div>
+                        <div class="slds-form-element slds-hint-parent slds-has-divider--bottom" >
+                            <span class="slds-form-element__label"><b>Mailing Address</b></span>
+                            <div class="slds-form-element__control">
+                                
+                                 {!v.existingAccount.PersonMailingStreet}<br/>
+                                 {!v.existingAccount.PersonMailingCity}&nbsp;&nbsp;
+                                  {!v.existingAccount.PersonMailingState}&nbsp;&nbsp;
+                                  {!v.existingAccount.PersonMailingPostalCode}<br/>
+                                
+                            </div>
+                        </div>
+                        <div class="slds-form-element slds-hint-parent slds-has-divider--bottom" >
+                            <span class="slds-form-element__label"><b>Email </b></span>
+                            <div class="slds-form-element__control">
+                                
+                                <span class="slds-form-element__static">  {!v.existingAccount.PersonEmail}</span>
+                            </div>
+                        </div>
+                        <div class="slds-form-element slds-hint-parent slds-has-divider--bottom" >
+                            <span class="slds-form-element__label"><b>Phone#</b></span>
+                            <div class="slds-form-element__control">
+                                
+                                <span class="slds-form-element__static">  {!v.existingAccount.Phone}</span>
+                            </div>
+                            
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+        <div class="slds-col" >
+            <div class="slds-box slds-box--small slds-theme--shade slds-text-align--center">{!v.dataBaseName}</div>
+            <div class="slds-panel slds-grid slds-grid--vertical slds-nowrap">
+                <div class="slds-form--stacked slds-grow slds-scrollable--y">
+                    
+                    <div class="slds-panel__section" style = "height:600px;">
+                        <div class="{!if(v.spinnerVisible, '', 'slds-hide')}">
+            <lightning:spinner variant="brand" size="large" aura:id="mySpinner" />
+                    </div>
+                        <div class="slds-form-element slds-hint-parent slds-has-divider--bottom">
+                            <span class="slds-form-element__label"><b>Name</b></span>
+                            <div class="{!if((v.WSDLAccount.FirstName+' '+v.WSDLAccount.LastName)!=(v.existingAccount.FirstName+' '+v.existingAccount.LastName), 'slds-form-element__control fontColor', 'slds-form-element__control')}">
+                                
+                                <ui:inputRadio aura:id="r1" name="PersonName" text="{!(v.WSDLAccount.FirstName+' '+v.WSDLAccount.LastName)}" change="{!c.updateValue}"/> 
+                                <span class="slds-form-element__static" style="margin-left: 10px;" > {!(v.WSDLAccount.FirstName+' '+v.WSDLAccount.LastName)}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="slds-form-element slds-hint-parent slds-has-divider--bottom"  >
+                            <span class="slds-form-element__label"><b>Address(s)</b></span>
+                            <div class="slds-form-element__control">
+                               
+                                    <aura:iteration items="{!v.WSDLAccount.AddressList}" var="streetList" >
+                                   <div class="slds-grid ">
+                                       <div style="margin-right: 10px;"><lightning:buttonMenu alternativeText="Toggle menu"  onselect="{! c.handleMenuSelect }" name="{!streetList}" >
+                                        <lightning:menuItem label="Update Mailing Address"  value="MailingAddress"  />
+                                        <lightning:menuItem label="Update Other Address" value="OtherAddress" />
+                                    </lightning:buttonMenu></div> 
+                                       <div> {!streetList.PersonMailingStreet}<br/>
+                                            {!streetList.PersonMailingCity}&nbsp;&nbsp;{!streetList.PersonMailingState}&nbsp;&nbsp; {!streetList.PersonMailingPostalCode}</div>
+                                   
+                                        
+                                        </div><br/>
+                                         </aura:iteration>
+                            </div>
+                        </div>
+                        
+                        <div class="slds-form-element slds-hint-parent slds-has-divider--bottom" >
+                            <span class="slds-form-element__label"><b>Email </b></span>
+                            <div class="slds-form-element__control">
+                                <!--<aura:iteration items="{!v.WSDLAccount.PersonEmail}" var="PersonEmailList">
+                                    <ui:inputRadio name="PersonEmail" text="{!PersonEmailList}" change="{!c.updateValue}"/>
+                                    <span class="slds-form-element__static">  {!PersonEmailList}</span><br/>
+                                </aura:iteration>-->
+                                <aura:iteration items="{!v.WSDLAccount.PersonEmail}" var="PersonEmailList" >
+                                   <div class="slds-grid ">
+                                       <div style="margin-right: 10px;"><lightning:buttonMenu alternativeText="Toggle menu"  onselect="{! c.handleMenuSelect }" name="{!PersonEmailList}" >
+                                        
+                                           <lightning:menuItem label="Update Email" value="emailAdd" />
+                                           <lightning:menuItem label="Update Other Email"  value="otheremail"  />
+                                        <lightning:menuItem label="Update Work Email" value="workemail" />
+                                    </lightning:buttonMenu></div> 
+                                       <div>   {!PersonEmailList}<br/></div>
+                                   
+                                        
+                                        </div><br/>
+                                         </aura:iteration>
+                                
+                                <!--<span class="slds-form-element__static"> PersonEmail</span>-->
+                            </div>
+                        </div>
+                        <div class="slds-form-element slds-hint-parent slds-has-divider--bottom" >
+                            <span class="slds-form-element__label"><b>Phone#</b></span>
+                            <div class="slds-form-element__control">
+                                <!--<aura:iteration items="{!v.WSDLAccount.Phone}" var="PhoneList">
+                                    <ui:inputRadio name="Phone" text="{!PhoneList}" change="{!c.updateValue}"/>
+                                    <span class="slds-form-element__static">  {!PhoneList}</span><br/>
+                                </aura:iteration>-->
+                                <aura:iteration items="{!v.WSDLAccount.Phone}" var="PhoneList" >
+                                   <div class="slds-grid ">
+                                       <div style="margin-right: 10px;"><lightning:buttonMenu alternativeText="Toggle menu"  onselect="{! c.handleMenuSelect }" name="{!PhoneList}" >
+                                        <lightning:menuItem label="Update Phone" value="PhoneNo" />
+                                           <lightning:menuItem label="Update Mobile" value="Mobile" />
+                                           <lightning:menuItem label="Update other Phone"  value="otherphone"  />
+                                        
+                                           
+                                    </lightning:buttonMenu></div> 
+                                       <div>  {!PhoneList}<br/></div>
+                                   
+                                        
+                                        </div><br/>
+                                         </aura:iteration>
+                            </div>
+                            
+                        </div>                        
+                    </div>
+                    
+                </div>
+            </div> 
+        </div>
+        <div class="slds-col">
+            <div class="slds-box slds-box--small slds-theme--shade slds-text-align--center">To be updated</div>
+            <div class="slds-panel slds-grid slds-grid--vertical slds-nowrap">
+                <div class="slds-form--stacked slds-grow slds-scrollable--y">
+                    
+                    <div class="slds-panel__section">
+                        
+                        <div class="slds-form-element slds-hint-parent slds-has-divider--bottom">
+                            <span class="slds-form-element__label"><b>Name</b></span> 
+                            <div class="slds-form-element__control">
+                                
+                                <span class="slds-form-element__static"> {!(v.newAccount.FirstName+' '+v.newAccount.LastName)}</span>
+                            </div>
+                        </div>
+                        <div class="slds-form-element slds-hint-parent slds-has-divider--bottom" >
+                            
+                            <div class="slds-form-element__control">
+                                <table >
+                                    <thead>
+                                        <tr>
+                                            <th scope="col"><span class="slds-truncate">Mailing Address</span></th>
+                                            <th scope="col"><span class="slds-truncate">Other Address</span></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td width = "100px" height = "110px">  {!v.newAccount.PersonMailingStreet}<br/>{!v.newAccount.PersonMailingCity}&nbsp;&nbsp;{!v.newAccount.PersonMailingState}&nbsp;&nbsp;{!v.newAccount.PersonMailingPostalCode}</td>
+                                            <td width = "100px"  height = "110px">{!v.newAccount.PersonOtherStreet}<br/>{!v.newAccount.PersonOtherCity}&nbsp;&nbsp;{!v.newAccount.PersonOtherState}&nbsp;&nbsp;{!v.newAccount.PersonOtherPostalCode}</td>
+                                        </tr>
+                                    </tbody>
+                                </table> 
+                                <!--<span class="slds-form-element__static"> {!v.newAccount.PersonMailingStreet}</span>-->
+                            </div>
+                        </div>
+                        
+                        <div class="slds-form-element slds-hint-parent slds-has-divider--bottom" >
+                            <!--<span class="slds-form-element__label">Email Address</span>-->
+                            <div class="slds-form-element__control">
+                                <table >
+                                    <thead>
+                                        <tr>
+                                            <th scope="col"><span class="slds-truncate">Email</span></th>
+                                            <th scope="col"><span class="slds-truncate">Other Email</span></th>
+                                            <th scope="col"><span class="slds-truncate">Work Email</span></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td height = "90px" width = "100px" ><span class="slds-form-element__static">{!v.newAccount.PersonEmail}</span></td>
+                                            <td height = "90px" width = "100px"><span class="slds-form-element__static">{!v.newAccount.Other_Email__pc}</span></td>
+                                            <td height = "90px" width = "100px"><span class="slds-form-element__static">{!v.newAccount.Work_Email__pc}</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                               
+                            </div>
+                        </div>
+                        <div class="slds-form-element slds-hint-parent slds-has-divider--bottom" >
+                            <!--<span class="slds-form-element__label">Phone#</span>-->
+                            <div class="slds-form-element__control">
+                                <table >
+                                    <thead>
+                                        <tr>
+                                            <th scope="col"><span class="slds-truncate">Phone#</span></th>
+                                            <th scope="col"><span class="slds-truncate">Mobile#</span></th>
+                                            <th scope="col"><span class="slds-truncate">Other Phone#</span></th>
+                                            
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td height = "80px" width = "100px"><span class="slds-form-element__static">{!v.newAccount.Phone}</span></td>
+                                            <td height = "80px" width = "100px"><span class="slds-form-element__static">{!v.newAccount.PersonMobilePhone}</span></td>
+                                            <td height = "80px" width = "100px"><span class="slds-form-element__static">{!v.newAccount.PersonOtherPhone}</span></td>
+                                            
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <!--<span class="slds-form-element__static">  {!v.newAccount.Phone}</span>-->
+                            </div>
+                            
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+            </div> 
+        </div>
+    </div>
+    </div>
+    <div class="{!if((!v.contantVisible &amp;&amp; ((v.skyMilesNumber!='') || (v.LoyaltyNumber!=''))), '', 'slds-hide')}">
+        <lightning:layout horizontalAlign="center">
+            <lightning:layoutItem padding="around-small">
+                <div onkeyup="{!c.noRecordformPress}">No results found</div>
+            </lightning:layoutItem>
+        </lightning:layout>
+    </div>
+</aura:component>

@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Complaint Code</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Complaint Codes</value>
+    </caseValues>
+    <fields>
+        <label><!-- Active --></label>
+        <name>Active__c</name>
+    </fields>
+    <fields>
+        <label><!-- Compensable --></label>
+        <name>Compensable__c</name>
+    </fields>
+    <fields>
+        <label><!-- Concord Code Number --></label>
+        <name>Concord_Code_Number__c</name>
+    </fields>
+    <fields>
+        <label><!-- Description --></label>
+        <name>Description__c</name>
+    </fields>
+    <fields>
+        <label><!-- Disability Code Required --></label>
+        <name>Disability_Code_Required__c</name>
+    </fields>
+    <fields>
+        <label><!-- Display Name --></label>
+        <name>Display_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Keywords --></label>
+        <name>Keywords__c</name>
+    </fields>
+    <fields>
+        <label><!-- Level 1 --></label>
+        <name>Level_1__c</name>
+    </fields>
+    <fields>
+        <label><!-- Level 2 --></label>
+        <name>Level_2__c</name>
+    </fields>
+    <fields>
+        <label><!-- Level 3 --></label>
+        <name>Level_3__c</name>
+    </fields>
+    <fields>
+        <label><!-- Level 4 --></label>
+        <name>Level_4__c</name>
+    </fields>
+    <fields>
+        <label><!-- Lowest Level --></label>
+        <name>Lowest_Level__c</name>
+    </fields>
+    <fields>
+        <help><!-- This is the Notification Type passed to the Mercury arbitration service. --></help>
+        <label><!-- Mercury Notification Type --></label>
+        <name>Notification_Type__c</name>
+        <picklistValues>
+            <masterLabel>CMPL</masterLabel>
+            <translation><!-- CMPL --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>CMPT</masterLabel>
+            <translation><!-- CMPT --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>PSRY</masterLabel>
+            <translation><!-- PSRY --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Phoenix L1 --></label>
+        <name>Phoenix_L1__c</name>
+    </fields>
+    <fields>
+        <label><!-- Phoenix L2 --></label>
+        <name>Phoenix_L2__c</name>
+    </fields>
+    <fields>
+        <label><!-- Phoenix L3 --></label>
+        <name>Phoenix_L3__c</name>
+    </fields>
+    <fields>
+        <label><!-- Phoenix L4 --></label>
+        <name>Phoenix_L4__c</name>
+    </fields>
+    <fields>
+        <label><!-- Possible Complaint Locations --></label>
+        <name>Possible_Complaint_Locations__c</name>
+    </fields>
+    <fields>
+        <label><!-- Priority --></label>
+        <name>Priority__c</name>
+    </fields>
+    <fields>
+        <label><!-- Type --></label>
+        <name>Type__c</name>
+        <picklistValues>
+            <masterLabel>DOT</masterLabel>
+            <translation><!-- DOT --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Delta</masterLabel>
+            <translation><!-- Delta --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Dot Disability</masterLabel>
+            <translation><!-- Dot Disability --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Special PSR</masterLabel>
+            <translation><!-- Special PSR --></translation>
+        </picklistValues>
+    </fields>
+    <layouts>
+        <layout>Complaint Code Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <recordTypes>
+        <label><!-- DOT --></label>
+        <name>DOT</name>
+    </recordTypes>
+    <recordTypes>
+        <label><!-- Delta --></label>
+        <name>Delta</name>
+    </recordTypes>
+    <recordTypes>
+        <label><!-- Dot Disability --></label>
+        <name>Dot_Disability</name>
+    </recordTypes>
+    <recordTypes>
+        <label><!-- Special PSR --></label>
+        <name>Special_PSR</name>
+    </recordTypes>
+    <startsWith>Consonant</startsWith>
+    <webLinks>
+        <label><!-- Delete --></label>
+        <name>Delete</name>
+    </webLinks>
+</CustomObjectTranslation>

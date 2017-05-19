@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Compensation</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Compensations</value>
+    </caseValues>
+    <fields>
+        <help><!-- The Case to which this Compensation is related. --></help>
+        <label><!-- Case --></label>
+        <name>Case__c</name>
+        <relationshipLabel><!-- Compensations --></relationshipLabel>
+    </fields>
+    <fields>
+        <help><!-- The Contact to whom this Compensation is related. --></help>
+        <label><!-- Contact --></label>
+        <name>Contact__c</name>
+        <relationshipLabel><!-- Compensations --></relationshipLabel>
+    </fields>
+    <fields>
+        <help><!-- The Flight Leg to which this Compensation is related. --></help>
+        <label><!-- Flight Leg --></label>
+        <name>Flight_Leg__c</name>
+        <relationshipLabel><!-- Compensations --></relationshipLabel>
+    </fields>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

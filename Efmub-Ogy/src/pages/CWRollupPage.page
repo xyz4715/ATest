@@ -1,0 +1,106 @@
+<!-- 
+/*******************************************************//**
+
+@page		CWRollupPage
+
+@brief		Rollup Page
+
+	This page allows the user to edit a CWRollup custom setting.
+
+@author		Michael Wing	(LiquidHub.EMW)
+
+@version	2014-??-??	LiquidHub.EMW
+	Created.
+
+@todo		Incorporate this page into the CWRollupsPage page
+@todo		Utilize Visualforce pageBlock... components for styling
+
+@see		CWRollupController
+
+	(c)2014-2015 LiquidHub.  All Rights Reserved.  Unauthorized use is prohibited.
+
+	This is a component of CW Core (tm), LiquidHub's middleware library for Salesforce.
+
+***********************************************************/
+ -->
+<apex:page controller="CWRollupController">
+	<h1>title</h1>
+	<br/>
+
+	<apex:pageMessages />
+
+	<apex:form id="theForm">
+		Parent Object &nbsp;
+		<apex:selectList value="{!rollup.Parent_Object__c}" size="1">
+			<apex:selectOptions value="{!objectNames}"/>
+		</apex:selectList><p/>
+		<br/>
+
+		Child Object &nbsp;
+		<apex:selectList value="{!rollup.Child_Object__c}" size="1">
+			<apex:selectOptions value="{!objectNames}"/>
+		</apex:selectList><p/>
+		<br/>
+
+		<apex:commandButton action="{!clickUpdate}" value="Update" rerender="theFieldInfoPageBlock"/>
+
+		<apex:pageBlock id="theFieldInfoPageBlock">
+			Name &nbsp;
+			<apex:inputText value="{!rollup.Name}" id="theName"/>
+			<br/>
+
+			Inactive &nbsp;
+			<apex:inputCheckbox value="{!rollup.Inactive__c}"/>
+			<br/>
+
+			Parent Field &nbsp;
+			<apex:selectList value="{!rollup.Parent_Field__c}" size="1">
+				<apex:selectOptions value="{!parentFieldNames}"/>
+			</apex:selectList><p/>
+			<br/>
+
+			Child Field &nbsp;
+			<apex:selectList value="{!rollup.Child_Field__c}" size="1">
+				<apex:selectOptions value="{!childFieldNames}"/>
+			</apex:selectList><p/>
+			<br/>
+
+			Function &nbsp;
+			<apex:selectList value="{!rollup.Function__c}" size="1">
+				<apex:selectOptions value="{!functionNames}"/>
+			</apex:selectList><p/>
+			<br/>
+
+			From Child To Parent Field &nbsp;
+			<apex:selectList value="{!rollup.Child_Parent_Field__c}" size="1">
+				<apex:selectOptions value="{!childParentFieldNames}"/>
+			</apex:selectList><p/>
+			<br/>
+
+			From Parent To Child Field &nbsp;
+			<apex:selectList value="{!rollup.Parent_Child_Field__c}" size="1">
+				<apex:selectOptions value="{!parentChildFieldNames}"/>
+			</apex:selectList><p/>
+			<br/>
+
+			Child Sort Field &nbsp;
+			<apex:selectList value="{!rollup.Child_Sort_Field__c}" size="1">
+				<apex:selectOptions value="{!childFieldNames}"/>
+			</apex:selectList><p/>
+			<br/>
+
+			Parent Other Field &nbsp;
+			<apex:selectList value="{!rollup.Parent_Other_Field__c}" size="1">
+				<apex:selectOptions value="{!parentFieldNames}"/>
+			</apex:selectList><p/>
+			<br/>
+
+			Additional Logic &nbsp;
+			<apex:inputText value="{!rollup.Child_Additional_Logic__c}" id="theTextInput"/>
+			<br/>
+		</apex:pageBlock>
+
+		<apex:commandButton action="{!clickSave}" value="Save" />
+		<apex:commandButton action="{!clickCancel}" value="Cancel" />
+	</apex:form>
+</apex:page>

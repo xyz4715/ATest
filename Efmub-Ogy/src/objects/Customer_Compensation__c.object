@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableEnhancedLookup>true</enableEnhancedLookup>
+    <enableFeeds>true</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Account__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Account</label>
+        <referenceTo>Account</referenceTo>
+        <relationshipLabel>Customer Compensations</relationshipLabel>
+        <relationshipName>Customer_Compensations</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Case__c</fullName>
+        <externalId>false</externalId>
+        <label>Case</label>
+        <referenceTo>Case</referenceTo>
+        <relationshipLabel>Customer Compensations</relationshipLabel>
+        <relationshipName>Customer_Compensations</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>Claim_Amount__c</fullName>
+        <externalId>false</externalId>
+        <label>Claim Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Claim_Type__c</fullName>
+        <externalId>false</externalId>
+        <label>Claim Type</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Domestic</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>International</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Exclusion_Amount__c</fullName>
+        <externalId>false</externalId>
+        <label>Exclusion Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Exclusion_Reason__c</fullName>
+        <externalId>false</externalId>
+        <label>Exclusion Reason</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MultiselectPicklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Artistic Items</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Cash High Value</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Confiscation of Items by Local Government</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Cremains</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Electronic or Mechanical Items</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Fragile Items</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Jewelry or Precious Metals</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Musical instrumentals and Equipment</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Perishable Items</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Photographic/Cinematographic Equipment</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Precision Items</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Religious Totems/Artifacts</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Security Non-Sanctioned Items</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Sporting Goods</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Valuable Papers</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+        <visibleLines>5</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Goodwill_Amount__c</fullName>
+        <externalId>false</externalId>
+        <label>Goodwill Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <label>Customer Compensation</label>
+    <listViews>
+        <fullName>All</fullName>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
+    <nameField>
+        <displayFormat>CC-{00000000}</displayFormat>
+        <label>Customer Compensation</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Customer Compensations</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ControlledByParent</sharingModel>
+    <validationRules>
+        <fullName>Exclusion_Reason_Required</fullName>
+        <active>true</active>
+        <description>Exclusion Reason is required when Exclusion Amount is entered</description>
+        <errorConditionFormula>AND(
+!ISBLANK( Exclusion_Amount__c ),
+ISBLANK( Exclusion_Reason__c )
+)</errorConditionFormula>
+        <errorMessage>Exclusion Reason is required</errorMessage>
+    </validationRules>
+</CustomObject>
